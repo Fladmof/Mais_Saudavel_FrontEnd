@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <title>+ Saudável | Administrador</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/icon/themify-icons/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="assets/icon/icofont/css/icofont.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/jquery.mCustomScrollbar.css">
+
+</head>
+
+<body>
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div class='contain'>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div>
+        <div class="pcoded-container navbar-wrapper">
+
+            <nav class="navbar header-navbar pcoded-header">
+                <div class="navbar-wrapper">
+                    <div class="navbar-logo">
+                        <a class="mobile-menu" id="mobile-collapse" href="#!">
+                            <i class="ti-menu"></i>
+                        </a>
+                        <a class="mobile-search morphsearch-search" href="#">
+                            <i class="ti-search"></i>
+                        </a>
+                        <a href="index.html">
+                            <img class="img-fluid" id="img_logo" src="assets/images/logo.png" alt="Theme-Logo" />
+                        </a>
+                        <a class="mobile-options">
+                            <i class="ti-more"></i>
+                        </a>
+                    </div>
+
+                    <div class="navbar-container container-fluid">
+                        <ul class="nav-left">
+                            <li>
+                                <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
+                            </li>
+                            <li>
+                                <a href="#!" onclick="javascript:toggleFullScreen()">
+                                    <i class="ti-fullscreen"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav-right"> 
+                            <li class="header-notification" id="btn_imprimir">
+                                <a href="#">
+                                        Imprimir relatório
+                                </a>
+                            </li>
+                            <li class="header-notification">
+                                <a href="#!">
+                                    <i class="ti-bell"></i>
+                                    <span class="badge"></span>  
+                                </a>
+                            </li>
+                            <li class="user-profile header-notification">
+                                <a href="#!">
+                                    <img src="assets/images/doctor.jpg" class="img-radius" alt="User-Profile-Image">
+                                    <span>Cristõvão Sango</span>
+                                    <i class="ti-angle-down"></i>
+                                </a>
+                                <ul class="show-notification profile-notification">
+                                    <li><a href="#!"><i class="ti-settings"></i> Configurações</a></li>
+                                    <li><a href="#"><i class="ti-user"></i> Meu perfil</a></li>
+                                    <li><a href="login.html"><i class="ti-layout-sidebar-left"></i> Sair</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    
+                    <nav class="pcoded-navbar">
+                        <div class="pcoded-search">
+                            <span class="searchbar-toggle"></span>
+                            <div class="pcoded-search-box">
+                                <input type="text" placeholder="Pesquisar...">
+                                <span class="search-icon"><i class="ti-search" aria-hidden="true"></i></span>
+                            </div>
+                        </div>
+                        <div class="pcoded-inner-navbar main-menu">
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li class="active">
+                                    <a href="index.html">
+                                        <span class="pcoded-micon micon-dashboard"><i class="ti-home"></i></span>
+                                        <span class="pcoded-mtext">Inicio</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-utilizadores"><i class="icofont icofont-users-social"></i></span>
+                                        <span class="pcoded-mtext">Utilizadores</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-medicos"><i class="icofont icofont-doctor-alt"></i></span>
+                                        <span class="pcoded-mtext">Médicos</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-pacientes"><i class="icofont icofont-user"></i></span>
+                                        <span class="pcoded-mtext">Pacientes</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-consultas"><i class="icofont icofont-calendar"></i></span>
+                                        <span class="pcoded-mtext">Consultas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-unidades"><i class="icofont icofont-hospital"></i></span>
+                                        <span class="pcoded-mtext">Unidades de saúde</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-pagamentos"><i class="icofont icofont-money"></i></span>
+                                        <span class="pcoded-mtext">Pagamentos</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-relatorios"><i class="ti-bar-chart"></i></span>
+                                        <span class="pcoded-mtext">Relatórios</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-comunicacoes"><i class="icofont icofont-chat"></i></span>
+                                        <span class="pcoded-mtext">Comunicações</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-sistema"><i class="ti-settings"></i></span>
+                                        <span class="pcoded-mtext">Configurações</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-sistema"><i class="ti-check-box"></i></span>
+                                        <span class="pcoded-mtext">Auditoria</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+                                    <div class="page-body">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-utilizadores">
+                                                            <i class="icofont icofont-users-social"></i>
+                                                        </div>
+                                                        <span class="text-muted f-w-600">Utilizadores</span>
+                                                        <h4>12.458</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-utilizadores f-16 icofont icofont-navigation-menu m-r-10"> 12.5%</i>vs mês anterior
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-medicos">
+                                                            <i class="icofont icofont-doctor-alt"></i>
+                                                        </div>
+                                                        <span class="text-muted f-w-600">Médicos</span>
+                                                        <h4>1.248</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-medicos f-16 icofont icofont-navigation-menu m-r-10"> 8.3%</i>vs mês anterior
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-consultas">
+                                                            <i class="icofont icofont-calendar"></i>
+                                                        </div>
+                                                        <span class="text-muted f-w-600">Consultas</span>
+                                                        <h4>3.789</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-consultas f-16 icofont icofont-navigation-menu m-r-10"> 15.2%</i>vs mês anterior
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-receita">
+                                                            <i class="icofont icofont-money"></i>
+                                                        </div>
+                                                        <span class="text-muted f-w-600">Receita</span>
+                                                        <h4>90.000,00</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-receita f-16 icofont icofont-navigation-menu m-r-10"> 10.7%</i>vs mês anterior
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-12 col-xl-8">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        <h5>Consultas realizadas</h5>
+                                                        <div class="card-header-left"></div>
+                                                        <div class="card-header-right">
+                                                            <ul class="list-unstyled card-option">
+                                                                <li><i class="icofont icofont-simple-left"></i></li>
+                                                                <li><i class="icofont icofont-maximize full-card"></i></li>
+                                                                <li><i class="icofont icofont-refresh reload-card"></i></li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-block">
+                                                        <div id="statestics-chart" style="height:517px;"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12 col-xl-4">
+
+                                                
+                                                <div class="card modern-mini-card bg-ctx-pacientes">
+                                                    
+                                                    <div class="card-header">
+                                                        <i class="icofont icofont-user f-30 f-left m-r-10"></i>
+                                                        <div class="d-inline-block">
+                                                            <h5 class="text-white">Pacientes</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-block text-center">
+                                                        <div class="row">
+                                                            <div class="col-6 b-r-default">
+                                                                <h2>150</h2>
+                                                                <p class="text-white text-opacity-75">Ativos</p>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h2>230</h2>
+                                                                <p class="text-white text-opacity-75">Inativos</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="card modern-mini-card bg-ctx-unidades">
+                                                    <div class="card-header">
+                                                        <i class="icofont icofont-hospital f-30 f-left m-r-10"></i>
+                                                        <div class="d-inline-block">
+                                                            <h5 class="text-white">Unidades de saúde</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-block text-center">
+                                                        <div class="row">
+                                                            <div class="col-6 b-r-default">
+                                                                <h2>23</h2>
+                                                                <p class="text-white text-opacity-75">Médicos ativos</p>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h2>100</h2>
+                                                                <p class="text-white text-opacity-75">Médicos inativos</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="card modern-mini-card bg-ctx-comunicacoes">
+                                                    <div class="card-header">
+                                                        <i class="icofont icofont-chat f-30 f-left m-r-10"></i>
+                                                        <div class="d-inline-block">
+                                                            <h5 class="text-white">Comunicações</h5>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-block text-center">
+                                                        <div class="row">
+                                                            <div class="col-6 b-r-default">
+                                                                <h2>25</h2>
+                                                                <p class="text-white text-opacity-75">Realizadas</p>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <h2>2</h2>
+                                                                <p class="text-white text-opacity-75">Em progresso</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="assets/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="assets/js/popper.js/popper.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="assets/js/modernizr/modernizr.js"></script>
+<script src="assets/pages/widget/amchart/amcharts.min.js"></script>
+<script src="assets/pages/widget/amchart/serial.min.js"></script>
+<script type="text/javascript" src="assets/pages/todo/todo.js"></script>
+<script type="text/javascript" src="assets/pages/dashboard/custom-dashboard.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
+<script type="text/javascript" src="assets/js/SmoothScroll.js"></script>
+<script src="assets/js/pcoded.min.js"></script>
+<script src="assets/js/demo-12.js"></script>
+<script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+</body>
+</html>
