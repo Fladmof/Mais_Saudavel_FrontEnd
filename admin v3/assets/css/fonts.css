@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'roboto';
+    src: url('../fonts/Roboto.ttf') format('Opentype');
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'poppins';
+    src: url('../fonts/Poppins-Regular.ttf') format('Opentype');
+    font-weight: normal;
+}

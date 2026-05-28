@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <title>+ Saudável | Médicos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="assets/icon/themify-icons/themify-icons.css">
+    <link rel="stylesheet" type="text/css" href="assets/icon/icofont/css/icofont.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/fonts.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/jquery.mCustomScrollbar.css">
+
+</head>
+
+<body>
+    <div class="theme-loader">
+        <div class="ball-scale">
+            <div class='contain'>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+                <div class="ring"><div class="frame"></div></div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="pcoded" class="pcoded">
+        <div class="pcoded-overlay-box"></div> 
+        <div class="pcoded-container navbar-wrapper">
+
+            <nav class="navbar header-navbar pcoded-header">
+                <div class="navbar-wrapper">
+                    <div class="navbar-logo">
+                        <a class="mobile-menu" id="mobile-collapse" href="#!">
+                            <i class="ti-menu"></i>
+                        </a>
+                        <a class="mobile-search morphsearch-search" href="#">
+                            <i class="ti-search"></i>
+                        </a>
+                        <a href="index.html">
+                            <img class="img-fluid" id="img_logo" src="assets/images/logo.png" alt="Theme-Logo" />
+                        </a>
+                        <a class="mobile-options">
+                            <i class="ti-more"></i>
+                        </a>
+                    </div>
+
+                    <div class="navbar-container container-fluid">
+                        <ul class="nav-left">
+                            <li>
+                                <div class="sidebar_toggle"><a href="javascript:void(0)"><i class="ti-menu"></i></a></div>
+                            </li>
+                            <li>
+                                <a href="#!" onclick="javascript:toggleFullScreen()">
+                                    <i class="ti-fullscreen"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <ul class="nav-right"> 
+                            <li class="header-notification" id="btn_imprimir">
+                                <a href="#">
+                                    <i class="ti-plus"></i>
+                                        Novo Médico
+                                </a>
+                            </li>
+                            <li class="header-notification">
+                                <a href="#!">
+                                    <i class="ti-bell"></i>
+                                    <span class="badge"></span>  
+                                </a>
+                            </li>
+                            <li class="user-profile header-notification">
+                                <a href="consultas.html">
+                                    <img src="assets/images/doctor.jpg" class="img-radius" alt="User-Profile-Image">
+                                    <span>Cristõvão Sango</span>
+                                    <i class="ti-angle-down"></i>
+                                </a>
+                                <ul class="show-notification profile-notification">
+                                    <li><a href="#!"><i class="ti-settings"></i> Configurações</a></li>
+                                    <li><a href="#"><i class="ti-user"></i> Meu perfil</a></li>
+                                    <li><a href="login.html"><i class="ti-layout-sidebar-left"></i> Sair</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="pcoded-main-container">
+                <div class="pcoded-wrapper">
+                    
+                    <nav class="pcoded-navbar">
+                        <div class="pcoded-search">
+                            <span class="searchbar-toggle"></span>
+                            <div class="pcoded-search-box">
+                                <input type="text" placeholder="Pesquisar médico...">
+                                <span class="search-icon"><i class="ti-search" aria-hidden="true"></i></span>
+                            </div>
+                        </div>
+                        <div class="pcoded-inner-navbar main-menu">
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li>
+                                    <a href="index.html">
+                                        <span class="pcoded-micon micon-dashboard"><i class="ti-home"></i></span>
+                                        <span class="pcoded-mtext">Inicio</span>
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li>
+                                    <a href="utilizadores.html">
+                                        <span class="pcoded-micon micon-utilizadores"><i class="icofont icofont-users-social"></i></span>
+                                        <span class="pcoded-mtext">Utilizadores</span>
+                                    </a>
+                                </li>
+                                <li class="active">
+                                    <a href="medicos.html">
+                                        <span class="pcoded-micon micon-medicos"><i class="icofont icofont-doctor-alt"></i></span>
+                                        <span class="pcoded-mtext" style="color:#1CA625;">Médicos</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="pacientes.html">
+                                        <span class="pcoded-micon micon-pacientes"><i class="icofont icofont-user"></i></span>
+                                        <span class="pcoded-mtext">Pacientes</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            
+                            <ul class="pcoded-item pcoded-left-item">
+                                <li>
+                                    <a href="consultas.html">
+                                        <span class="pcoded-micon micon-consultas"><i class="icofont icofont-calendar"></i></span>
+                                        <span class="pcoded-mtext">Consultas</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-unidades"><i class="icofont icofont-hospital"></i></span>
+                                        <span class="pcoded-mtext">Unidades de saúde</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-pagamentos"><i class="icofont icofont-money"></i></span>
+                                        <span class="pcoded-mtext">Pagamentos</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-relatorios"><i class="ti-bar-chart"></i></span>
+                                        <span class="pcoded-mtext">Relatórios</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-comunicacoes"><i class="icofont icofont-chat"></i></span>
+                                        <span class="pcoded-mtext">Comunicações</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-sistema"><i class="ti-settings"></i></span>
+                                        <span class="pcoded-mtext">Configurações</span>
+                                    </a>
+                                </li>
+                                 <li>
+                                    <a href="#">
+                                        <span class="pcoded-micon micon-sistema"><i class="ti-check-box"></i></span>
+                                        <span class="pcoded-mtext">Auditoria</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    
+                    <div class="pcoded-content">
+                        <div class="pcoded-inner-content">
+                            <div class="main-body">
+                                <div class="page-wrapper">
+                                    <div class="page-body">
+                                        <div class="row">
+                                            
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-utilizadores">
+                                                            <i class="icofont icofont-users-social"></i>
+                                                        </div>
+                                                        <span class="text-muted">Médicos</span>
+                                                        <h4>12.458</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-utilizadores f-16 icofont icofont-navigation-menu m-r-10"> 12.5%</i>do total
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-medicos">
+                                                            <i class="ti-arrow-circle-down"></i>
+                                                        </div>
+                                                        <span class="text-muted">Médicos Ativos</span>
+                                                        <h4>148</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-medicos f-16 icofont icofont-navigation-menu m-r-10"> 8.3%</i>do total
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-consultas">
+                                                            <i class="icofont icofont-user"></i>
+                                                        </div>
+                                                        <span class="text-muted">Suspensos</span>
+                                                        <h4>289</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-consultas f-16 icofont icofont-navigation-menu m-r-10"> 15.2%</i>do total
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-6 col-xl-3">
+                                                <div class="card widget-card-1">
+                                                    <div class="card-block-small">
+                                                        <div class="modern-icon-box icon-receita">
+                                                            <i class="ti-timer"></i>
+                                                        </div>
+                                                        <span class="text-muted">Pendentes</span>
+                                                        <h4>6</h4>
+                                                        <div>
+                                                            <span class="f-left m-t-10 text-muted">
+                                                                <i class="text-trend-receita f-16 icofont icofont-navigation-menu m-r-10"> 10.7%</i>do total
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="card p-2">
+                                        <div class="card-header">
+                                           <ul class="list-inline d-flex elementos_filtro">
+                                            <li>
+                                                 <a href="#">Todos</a>
+                                            </li>   
+                                            <li>
+                                                 <a href="#">Ativos</a>
+                                            </li>    
+                                            <li>
+                                                <a href="#">Inativos</a>
+                                            </li>       
+                                            <li>
+                                                 <a href="#">Pendentes</a>
+                                            </li>
+                                           </ul>
+                                            <div class="card-header-right">
+                                                <a href="#" class="btn_exportar">
+                                                    <i class="ti-import"></i>
+                                                    Exportar
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="card-block table-border-style">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Médico</th>
+                                                            <th>Especialidade</th>
+                                                            <th>Número de licença</th>
+                                                            <th>Unidade de saúde</th>
+                                                            <th>Email</th>
+                                                            <th>Data de Registro</th>
+                                                            <th>Status</th>
+                                                            <th>Acções</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>
+                                                                <ul class="list-inline d-flex">
+                                                                    <li>
+                                                                        <img width="35" src="assets/images/doctor.jpg"
+                                                                        class="rounded-circle" alt="Foto">
+                                                                         
+                                                                        <span>Fortunato Francisco Joaquim</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
+                                                            <td>Pedriatria</td>
+                                                            <td>1111111</td>
+                                                            <td>Clínica Girassol</td>
+                                                             <td>fortunato@gmail.com</td>
+                                                            <td>20/12/2026</td>
+                                                            <td>
+                                                                <a href="#" class="btn_ativo">
+                                                                    Ativo
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="#">
+                                                                     <i class="f-16 icofont icofont-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <ul class="list-inline d-flex">
+                                                                    <li>
+                                                                        <img width="35" src="assets/images/doctor.jpg"
+                                                                        class="rounded-circle" alt="Foto">
+                                                                         
+                                                                        <span>Fortunato Francisco Joaquim</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
+                                                            <td>Pedriatria</td>
+                                                            <td>1111111</td>
+                                                            <td>Clínica Girassol</td>
+                                                             <td>fortunato@gmail.com</td>
+                                                            <td>20/12/2026</td>
+                                                             <td>
+                                                                <a href="#" class="btn_inativo">
+                                                                    Inativo
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="#">
+                                                                     <i class="f-16 icofont icofont-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                             <td>
+                                                                <ul class="list-inline d-flex">
+                                                                    <li>
+                                                                        <img width="35" src="assets/images/doctor.jpg"
+                                                                        class="rounded-circle" alt="Foto">
+                                                                         
+                                                                        <span>Fortunato Francisco Joaquim</span>
+                                                                    </li>
+                                                                </ul>
+                                                            </td>
+                                                            <td>Pedriatria</td>
+                                                            <td>1111111</td>
+                                                            <td>Clínica Girassol</td>
+                                                             <td>fortunato@gmail.com</td>
+                                                            <td>20/12/2026</td>
+                                                             <td>
+                                                                <a href="#" class="btn_pendente">
+                                                                    Pendente
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a href="#">
+                                                                     <i class="f-16 icofont icofont-trash"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                       
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="assets/js/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-ui/jquery-ui.min.js"></script>
+<script type="text/javascript" src="assets/js/popper.js/popper.min.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="assets/js/jquery-slimscroll/jquery.slimscroll.js"></script>
+<script type="text/javascript" src="assets/js/modernizr/modernizr.js"></script>
+<script src="assets/pages/widget/amchart/amcharts.min.js"></script>
+<script src="assets/pages/widget/amchart/serial.min.js"></script>
+<script type="text/javascript" src="assets/pages/todo/todo.js"></script>
+<script type="text/javascript" src="assets/pages/dashboard/custom-dashboard.js"></script>
+<script type="text/javascript" src="assets/js/script.js"></script>
+<script type="text/javascript" src="assets/js/SmoothScroll.js"></script>
+<script src="assets/js/pcoded.min.js"></script>
+<script src="assets/js/demo-12.js"></script>
+<script src="assets/js/jquery.mCustomScrollbar.concat.min.js"></script>
+</body>
+</html>
