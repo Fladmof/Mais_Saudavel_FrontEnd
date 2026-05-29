@@ -1,7 +1,6 @@
 
 import { StyleSheet, Text, View, Pressable, TextInput } from 'react-native';
 import React, { useState } from 'react';
-import { StatusBar } from 'expo-status-bar';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
@@ -12,12 +11,13 @@ export default function DataPicker() {
     const toggleDatePicker = () => {
         setShowPicker(!showPicker);
     }
-    const onChange = ({type}, selectedDate) => {
-        if (type == "set") {
+    const onChange = ({ type }, selectedDate) => {
+        if (type === "set" && selectedDate) {
             const currentDate = selectedDate;
-            setDate(currentDate)
+            setDate(currentDate);
+        } else {
+            toggleDatePicker();
         }
-        else{ toggleDatePicker() }
     }
 
     return (
@@ -27,7 +27,7 @@ export default function DataPicker() {
                 mode='date'
                 display="spinner"
                 value={date}
-                onChange={onchange}
+                onChange={onChange}
             />
          
          { !showPicker &&

@@ -25,6 +25,9 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
+    "extra": {
+      "backendUrl": "http://localhost:3000"
+    },
     "plugins": [
       "expo-router",
       [

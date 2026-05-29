@@ -1,102 +1,142 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { useState } from 'react';
 import InputField from './inputField';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
+import { login as loginUser } from '../services/api';
 
 const Login = () => {
-    const router = useRouter();
+  const router = useRouter();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    return (
-        <>
-            <InputField fieldName="Email" placeholder="seu@email.com"/>
+  const handleLogin = async () => {
+    setError('');
 
-            <View style={[{ marginTop: 18 }, styles.inputField]}>
-                <view style={styles.inputField}>
-                    <Text style={{ color: 'grey' }}>Senha</Text>
-                    <View style={[styles.inputeye, styles.input]}>
-                        <TextInput
-                            placeholder="palavra-passe"
-                            style={{ flex: 1, padding: 4 }}
-                            placeholderTextColor={'#B9C0C9'}
-                            secureTextEntry
-                        />
-                        <view>
-                            <TouchableOpacity>
-                                <Image source={require('../../assets/images/eye-off.png')} />
-                            </TouchableOpacity>
-                        </view>
-                    </View>
-                </view>
-            </View>
+    if (!username || !password) {
+      setError('Preencha o email e a senha.');
+      return;
+    }
 
-            <View style={{ marginTop: 18 }}>
-                <Text style={styles.noCountText}>
-                    Não tem conta?
-                    <Text style={{ color: 'blue' }}> criar</Text>
-                </Text>
-            </View>
+    setLoading(true);
+    try {
+      await loginUser(username, password);
+      router.push('/ficha-medica');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Falha ao conectar com o servidor';
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            <TouchableOpacity style={styles.loginBtn} 
-            onPress={() => router.push("/ficha-medica")}>Entrar</TouchableOpacity>
+  return (
+    <>
+      <InputField
+        fieldName="Email"
+        placeholder="seu@email.com"
+        value={username}
+        onChangeText={setUsername}
+      />
 
-            <View style={{ marginTop: 16 }}>
-                <Image source={require('../../assets/images/or.png')} />
-            </View>
+      <InputField
+        fieldName="Senha"
+        placeholder="palavra-passe"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+      />
 
-            <TouchableOpacity style={styles.googleBtn} onPress={() => router.push("/transitionPage")}>
-                <Image style={{ margin: 5 }} source={require('../../assets/images/google.png')} />
-                <Text style={styles.googleText}>Entrar com Google </Text>
-            </TouchableOpacity>
-        </>
-    )
-}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      <Text style={styles.noCountText}>
+        Não tem conta? <Text style={styles.linkText}>criar</Text>
+      </Text>
+
+      <TouchableOpacity
+        style={[styles.loginBtn, loading && styles.disabledBtn]}
+        onPress={handleLogin}
+        disabled={loading}
+      >
+        <Text style={styles.loginText}>{loading ? 'Entrando...' : 'Entrar'}</Text>
+      </TouchableOpacity>
+
+      <View style={styles.divider} />
+
+      <TouchableOpacity style={styles.googleBtn} onPress={() => router.push('/transitionPage')}>
+        <Image style={styles.googleIcon} source={require('../../assets/images/google.png')} />
+        <Text style={styles.googleText}>Entrar com Google</Text>
+      </TouchableOpacity>
+    </>
+  );
+};
 
 export default Login;
 
 const styles = StyleSheet.create({
-    inputField: {
-        display: 'flex',
-        flexDirection: 'column'
-    },
-    input: {
-        flex: 1,
-        width: 300,
-        borderWidth: 1,
-        borderColor: '#EDF1F3',
-        padding: 10,
-        borderRadius: 8,
-    },
-    inputeye: {
-        display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
-    loginBtn: {
-        backgroundColor: '#0DF205',
-        paddingHorizontal: 130,
-        textAlign: 'center',
-        color: '#FFFFFF',
-        paddingVertical: 13,
-        borderRadius: 8,
-        marginTop: 30
-    },
-    googleBtn: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginTop: 18,
-        borderWidth: 1,
-        paddingHorizontal: 70,
-        paddingVertical: 8,
-        borderRadius: 8,
-        alignItems: 'center',
-        borderColor: 'lightgray'
-    },
-    googleText: {
-        color: 'gray'
-    },
-    noCountText: {
-        color: 'gray',
-        fontWeight: '400'
-    }
-
+  loginBtn: {
+    backgroundColor: '#1CA625',
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginTop: 28,
+    shadowColor: '#1CA625',
+    shadowOpacity: 0.16,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+  loginText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 16,
+  },
+  disabledBtn: {
+    opacity: 0.65,
+  },
+  googleBtn: {
+    flexDirection: 'row',
+    marginTop: 18,
+    borderWidth: 1,
+    borderColor: '#D8E1EA',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 14,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  googleIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 10,
+    resizeMode: 'contain',
+  },
+  googleText: {
+    color: '#5E6E7E',
+    fontWeight: '600',
+  },
+  noCountText: {
+    color: '#5E6E7E',
+    fontWeight: '500',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  linkText: {
+    color: '#1CA625',
+    fontWeight: '700',
+  },
+  divider: {
+    height: 1,
+    width: '100%',
+    backgroundColor: '#EDF1F3',
+    marginTop: 24,
+    marginBottom: 18,
+  },
+  errorText: {
+    color: '#D3382A',
+    marginTop: 12,
+    textAlign: 'center',
+    fontWeight: '600',
+  },
 });

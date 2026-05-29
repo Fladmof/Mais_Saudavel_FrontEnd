@@ -1,105 +1,90 @@
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, TextInput, TurboModuleRegistry } from "react-native";
-import { useState } from "react";
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
 import SignUpComponent from "../components/sign-up";
 import { useRouter } from "expo-router";
 
-export default function SignUp() {
+export default function SignUpScreen() {
   const router = useRouter();
-  const [tab, setTab] = useState('criar');
 
   return (
-    <ScrollView
-     contentContainerStyle={{
-      paddingTop: 20,
-      paddingBottom: 40
-     }}
-    >
-      <View style={styles.container}>
-        <Image source={require("../../assets/images/mais-saudavel-logo.png")} />
+    <ScrollView style={styles.page} contentContainerStyle={styles.pageContent}>
+      <View style={styles.hero}>
+        <Image source={require("../../assets/images/mais-saudavel-logo.png")} style={styles.logo} />
+        <Text style={styles.heroText}>Comece a gerir os seus dados de saúde com um perfil seguro.</Text>
+      </View>
 
+      <View style={styles.card}>
         <View style={styles.tabs}>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              tab === 'entrar' && styles.activeTab,
-            ]}
-            //onPress={() => setTab('entrar')}
-            onPress={() => router.push("/(auth)/sign-in")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                tab === 'entrar' && styles.activeText,
-              ]}
-            >
-              Entrar
-            </Text>
+          <TouchableOpacity style={styles.tabButton} onPress={() => router.push("/(auth)/sign-in")}>
+            <Text style={styles.tabText}>Entrar</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              tab === 'criar' && styles.activeTab,
-            ]}
-            onPress={() => setTab('criar')}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                tab === 'criar' && styles.activeText,
-              ]}
-            >
-              Criar conta
-            </Text>
-
-          </TouchableOpacity>
+          <View style={[styles.tabButton, styles.activeTab]}>
+            <Text style={[styles.tabText, styles.activeText]}>Criar conta</Text>
+          </View>
         </View>
-                                                                                                              
-        <SignUpComponent /> 
 
+        <SignUpComponent />
       </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  page: {
+    backgroundColor: '#F4F7FB',
+  },
+  pageContent: {
+    paddingVertical: 32,
+    paddingHorizontal: 20,
+  },
+  hero: {
     alignItems: 'center',
+    marginBottom: 24,
+  },
+  logo: {
+    width: 110,
+    height: 26,
+    resizeMode: 'contain',
+    marginBottom: 16,
+  },
+  heroText: {
+    textAlign: 'center',
+    color: '#5E6E7E',
+    fontSize: 16,
+    lineHeight: 24,
+  },
+  card: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: '#1A2A3A',
+    shadowOpacity: 0.06,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 8,
   },
   tabs: {
     flexDirection: 'row',
-    borderRadius: 5,
-    backgroundColor: '#F5F5F9',
-    padding: 2,
-    marginBottom: 20,
-    marginTop: 10,
-    width: '70%',
-    alignItems: 'center'
+    borderRadius: 16,
+    backgroundColor: '#F4F7FB',
+    padding: 4,
+    marginBottom: 22,
   },
   tabButton: {
     flex: 1,
-    paddingVertical: 5,
-    paddingHorizontal: 40,
+    paddingVertical: 12,
     alignItems: 'center',
-    borderRadius: 5
+    borderRadius: 14,
   },
   activeTab: {
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#E7F8EA',
   },
   tabText: {
-    color: 'gray',
-    fontWeight: '500'
+    color: '#7A8A9F',
+    fontWeight: '600',
   },
   activeText: {
-    color: 'green',
-    fontWeight: '500',
-    fontSize: 14
+    color: '#1CA625',
   },
-  inputField: {
-    display: 'flex',
-    flexDirection: 'column'
-  }
 });
 
 

@@ -6,7 +6,7 @@ const TabOption = ({ name }) => {
     return (
         <TouchableOpacity onPress={() => setActiveSelect(!activeSelect)}
         style={{borderWidth: 1, borderRadius: 24, borderColor: "#E8E8E8", marginTop: -3,}}>
-            <view style={{
+            <View style={{
                 borderWidth: 1, borderColor: "#E8E8E8",
                 backgroundColor: activeSelect ? '#20F6591A' : 'white',
                 width: 90, height: 52, display: 'flex', 
@@ -18,7 +18,7 @@ const TabOption = ({ name }) => {
                     fontWeight: '500',
                     color: activeSelect ? '#1CA625' : '#000000'
                 }}>{name}</Text>
-            </view>
+            </View>
         </TouchableOpacity>
     )
 }
