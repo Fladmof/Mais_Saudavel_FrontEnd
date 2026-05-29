@@ -41,7 +41,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="login-card card-block auth-body mr-auto ml-auto">
-                        <form action="index.html" class="md-float-material">
+                        <form id="loginForm" class="md-float-material">
                             <div class="text-center">
                                 <img src="assets/images/logo_2.png" alt="logo.png">
                             </div>
@@ -53,11 +53,11 @@
                                 </div>
                                 <hr/>
                                 <div class="input-group">
-                                    <input type="email" class="form-control" placeholder="Email">
+                                    <input id="loginEmail" name="username" type="email" class="form-control" placeholder="Email" required>
                                     <span class="md-line"></span>
                                 </div>
                                 <div class="input-group">
-                                    <input type="password" class="form-control" placeholder="Senha">
+                                    <input id="loginPassword" name="password" type="password" class="form-control" placeholder="Senha" required>
                                     <span class="md-line"></span>
                                 </div>
                                 
@@ -85,6 +85,7 @@
     <script type="text/javascript" src="assets/js/modernizr/modernizr.js"></script>
     <script type="text/javascript" src="assets/js/modernizr/css-scrollbars.js"></script>
     <script type="text/javascript" src="assets/js/common-pages.js"></script>
+    <script type="text/javascript" src="assets/js/admin-custom.js"></script>
 </body>
 
 </html>
