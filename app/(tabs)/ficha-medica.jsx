@@ -1,6 +1,5 @@
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
-import CardParam from '../components/CardParam';
 
 const FichaMedica = () => {
     return (
@@ -183,7 +182,7 @@ const FichaMedica = () => {
 
                 <View style={{
                     backgroundColor: 'white', width: '100%',
-                    paddingVertical: 25, display: 'flex',
+                    display: 'flex',
                     flexDirection: 'column', alignItems: 'center',
                     borderBottomEndRadius: 16, borderBottomStartRadius: 16,
                     borderTopLeftRadius: 16, borderTopRightRadius: 16, marginTop: 20,

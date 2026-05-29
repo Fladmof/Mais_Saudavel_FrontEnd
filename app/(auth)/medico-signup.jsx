@@ -1,8 +1,7 @@
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, TextInput, TurboModuleRegistry } from "react-native";
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity, TextInput } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import InputField from '../components/inputField';
-import Pickery from '../picker';
 import PasswordField from "../components/passwordField";
 
 export default function SignUp() {
@@ -63,31 +62,31 @@ export default function SignUp() {
                     </TouchableOpacity>
 
 
-                    <view style={styles.sectionInput}>
+                    <View style={styles.sectionInput}>
                         <Text style={styles.sectionTitle}>Conta</Text>
-                    </view>
+                    </View>
                     <InputField fieldName="Email" placeholder="seu@email.com" />
                     <PasswordField fieldName={'Senha'} placeholder={'password'} />
                     <PasswordField fieldName={'Confirmar senha'} placeholder={'password'} />
 
-                    <view style={styles.sectionInput}>
+                    <View style={styles.sectionInput}>
                         <Text style={styles.sectionTitle}>Dados pessoais</Text>
-                    </view>
+                    </View>
 
-                    <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
-                        <view style={styles.nameField}>
+                    <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                        <View style={styles.nameField}>
                             <Text style={{ color: 'gray' }}>Nome</Text>
                             <TextInput placeholder='' style={styles.input} />
-                        </view>
-                        <view style={styles.nameField}>
+                        </View>
+                        <View style={styles.nameField}>
                             <Text style={{ color: 'gray' }}>Apelido</Text>
                             <TextInput placeholder='' style={styles.input} />
-                        </view>
-                    </view>
+                        </View>
+                    </View>
 
-                    <view style={styles.sectionInput}>
+                    <View style={styles.sectionInput}>
                         <Text style={styles.sectionTitle}>Dados Profissionais</Text>
-                    </view>
+                    </View>
                     <InputField fieldName="" placeholder="Especialidade" />
                     <InputField fieldName="" placeholder="Hospital" />
 

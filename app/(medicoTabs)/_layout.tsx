@@ -1,5 +1,5 @@
 import { View, Text, Image } from 'react-native';
-import { Tabs, Redirect } from 'expo-router';
+import { Tabs } from 'expo-router';
 
 
 const TabsLayout = () => {

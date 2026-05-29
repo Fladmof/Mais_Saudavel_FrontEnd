@@ -4,191 +4,102 @@ import { useRouter } from "expo-router";
 const HomeScreen = () => {
   const router = useRouter();
   return (
-    <ScrollView>
-      <View style={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%' }}>
-        <View style={{
-          display: 'flex', flexDirection: 'row',
-          justifyContent: 'center', position: 'absolute', left: '50%', right: '50%'
-        }}>
-          <Image source={require("../assets/images/mais-saudavel-logo.png")} />
-        </View>
-        <View style={{ width: '100%' }}>
-          <Image source={require('../assets/images/smock1.png')} />
+    <ScrollView style={styles.page} contentContainerStyle={styles.pageContent}>
+      <View style={styles.heroCard}>
+        <View style={styles.logoRow}>
+          <Image source={require("../assets/images/mais-saudavel-logo.png")} style={styles.logo} />
         </View>
 
-        <View style={{ width: '100%', display: 'flex', alignItems: 'center', marginTop: -120 }}>
-          <View>
+        <Image source={require('../assets/images/smock1.png')} style={styles.heroImage} />
 
-            <Image source={require('../assets/images/healthcare.png')} />
-            <View style={{ position: 'absolute', bottom: 12, right: 12 }}>
-              <Image style={{ width: 90, height: 90 }} source={require('../assets/images/costumer.png')} />
-            </View>
-          </View>
-        </View>
-        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 60 }}>
-          <Text style={{
-            textAlign: 'center', fontWeight: '700', fontSize: 34,
-            color: '#1CA625'
-          }}>
-            Controle a sua saúde {'\n'} com o +Saudável
-          </Text>
+        <View style={styles.heroCopy}>
+          <Text style={styles.title}>Controle a sua saúde{`\n`}com o +Saudável</Text>
+          <Text style={styles.subtitle}>O +Saudável centraliza as informações num só lugar de forma clara e fácil.</Text>
         </View>
 
-        <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 60 }}>
-          <Text style={{
-            textAlign: 'center', fontWeight: '400', fontSize: 15,
-            color: '#626262'
-          }}>
-            O +Saudável centraliza tudo num {'\n'}
-            único lugar, acessível a qualquer {'\n'}
-            momento
-          </Text>
-        </View>
-
-        <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginTop: 20}}>
-          <Image source={require('../assets/images/outlook.png')}/>
-        </View>
-        
-        <View style={{display: 'flex',flexDirection: 'row', justifyContent: 'center'}}>
-          
-          <TouchableOpacity style={{ marginTop: 60, width: 250 }} onPress={() => router.push("/(auth)/sign-in")}>
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', 
-            backgroundColor: '#0DF205',
-              justifyContent: 'space-between', paddingHorizontal: 60, borderRadius: 16, 
-              paddingVertical: 0 }}>
-              <View></View>  <Text style={{ fontWeight: '500', color: 'white' }}>Continuar</Text> 
-              <Image style={{ marginRight: -70, marginVertical: -10 }} source={require('../assets/images/arrow.png')} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        </View>
+        <TouchableOpacity style={styles.primaryButton} onPress={() => router.push("/(auth)/sign-in") }>
+          <Text style={styles.primaryText}>Continuar</Text>
+          <Image style={styles.arrowIcon} source={require('../assets/images/arrow.png')} />
+        </TouchableOpacity>
+      </View>
     </ScrollView>
   )
 }
 
 export default HomeScreen;
 
-
-/*
-import { useState } from "react";
-import Login from './components/Login';
-import { useRouter } from "expo-router";
-
-export default function HomeScreen() {
-  const router = useRouter();
-  const [tab, setTab] = useState('entrar');
-
-  return (
-    <ScrollView
-     contentContainerStyle={{
-      paddingTop: 20,
-      paddingBottom: 40
-     }}
-    >
-      <View style={styles.container}>
-        <Image source={require("../assets/images/mais-saudavel-logo.png")} />
-
-        <View style={styles.tabs}>
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              tab === 'entrar' && styles.activeTab,
-            ]}
-            //onPress={() => setTab('entrar')}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                tab === 'entrar' && styles.activeText,
-              ]}
-            >
-              Entrar
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.tabButton,
-              tab === 'criar' && styles.activeTab,
-            ]}
-            //onPress={() => setTab('criar')}
-            onPress={() => router.push("/(auth)/sign-up")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                tab === 'criar' && styles.activeText,
-              ]}
-            >
-              Criar conta
-            </Text>
-
-          </TouchableOpacity>
-        </View>
-                                                                                                              
-        <Login /> 
-
-      </View>
-    </ScrollView>
-  );
-}
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  page: {
+    backgroundColor: '#F4F7FB',
+  },
+  pageContent: {
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  heroCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 28,
+    padding: 24,
+    shadowColor: '#1A2A3A',
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 14 },
+    elevation: 10,
     alignItems: 'center',
   },
-  tabs: {
+  logoRow: {
+    width: '100%',
+    alignItems: 'flex-start',
+    marginBottom: 24,
+  },
+  logo: {
+    width: 120,
+    height: 26,
+    resizeMode: 'contain',
+  },
+  heroImage: {
+    width: '100%',
+    height: 240,
+    resizeMode: 'contain',
+    marginBottom: 24,
+  },
+  heroCopy: {
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  title: {
+    textAlign: 'center',
+    color: '#1CA625',
+    fontSize: 34,
+    fontWeight: '700',
+    lineHeight: 42,
+  },
+  subtitle: {
+    marginTop: 16,
+    textAlign: 'center',
+    color: '#6B7885',
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  primaryButton: {
     flexDirection: 'row',
-    borderRadius: 5,
-    backgroundColor: '#F5F5F9',
-    padding: 2,
-    marginBottom: 20,
-    marginTop: 10,
-    width: '70%',
-    alignItems: 'center'
-  },
-  tabButton: {
-    flex: 1,
-    paddingVertical: 5,
-    paddingHorizontal: 40,
     alignItems: 'center',
-    borderRadius: 5
+    justifyContent: 'center',
+    backgroundColor: '#1CA625',
+    borderRadius: 18,
+    paddingVertical: 16,
+    paddingHorizontal: 36,
+    width: '100%',
   },
-  activeTab: {
-    backgroundColor: '#FFFFFF'
+  primaryText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 16,
   },
-  tabText: {
-    color: 'gray',
-    fontWeight: '500'
+  arrowIcon: {
+    width: 18,
+    height: 18,
+    marginLeft: 12,
+    resizeMode: 'contain',
   },
-  activeText: {
-    color: 'green',
-    fontWeight: '500',
-    fontSize: 14
-  },
-  inputField: {
-    display: 'flex',
-    flexDirection: 'column'
-  }
 });
-
-
-
-<View style={{ width: '98%', position: 'absolute', zIndex: 100, marginTop: 20, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <View style={{
-                marginLeft: 10, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3, borderWidth: 1, borderColor: '#B6B6B6', paddingHorizontal: 8,
-                borderRadius: 12, paddingVertical: 2
-              }}>
-                <Image source={require('../assets/images/redDot.png')} />
-                <Text style={{ color: '#808080', fontSize: 12, fontWeight: '400' }}>
-                  09:12
-                </Text>
-              </View>
-              <TouchableOpacity>
-                <Image source={require('../assets/images/hide.png')} />
-              </TouchableOpacity>
-            </View>
-
-*/

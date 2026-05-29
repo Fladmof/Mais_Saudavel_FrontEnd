@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
+import React from 'react';
 import { TextInput } from 'react-native-gesture-handler';
 import { useRouter } from "expo-router";
 import TabOption from '../components/tabOption';
@@ -151,14 +151,14 @@ const Medication = () => {
                         <Text style={{ color: '#ABB5BE', fontSize: 14 }}>Clínica central de Luanda</Text>
                     </View>
                     <TouchableOpacity onPress={() => router.push("/telemedicine/videoCallDoctor")}>
-                        <view style={{
-                            backgroundColor: 'red', width: 120, height: 48, display: 'flex',
+                        <View style={{
+                            width: 120, height: 48, display: 'flex',
                             flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             backgroundColor: '#0DF205', borderRadius: 24
                         }}>
                             <Image source={require('../../assets/images/telemedicina.png')} />
                             <Text style={{ color: 'white' }}>Telemedicina</Text>
-                        </view>
+                        </View>
                     </TouchableOpacity>
                 </View>
 
