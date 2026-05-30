@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { useState, useRef } from 'react';
 
@@ -19,10 +19,10 @@ export default function Pickery({width, selectOptions}) {
 
                // alert(itemValue);
              }}
-             style={{width: width}}
+             style={{width: Number(width)}}
             >
               {selectOptions.map((option, index) => (
-                 <Picker.Item key={`${option}-${index}`} label={option} value={option} />
+                 <Picker.Item label={option} value={option} />
               ))}
             </Picker>
             <StatusBar style='auto' />
