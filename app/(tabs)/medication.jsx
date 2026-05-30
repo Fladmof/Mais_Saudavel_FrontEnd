@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { TextInput } from 'react-native-gesture-handler';
 import { useRouter } from "expo-router";
 import TabOption from '../components/tabOption';
@@ -20,7 +20,7 @@ const HistoricPart = ({ title, desc1, desc2 }) => {
                     {desc1} {"\n"}
                     {desc2}
                 </Text>
-                <TouchableOpacity onPress={() => router.push("../components/set-up-date")}>
+                <TouchableOpacity onPress={() => router.push("../components/add-consulta")}>
                     <View style={{
                         width: 90, borderWidth: 1, height: 52,
                         borderRadius: 24, display: 'flex', flexDirecion: 'row',
@@ -150,15 +150,15 @@ const Medication = () => {
                         <Text style={{ color: '#ABB5BE', fontSize: 14 }}>958654234</Text>
                         <Text style={{ color: '#ABB5BE', fontSize: 14 }}>Clínica central de Luanda</Text>
                     </View>
-                    <TouchableOpacity onPress={() => router.push("/telemedicine/videoCallDoctor")}>
-                        <View style={{
-                            width: 120, height: 48, display: 'flex',
+                    <TouchableOpacity onPress={() => router.push("../components/set-up-date")}>
+                        <view style={{
+                            backgroundColor: 'red', width: 120, height: 48, display: 'flex',
                             flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             backgroundColor: '#0DF205', borderRadius: 24
                         }}>
                             <Image source={require('../../assets/images/telemedicina.png')} />
                             <Text style={{ color: 'white' }}>Telemedicina</Text>
-                        </View>
+                        </view>
                     </TouchableOpacity>
                 </View>
 

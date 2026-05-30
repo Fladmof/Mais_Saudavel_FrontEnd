@@ -1,230 +1,154 @@
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
-import { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
 import InputField from './inputField';
 import PasswordField from './passwordField';
 import Pickery from '../picker';
-import { useRouter } from 'expo-router';
-import { register } from '../services/api';
+import { useRouter } from "expo-router";
 
 const SignUpComponent = () => {
-  const router = useRouter();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+    const router = useRouter();
 
-  const handleRegister = async () => {
-    setError('');
+    return (
+        <>
+            <TouchableOpacity onPress={() => router.push("../(auth)/medico-signup")}>
+                <Text style={styles.upText}>Criar conta como médico</Text>
+            </TouchableOpacity>
 
-    if (!username || !password || !confirmPassword) {
-      setError('Preencha todos os campos obrigatórios.');
-      return;
-    }
 
-    if (password !== confirmPassword) {
-      setError('As senhas não coincidem.');
-      return;
-    }
+            <view style={styles.sectionInput}>
+                <Text style={styles.sectionTitle}>Conta</Text>
+            </view>
+            <InputField fieldName="Email" placeholder="seu@email.com" />
+            <PasswordField fieldName={'Senha'} placeholder={'password'} />
+            <PasswordField fieldName={'Confirmar senha'} placeholder={'password'} />
 
-    setLoading(true);
-    try {
-      await register(username, password, 'utente');
-      router.push('/ficha-medica');
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Falha ao criar conta';
-      setError(message);
-    } finally {
-      setLoading(false);
-    }
-  };
+            <view style={styles.sectionInput}>
+                <Text style={styles.sectionTitle}>Dados pessoais</Text>
+            </view>
 
-  return (
-    <View style={styles.formCard}>
-      <TouchableOpacity style={styles.switchButton} onPress={() => router.push('../(auth)/medico-signup')}>
-        <Text style={styles.switchText}>Criar conta como médico</Text>
-      </TouchableOpacity>
+            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Nome</Text>
+                    <TextInput placeholder='' style={styles.input} />
+                </view>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Apelido</Text>
+                    <TextInput placeholder='' style={styles.input} />
+                </view>
+            </view>
 
-      <Text style={styles.sectionTitle}>Conta</Text>
-      <InputField
-        fieldName="Email"
-        placeholder="seu@email.com"
-        value={username}
-        onChangeText={setUsername}
-      />
-      <PasswordField
-        fieldName="Senha"
-        placeholder="password"
-        value={password}
-        onChangeText={setPassword}
-      />
-      <PasswordField
-        fieldName="Confirmar senha"
-        placeholder="password"
-        value={confirmPassword}
-        onChangeText={setConfirmPassword}
-      />
+            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Data de nascimento</Text>
+                    <TextInput placeholder='' style={styles.input} />
+                </view>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>genero</Text>
+                    <Pickery width={140} selectOptions={['Masculino', 'Femenino']} />
+                </view>
+            </view>
 
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            <InputField fieldName={'Telefone'} placeholder={''} />
 
-      <Text style={styles.sectionHeading}>Dados pessoais</Text>
-      <View style={styles.rowGroup}>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Nome</Text>
-          <TextInput placeholder='' style={styles.inlineInput} />
-        </View>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Apelido</Text>
-          <TextInput placeholder='' style={styles.inlineInput} />
-        </View>
-      </View>
+            <InputField fieldName={'BI/Passport'} placeholder={''} />
 
-      <View style={styles.rowGroup}>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Data de nascimento</Text>
-          <TextInput placeholder='' style={styles.inlineInput} />
-        </View>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Género</Text>
-          <Pickery width={140} selectOptions={['Masculino', 'Feminino']} />
-        </View>
-      </View>
+            <InputField fieldName={'Morada'} placeholder={''} />
 
-      <InputField fieldName={'Telefone'} placeholder={''} />
-      <InputField fieldName={'BI/Passport'} placeholder={''} />
-      <InputField fieldName={'Morada'} placeholder={''} />
+            <view style={styles.nameField}>
+                <Text style={{ color: 'gray' }}>Profissao</Text>
+                <Pickery width={300} selectOptions={['', 'Electrecista', 'Professor', 'Outro']} />
+            </view>
 
-      <Text style={styles.fieldLabel}>Profissão</Text>
-      <Pickery width={300} selectOptions={['', 'Electricista', 'Professor', 'Outro']} />
+            <view style={styles.sectionInput}>
+                <Text style={styles.sectionTitle}>Dados Biológicos</Text>
+            </view>
 
-      <Text style={styles.sectionHeading}>Dados Biológicos</Text>
-      <View style={styles.rowGroup}>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Factor RH</Text>
-          <TextInput placeholder='' style={styles.inlineInput} />
-        </View>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Grupo sanguíneo</Text>
-          <Pickery width={140} selectOptions={['O+', 'O-', 'Outro']} />
-        </View>
-      </View>
+            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Factor RH</Text>
+                    <TextInput placeholder='' style={styles.input} />
+                </view>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Grupo sanguinio</Text>
+                    <Pickery width={140} selectOptions={['O+', 'O-', 'Outro']} />
+                </view>
+            </view>
 
-      <View style={styles.rowGroup}>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Peso (kg)</Text>
-          <TextInput placeholder='' style={styles.inlineInput} keyboardType='numeric' />
-        </View>
-        <View style={styles.halfField}>
-          <Text style={styles.fieldLabel}>Altura (m)</Text>
-          <TextInput placeholder='' style={styles.inlineInput} keyboardType='numeric' />
-        </View>
-      </View>
+            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Peso (kg)</Text>
+                    <TextInput placeholder='' style={styles.input} />
+                </view>
+                <view style={styles.nameField}>
+                    <Text style={{ color: 'gray' }}>Altura (m)</Text>
+                    <TextInput placeholder='' style={styles.input}
+                        keyboardType='numeric'
+                    />
+                </view>
+            </view>
 
-      <Text style={styles.sectionHeading}>Histórico Médico</Text>
-      <Text style={styles.fieldLabel}>Alergia</Text>
-      <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} />
-      <View style={styles.separator} />
-      <Text style={styles.fieldLabel}>Condições especiais</Text>
-      <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} />
+            <view style={styles.sectionInput}>
+                <Text style={styles.sectionTitle}>Histórico Médico</Text>
+            </view>
 
-      <Text style={styles.sectionHeading}>Contacto de emergência</Text>
-      <InputField fieldName={'Nome do contacto'} placeholder={'nome'} />
-      <InputField fieldName={'Relação'} placeholder={'irmão/amigo/familiar...'} />
-      <InputField fieldName={'Telefone'} placeholder={'+244 ...'} />
+            <view style={styles.nameField}>
+                <Text style={{ color: 'gray' }}>Alergia</Text>
+                <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} />
+            </view>
+            <view>{'-'}</view>
+            <view style={styles.nameField}>
+                <Text style={{ color: 'gray' }}>Condições especiais</Text>
+                <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} />
+            </view>
 
-      <TouchableOpacity style={[styles.submitBtn, loading && styles.disabledBtn]} onPress={handleRegister} disabled={loading}>
-        <Text style={styles.submitText}>{loading ? 'Criando...' : 'Criar conta'}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-};
+            <view style={styles.sectionInput}>
+                <Text style={styles.sectionTitle}>Contacto de emergência</Text>
+            </view>
+
+            <InputField fieldName={'Nome do contacto'} placeholder={'nome'} />
+            <InputField fieldName={'Relação'} placeholder={'irmão/amigo/familiar/...'} />
+            <InputField fieldName={'Telefone'} placeholder={'+244 ...'} />
+
+            <TouchableOpacity style={styles.logupBtn}>Criar conta</TouchableOpacity>
+        </>
+    )
+}
 
 export default SignUpComponent;
 
 const styles = StyleSheet.create({
-  formCard: {
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 28,
-    padding: 24,
-    shadowColor: '#1A2A3A',
-    shadowOpacity: 0.08,
-    shadowRadius: 24,
-    shadowOffset: { width: 0, height: 12 },
-    elevation: 8,
-  },
-  switchButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 18,
-  },
-  switchText: {
-    color: '#1CA625',
-    fontWeight: '700',
-    fontSize: 14,
-  },
-  sectionTitle: {
-    color: '#1F2A37',
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 16,
-  },
-  sectionHeading: {
-    color: '#5E6E7E',
-    fontSize: 16,
-    fontWeight: '700',
-    marginTop: 24,
-    marginBottom: 12,
-  },
-  fieldLabel: {
-    color: '#5E6E7E',
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 8,
-  },
-  rowGroup: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginBottom: 12,
-  },
-  halfField: {
-    flex: 1,
-  },
-  inlineInput: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#D8E1EA',
-    backgroundColor: '#F7F9FC',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    borderRadius: 16,
-    color: '#1F2A37',
-    fontSize: 15,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#EDF1F3',
-    marginVertical: 18,
-  },
-  submitBtn: {
-    backgroundColor: '#1CA625',
-    borderRadius: 16,
-    paddingVertical: 16,
-    marginTop: 22,
-    alignItems: 'center',
-  },
-  submitText: {
-    fontWeight: '700',
-    color: '#FFFFFF',
-    fontSize: 16,
-  },
-  disabledBtn: {
-    opacity: 0.65,
-  },
-  errorText: {
-    color: '#D3382A',
-    marginTop: 12,
-    textAlign: 'center',
-    fontWeight: '600',
-  },
+    upText: {
+        color: '#2b9128',
+        marginBottom: 30,
+        fontWeight: '500'
+    },
+    sectionInput: {
+        margin: 16
+    },
+    sectionTitle: {
+        color: 'green',
+        fontWeight: '500'
+    },
+    nameField: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginVertical: 10
+    },
+    input: {
+        flex: 1,
+        width: 140,
+        borderWidth: 1,
+        borderColor: '#EDF1F3',
+        padding: 10,
+        borderRadius: 8,
+        marginHorizontal: 6
+    },
+    logupBtn: {
+        backgroundColor: '#0DF205',
+        paddingHorizontal: 130,
+        textAlign: 'center',
+        color: '#FFFFFF',
+        paddingVertical: 13,
+        borderRadius: 8,
+        marginTop: 30
+    }
 });
