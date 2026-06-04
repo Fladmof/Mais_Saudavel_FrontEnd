@@ -2,12 +2,14 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } fro
 import InputField from './inputField';
 import { useRouter } from "expo-router";
 import {useState} from 'react';
+const authService = require("../../services/authService")  
 
 const Login = () => {
     const router = useRouter();
     const [showPass, setShowPass] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const validateForm = () => {
         if (!email.trim()) {
@@ -23,36 +25,47 @@ const Login = () => {
         return null;
     }
 
-    const handleCreateAccount = () => {
-            try {
-    
-                const error = validateForm();
-    
-                if (error) {
-                    Alert.alert(error);
-                    return;
-                }
-    
-                const payLoad = {
-                    email: email.trim(),
-                    password
-                };
-    
-                // payload preparado console.log("payload: ",payload)
-                // BACKEND LIGA AQUI!!!!!!!!!!!!!!!!!!!!!!!!!! Flavio aqui mesmo (:----------------------------------
-    
-            } catch (error) {
-                console.log(error);
-                Alert.alert("Erro", "ocorreu um erro inseperado");
+    // app/components/Login.jsx (atualizado)
+// app/components/Login.jsx
+const handleLogin = async () => {
+    try {
+        const error = validateForm();
+        if (error) {
+            Alert.alert("Erro", error);
+            return;
+        }
+
+        setLoading(true);
+        const resposta = await authService.login(email.trim(), password);
+
+        if (resposta.sucesso) {
+            Alert.alert("Sucesso", "Login realizado com sucesso!");
+            
+            // DECISÃO DE NAVEGAÇÃO BASEADA NO ROLE
+            if (resposta.user.role === "medico") {
+                // Médico vai para as tabs específicas do médico
+                router.replace("/(medicoTabs)/home");
+            } else if (resposta.user.role === "utente") {
+                // Utente vai para as tabs do utente
+                router.replace("/(utenteTabs)/ficha-medica");
+            } else if (resposta.user.role === "admin") {
+                // Admin vai para área administrativa
+                router.replace("/admin");
             }
-        };
+        }
+    } catch (error) {
+        Alert.alert( "Erro no login");
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <>
             <InputField fieldName="Email" placeholder="seu@email.com" value={email} setValue={setEmail}/>
             
             <View style={[{ marginTop: 18 }, styles.inputField]}>
-                <view style={styles.inputField}>
+                <View style={styles.inputField}>
                     <Text style={{ color: 'grey' }}>Senha</Text>
                     <View style={[styles.inputeye, styles.input]}>
                         <TextInput
@@ -63,13 +76,13 @@ const Login = () => {
                             value={password}
                             onChangeText={setPassword}
                         />
-                        <view>
+                        <View>
                             <TouchableOpacity onPress={() => setShowPass(!showPass)}>
                                 <Image source={require('../../assets/images/eye-off.png')} />
                             </TouchableOpacity>
-                        </view>
+                        </View>
                     </View>
-                </view>
+                </View>
             </View>
 
             <View style={{ marginTop: 18 }}>
@@ -80,7 +93,7 @@ const Login = () => {
             </View>
 
             <TouchableOpacity style={styles.loginBtn} 
-            onPress={() => router.push("/ficha-medica")}>Entrar</TouchableOpacity>
+            onPress={() => router.push("/ficha-medica")}><Text>Entrar</Text></TouchableOpacity>
 
             <View style={{ marginTop: 16 }}>
                 <Image source={require('../../assets/images/or.png')} />
@@ -88,7 +101,7 @@ const Login = () => {
              
             <TouchableOpacity style={styles.googleBtn} onPress={() => 
                 {   
-                    handleCreateAccount();
+                    handleLogin();
                     router.push("/transitionPage")
                 }
                 }>

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 
 const HomeScreen = () => {
@@ -51,15 +51,21 @@ const HomeScreen = () => {
         
         <View style={{display: 'flex',flexDirection: 'row', justifyContent: 'center'}}>
           
-          <TouchableOpacity style={{ marginTop: 60, width: 250 }} onPress={() => router.push("/(auth)/sign-in")}>
-            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', 
-            backgroundColor: '#0DF205',
-              justifyContent: 'space-between', paddingHorizontal: 60, borderRadius: 16, 
-              paddingVertical: 0 }}>
-              <View></View>  <Text style={{ fontWeight: '500', color: 'white' }}>Continuar</Text> 
-              <Image style={{ marginRight: -70, marginVertical: -10 }} source={require('../assets/images/arrow.png')} />
-            </View>
-          </TouchableOpacity>
+        <TouchableOpacity style={{ marginTop: 60, width: 250 }} onPress={() => router.push("/(auth)/sign-in")}>
+          <View style={{ 
+              display: 'flex', 
+              flexDirection: 'row', 
+              alignItems: 'center', 
+              backgroundColor: '#0DF205',
+              justifyContent: 'space-between', 
+              paddingHorizontal: 60, 
+              borderRadius: 16, 
+              paddingVertical: 0
+            }}>
+            <Text style={{ fontWeight: '500', color: 'white' }}>Continuar</Text>
+            <Image style={{ marginRight: -70 }} source={require('../assets/images/arrow.png')} />
+        </View>
+      </TouchableOpacity>
         </View>
 
         </View>

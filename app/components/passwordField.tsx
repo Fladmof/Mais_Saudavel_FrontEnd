@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'reac
 const PasswordField = ({ fieldName, placeholder, value, setValue, securityTextEntry, onToggleSecure }) => {
     return (
         <View style={[{ marginTop: 18 }, styles.inputField]}>
-            <view style={styles.inputField}>
+            <View style={styles.inputField}>
                 <Text style={{ color: 'grey' }}>{fieldName}</Text>
                 <View style={[styles.inputeye, styles.input]}>
                     <TextInput
@@ -14,13 +14,13 @@ const PasswordField = ({ fieldName, placeholder, value, setValue, securityTextEn
                         value={value}
                         onChangeText={setValue}
                     />
-                    <view>
+                    <View>
                         <TouchableOpacity onPress={onToggleSecure}>
                             <Image source={require('../../assets/images/eye-off.png')} />
                         </TouchableOpacity>
-                    </view>
+                    </View>
                 </View>
-            </view>
+            </View>
         </View>
     )
 }

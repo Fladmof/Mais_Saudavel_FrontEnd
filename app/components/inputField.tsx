@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput } from 'react-native';
 const InputField = ({fieldName, placeholder, value, setValue}) => {
     return (
         <View style={{ marginTop: 12 }}>
-            <view style={styles.inputField}>
+            <View style={styles.inputField}>
                 <Text style={{ color: 'grey' }}>{fieldName}</Text>
                 <TextInput
                     placeholder={placeholder}
@@ -12,7 +12,7 @@ const InputField = ({fieldName, placeholder, value, setValue}) => {
                     onChangeText={setValue}
                     placeholderTextColor={'#B9C0C9'}
                 />
-            </view>
+            </View>
         </View>
     )
 }
