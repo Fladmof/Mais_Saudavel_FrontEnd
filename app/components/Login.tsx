@@ -2,14 +2,12 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } fro
 import InputField from './inputField';
 import { useRouter } from "expo-router";
 import {useState} from 'react';
-const authService = require("../../services/authService")  
 
 const Login = () => {
     const router = useRouter();
     const [showPass, setShowPass] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
 
     const validateForm = () => {
         if (!email.trim()) {
@@ -25,40 +23,29 @@ const Login = () => {
         return null;
     }
 
-    // app/components/Login.jsx (atualizado)
-// app/components/Login.jsx
-const handleLogin = async () => {
-    try {
-        const error = validateForm();
-        if (error) {
-            Alert.alert("Erro", error);
-            return;
-        }
-
-        setLoading(true);
-        const resposta = await authService.login(email.trim(), password);
-
-        if (resposta.sucesso) {
-            Alert.alert("Sucesso", "Login realizado com sucesso!");
-            
-            // DECISÃO DE NAVEGAÇÃO BASEADA NO ROLE
-            if (resposta.user.role === "medico") {
-                // Médico vai para as tabs específicas do médico
-                router.replace("/(medicoTabs)/home");
-            } else if (resposta.user.role === "utente") {
-                // Utente vai para as tabs do utente
-                router.replace("/(utenteTabs)/ficha-medica");
-            } else if (resposta.user.role === "admin") {
-                // Admin vai para área administrativa
-                router.replace("/admin");
+    const handleCreateAccount = () => {
+            try {
+    
+                const error = validateForm();
+    
+                if (error) {
+                    Alert.alert(error);
+                    return;
+                }
+    
+                const payLoad = {
+                    email: email.trim(),
+                    password
+                };
+    
+                // payload preparado console.log("payload: ",payload)
+                // BACKEND LIGA AQUI!!!!!!!!!!!!!!!!!!!!!!!!!! Flavio aqui mesmo (:----------------------------------
+    
+            } catch (error) {
+                console.log(error);
+                Alert.alert("Erro", "ocorreu um erro inseperado");
             }
-        }
-    } catch (error) {
-        Alert.alert( "Erro no login");
-    } finally {
-        setLoading(false);
-    }
-};
+        };
 
     return (
         <>
@@ -93,7 +80,7 @@ const handleLogin = async () => {
             </View>
 
             <TouchableOpacity style={styles.loginBtn} 
-            onPress={() => router.push("/ficha-medica")}><Text>Entrar</Text></TouchableOpacity>
+            onPress={() => router.push("/ficha-medica")}>Entrar</TouchableOpacity>
 
             <View style={{ marginTop: 16 }}>
                 <Image source={require('../../assets/images/or.png')} />
@@ -101,7 +88,7 @@ const handleLogin = async () => {
              
             <TouchableOpacity style={styles.googleBtn} onPress={() => 
                 {   
-                    handleLogin();
+                    handleCreateAccount();
                     router.push("/transitionPage")
                 }
                 }>
