@@ -23,9 +23,9 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
                 <Text style={styles.upText}>Criar conta como médico</Text>
             </TouchableOpacity>
 
-            <view style={styles.sectionInput}>
+            <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Conta</Text>
-            </view>
+            </View>
             <InputField fieldName="Email" placeholder="seu@email.com" value={email} setValue={setEmail}/>
             <PasswordField fieldName={'Senha'} placeholder={'password'} value={password} setValue={setPassword}
             securityTextEntry={showPass3} 
@@ -35,31 +35,31 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
             securityTextEntry={showPass4} 
                     onToggleSecure={() => setShowPass4(!showPass4)}/>
 
-            <view style={styles.sectionInput}>
+            <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Dados pessoais</Text>
-            </view>
+            </View>
 
-            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
-                <view style={styles.nameField}>
+            <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <View style={styles.nameField}>
                     <Text style={{color: 'gray'}}>Nome</Text>
                     <TextInput placeholder='' style={styles.input} value={name} onChangeText={setName}/>
-                </view>
-                <view style={styles.nameField}>
+                </View>
+                <View style={styles.nameField}>
                     <Text style={{color: 'gray'}}>Apelido</Text>
                     <TextInput placeholder='' style={styles.input} value={nickname} onChangeText={setNickname}/>
-                </view>
-            </view>
+                </View>
+            </View>
 
-            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
-                <view style={styles.nameField}>
+            <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <View style={styles.nameField}>
                     <Text style={{color: 'gray'}}>Data de nascimento</Text>
                     <TextInput placeholder='' style={styles.input} value={birthdate} onChangeText={setBirthdate}/>
-                </view>
-                <view style={styles.nameField}>
+                </View>
+                <View style={styles.nameField}>
                     <Text style={{color: 'gray'}}>genero</Text>
                     <Pickery width={140} selectOptions={['Masculino', 'Femenino']} value={gender} setValue={setGender}/>
-                </view>
-            </view>
+                </View>
+            </View>
 
             <InputField fieldName={'Telefone'} placeholder={''} value={telefone} setValue={setTelefone}/>
 
@@ -67,58 +67,58 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
 
             <InputField fieldName={'Morada'} placeholder={''} value={neighborhood} setValue={setNeighborhood}/>
 
-            <view style={styles.nameField}>
+            <View style={styles.nameField}>
                 <Text style={{ color: 'gray' }}>Profissao</Text>
                 <Pickery width={300} selectOptions={['', 'Electrecista', 'Professor', 'Outro']} value={job} setValue={setJob}/>
-            </view>
+            </View>
 
-            <view style={styles.sectionInput}>
+            <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Dados Biológicos</Text>
-            </view>
+            </View>
 
-            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
-                <view style={styles.nameField}>
+            <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Factor RH</Text>
                     <TextInput placeholder='' style={styles.input} value={factorRH} onChangeText={setFactorRH}/>
-                </view>
-                <view style={styles.nameField}>
+                </View>
+                <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Grupo sanguinio</Text>
                     <Pickery width={140} selectOptions={['O+', 'O-', 'Outro']} value={bloodType} setValue={setBloodType}/>
-                </view>
-            </view>
+                </View>
+            </View>
 
-            <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
-                <view style={styles.nameField}>
+            <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Peso (kg)</Text>
                     <TextInput placeholder='' style={styles.input} value={weight} onChangeText={setWeight}/>
-                </view>
-                <view style={styles.nameField}>
+                </View>
+                <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Altura (m)</Text>
                     <TextInput placeholder='' style={styles.input}
                         keyboardType='numeric' value={height} onChangeText={setHeight}
                     />
-                </view>
-            </view>
+                </View>
+            </View>
 
-            <view style={styles.sectionInput}>
+            <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Histórico Médico</Text>
-            </view>
+            </View>
 
-            <view style={styles.nameField}>
+            <View style={styles.nameField}>
                 <Text style={{ color: 'gray' }}>Alergia</Text>
                 <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} 
                 value={alergia} setValue={setAlergia}/>
-            </view>
-            <view style={{margin: 8}}>{' '}</view>
-            <view style={styles.nameField}>
+            </View>
+            <View style={{margin: 8}}>{' '}</View>
+            <View style={styles.nameField}>
                 <Text style={{color: 'gray'}}>Condições especiais</Text>
                 <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} 
                 value={specialCondition} setValue={setSpecialCondition}/>
-            </view>
+            </View>
 
-            <view style={styles.sectionInput}>
+            <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Contacto de emergência</Text>
-            </view>
+            </View>
 
             <InputField fieldName={'Nome do contacto'} placeholder={'nome'} value={emergencyContactName} setValue={setEmergencyContactName}/>
             <InputField fieldName={'Relação'} placeholder={'irmão/amigo/familiar/...'} value={emergencyContactRelatioship} setValue={setEmergencyContactRelatioship}/>
