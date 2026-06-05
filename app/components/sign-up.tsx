@@ -83,7 +83,7 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
                 </View>
                 <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Grupo sanguinio</Text>
-                    <Pickery width={140} selectOptions={['O+', 'O-', 'Outro']} value={bloodType} setValue={setBloodType}/>
+                    <Pickery width={140} selectOptions={['', 'O+', 'O-', 'Outro']} value={bloodType} setValue={setBloodType}/>
                 </View>
             </View>
 
@@ -109,7 +109,7 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
                 <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} 
                 value={alergia} setValue={setAlergia}/>
             </View>
-            {/* <View style={{margin: 8}}>{' '}</View> */}
+            <View style={{margin: 8}}>{' '}</View>
             <View style={styles.nameField}>
                 <Text style={{color: 'gray'}}>Condições especiais</Text>
                 <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} 
@@ -122,7 +122,7 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
 
             <InputField fieldName={'Nome do contacto'} placeholder={'nome'} value={emergencyContactName} setValue={setEmergencyContactName}/>
             <InputField fieldName={'Relação'} placeholder={'irmão/amigo/familiar/...'} value={emergencyContactRelatioship} setValue={setEmergencyContactRelatioship}/>
-            <InputField fieldName={'Telefone'} placeholder={'+244 ...'} value={emergencyContact} setValue={setEmergencyContact}/>
+            <InputField fieldName={'Telefone'} placeholder={''} value={emergencyContact} setValue={setEmergencyContact}/>
 
             
         </>

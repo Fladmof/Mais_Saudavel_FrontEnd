@@ -3,6 +3,7 @@ import React from 'react';
 import CardParam from '../components/CardParam';
 
 const FichaMedica = () => {
+
     return (
         <ScrollView
             contentContainerStyle={{
