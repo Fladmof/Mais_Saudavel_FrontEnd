@@ -1,24 +1,97 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import InputField from './inputField';
 import PasswordField from './passwordField';
 import Pickery from '../picker';
 import { useRouter } from "expo-router";
 import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
-const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
-    setPasswordcheck, name, setName, nickname, setNickname, birthdate, setBirthdate,
-    gender, setGender, telefone, setTelefone, passport, setPassport, neighborhood, 
-    setNeighborhood, job, setJob, factorRH, setFactorRH, bloodType, setBloodType,
-    weight, setWeight, height, setHeight, alergia, setAlergia, specialCondition, 
-    setSpecialCondition, emergencyContactName, setEmergencyContactName, emergencyContactRelatioship,
-    setEmergencyContactRelatioship, emergencyContact, setEmergencyContact
-}) => {
+const SignUpComponent = () => {
     const router = useRouter();
+    const { loading, error, handleRegister, setError } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [passwordcheck, setPasswordcheck] = useState('');
+    const [name, setName] = useState('');
+    const [nickname, setNickname] = useState('');
+    const [birthdate, setBirthdate] = useState('');
+    const [gender, setGender] = useState('');
+    const [telefone, setTelefone] = useState('');
+    const [passport, setPassport] = useState('');
+    const [neighborhood, setNeighborhood] = useState('');
+    const [job, setJob] = useState('');
+    const [factorRH, setFactorRH] = useState('');
+    const [bloodType, setBloodType] = useState('');
+    const [weight, setWeight] = useState('');
+    const [height, setHeight] = useState('');
+    const [alergia, setAlergia] = useState('');
+    const [specialCondition, setSpecialCondition] = useState('');
+    const [emergencyContactName, setEmergencyContactName] = useState('');
+    const [emergencyContactRelatioship, setEmergencyContactRelatioship] = useState('');
+    const [emergencyContact, setEmergencyContact] = useState('');
     const [showPass3, setShowPass3] = useState(false);
     const [showPass4, setShowPass4] = useState(false);
 
+    const validateForm = () => {
+        if (!email || !password || !passwordcheck || !name || !gender || !telefone || !passport || !neighborhood) {
+            Alert.alert('Erro', 'Preencha todos os campos obrigatórios');
+            return false;
+        }
+        if (password !== passwordcheck) {
+            Alert.alert('Erro', 'As senhas não coincidem');
+            return false;
+        }
+        if (password.length < 8) {
+            Alert.alert('Erro', 'Senha deve ter pelo menos 8 caracteres');
+            return false;
+        }
+        return true;
+    };
+
+    const handleSubmit = async () => {
+        setError(null);
+
+        if (!validateForm()) return;
+
+        const userData = {
+            role: 'utente',
+            email,
+            nome: name,
+            password,
+            telefone,
+            datanascimento: birthdate,
+            genero: gender,
+            bi: passport,
+            morada: neighborhood,
+            gsanguineo: bloodType,
+            factorrh: factorRH,
+            peso: weight,
+            altura: height,
+            alergia,
+            condespeciais: specialCondition,
+            relacao: emergencyContactRelatioship,
+            telemergencia: emergencyContact
+        };
+
+        const result = await handleRegister(userData);
+
+        if (result.success) {
+            Alert.alert('Sucesso', 'Conta criada com sucesso!', [
+                { text: 'OK', onPress: () => router.push('/(tabs)/ficha-medica') }
+            ]);
+        } else {
+            Alert.alert('Erro', result.error?.message || 'Erro ao criar conta');
+        }
+    };
+
     return (
-        <>
+        <ScrollView contentContainerStyle={styles.container}>
+            {error && (
+                <View style={styles.errorBox}>
+                    <Text style={styles.errorText}>{error}</Text>
+                </View>
+            )}
+
             <TouchableOpacity onPress={() => router.push("../(auth)/medico-signup")}>
                 <Text style={styles.upText}>Criar conta como médico</Text>
             </TouchableOpacity>
@@ -27,13 +100,14 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
                 <Text style={styles.sectionTitle}>Conta</Text>
             </View>
             <InputField fieldName="Email" placeholder="seu@email.com" value={email} setValue={setEmail}/>
-            <PasswordField fieldName={'Senha'} placeholder={'password'} value={password} setValue={setPassword}
-            securityTextEntry={showPass3} 
-                    onToggleSecure={() => setShowPass3(!showPass3)}/>
-
-            <PasswordField fieldName={'Confirmar senha'} placeholder={'password'} value={passwordcheck} setValue={setPasswordcheck}
-            securityTextEntry={showPass4} 
-                    onToggleSecure={() => setShowPass4(!showPass4)}/>
+            <PasswordField fieldName="Senha" placeholder="password" value={password} setValue={setPassword}
+                securityTextEntry={showPass3}
+                onToggleSecure={() => setShowPass3(!showPass3)}
+            />
+            <PasswordField fieldName="Confirmar senha" placeholder="password" value={passwordcheck} setValue={setPasswordcheck}
+                securityTextEntry={showPass4}
+                onToggleSecure={() => setShowPass4(!showPass4)}
+            />
 
             <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Dados pessoais</Text>
@@ -53,23 +127,21 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
             <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
                 <View style={styles.nameField}>
                     <Text style={{color: 'gray'}}>Data de nascimento</Text>
-                    <TextInput placeholder='' style={styles.input} value={birthdate} onChangeText={setBirthdate}/>
+                    <TextInput placeholder='YYYY-MM-DD' style={styles.input} value={birthdate} onChangeText={setBirthdate}/>
                 </View>
                 <View style={styles.nameField}>
-                    <Text style={{color: 'gray'}}>genero</Text>
-                    <Pickery width={140} selectOptions={['Masculino', 'Femenino']} value={gender} setValue={setGender}/>
+                    <Text style={{color: 'gray'}}>Gênero</Text>
+                    <Pickery width={140} selectOptions={['Masculino', 'Feminino']} value={gender} setValue={setGender}/>
                 </View>
             </View>
 
-            <InputField fieldName={'Telefone'} placeholder={''} value={telefone} setValue={setTelefone}/>
-
-            <InputField fieldName={'BI/Passport'} placeholder={''} value={passport} setValue={setPassport}/>
-
-            <InputField fieldName={'Morada'} placeholder={''} value={neighborhood} setValue={setNeighborhood}/>
+            <InputField fieldName="Telefone" placeholder="+244 ..." value={telefone} setValue={setTelefone}/>
+            <InputField fieldName="BI/Passport" placeholder="" value={passport} setValue={setPassport}/>
+            <InputField fieldName="Morada" placeholder="" value={neighborhood} setValue={setNeighborhood}/>
 
             <View style={styles.nameField}>
-                <Text style={{ color: 'gray' }}>Profissao</Text>
-                <Pickery width={300} selectOptions={['', 'Electrecista', 'Professor', 'Outro']} value={job} setValue={setJob}/>
+                <Text style={{ color: 'gray' }}>Profissão</Text>
+                <Pickery width={300} selectOptions={['', 'Eletricista', 'Professor', 'Outro']} value={job} setValue={setJob}/>
             </View>
 
             <View style={styles.sectionInput}>
@@ -79,10 +151,10 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
             <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
                 <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Factor RH</Text>
-                    <TextInput placeholder='' style={styles.input} value={factorRH} onChangeText={setFactorRH}/>
+                    <TextInput placeholder="" style={styles.input} value={factorRH} onChangeText={setFactorRH}/>
                 </View>
                 <View style={styles.nameField}>
-                    <Text style={{ color: 'gray' }}>Grupo sanguinio</Text>
+                    <Text style={{ color: 'gray' }}>Grupo sanguíneo</Text>
                     <Pickery width={140} selectOptions={['O+', 'O-', 'Outro']} value={bloodType} setValue={setBloodType}/>
                 </View>
             </View>
@@ -90,13 +162,11 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
             <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
                 <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Peso (kg)</Text>
-                    <TextInput placeholder='' style={styles.input} value={weight} onChangeText={setWeight}/>
+                    <TextInput placeholder="" style={styles.input} keyboardType="numeric" value={weight} onChangeText={setWeight}/>
                 </View>
                 <View style={styles.nameField}>
                     <Text style={{ color: 'gray' }}>Altura (m)</Text>
-                    <TextInput placeholder='' style={styles.input}
-                        keyboardType='numeric' value={height} onChangeText={setHeight}
-                    />
+                    <TextInput placeholder="1.75" style={styles.input} keyboardType="decimal-pad" value={height} onChangeText={setHeight}/>
                 </View>
             </View>
 
@@ -106,36 +176,57 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
 
             <View style={styles.nameField}>
                 <Text style={{ color: 'gray' }}>Alergia</Text>
-                <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} 
-                value={alergia} setValue={setAlergia}/>
+                <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} value={alergia} setValue={setAlergia}/>
             </View>
-            {/* <View style={{margin: 8}}>{' '}</View> */}
+
             <View style={styles.nameField}>
-                <Text style={{color: 'gray'}}>Condições especiais</Text>
-                <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} 
-                value={specialCondition} setValue={setSpecialCondition}/>
+                <Text style={{ color: 'gray' }}>Condições especiais</Text>
+                <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} value={specialCondition} setValue={setSpecialCondition}/>
             </View>
 
             <View style={styles.sectionInput}>
                 <Text style={styles.sectionTitle}>Contacto de emergência</Text>
             </View>
 
-            <InputField fieldName={'Nome do contacto'} placeholder={'nome'} value={emergencyContactName} setValue={setEmergencyContactName}/>
-            <InputField fieldName={'Relação'} placeholder={'irmão/amigo/familiar/...'} value={emergencyContactRelatioship} setValue={setEmergencyContactRelatioship}/>
-            <InputField fieldName={'Telefone'} placeholder={'+244 ...'} value={emergencyContact} setValue={setEmergencyContact}/>
+            <InputField fieldName="Nome do contacto" placeholder="nome" value={emergencyContactName} setValue={setEmergencyContactName}/>
+            <InputField fieldName="Relação" placeholder="irmão/amigo/familiar" value={emergencyContactRelatioship} setValue={setEmergencyContactRelatioship}/>
+            <InputField fieldName="Telefone" placeholder="+244 ..." value={emergencyContact} setValue={setEmergencyContact}/>
 
-            
-        </>
-    )
-}
+            <TouchableOpacity
+                style={[styles.submitButton, loading && styles.submitButtonDisabled]}
+                onPress={handleSubmit}
+                disabled={loading}
+            >
+                {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.submitButtonText}>Registrar</Text>}
+            </TouchableOpacity>
+        </ScrollView>
+    );
+};
 
 export default SignUpComponent;
 
 const styles = StyleSheet.create({
+    container: {
+        paddingBottom: 30
+    },
+    errorBox: {
+        backgroundColor: '#ffebee',
+        borderLeftWidth: 4,
+        borderLeftColor: '#d32f2f',
+        padding: 12,
+        marginHorizontal: 12,
+        marginVertical: 10,
+        borderRadius: 4
+    },
+    errorText: {
+        color: '#d32f2f',
+        fontSize: 14
+    },
     upText: {
         color: '#2b9128',
         marginBottom: 30,
-        fontWeight: '500'
+        fontWeight: '500',
+        textAlign: 'center'
     },
     sectionInput: {
         margin: 16
@@ -158,4 +249,20 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginHorizontal: 6
     },
+    submitButton: {
+        backgroundColor: '#2b9128',
+        padding: 14,
+        borderRadius: 8,
+        marginHorizontal: 12,
+        marginTop: 20,
+        alignItems: 'center'
+    },
+    submitButtonDisabled: {
+        opacity: 0.6
+    },
+    submitButtonText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16
+    }
 });

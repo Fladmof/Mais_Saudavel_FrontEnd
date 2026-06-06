@@ -1,8 +1,10 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, ActivityIndicator } from 'react-native';
 import InputField from './inputField';
 import { useRouter } from "expo-router";
-import {useState} from 'react';
-const authService = require("../../services/authService")  
+import { useState } from 'react';
+
+// VERIFIQUE SE O CAMINHO ESTÁ CORRETO
+import authService from '../../services/authService';
 
 const Login = () => {
     const router = useRouter();
@@ -12,53 +14,72 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
 
     const validateForm = () => {
-        if (!email.trim()) {
-            return "O email é obrigatorio"
-        }
-        if (!email.includes("@")) {
-            return "Email inválido"
-        }
-        if (!password) {
-            return "A senha é obrigatoria"
-        }
-        
+        const trimmedEmail = email.trim();
+        if (!trimmedEmail) return "O email é obrigatório";
+        if (!trimmedEmail.includes("@")) return "Email inválido";
+        if (!password) return "A senha é obrigatória";
         return null;
     }
 
-    // app/components/Login.jsx (atualizado)
-// app/components/Login.jsx
-const handleLogin = async () => {
-    try {
-        const error = validateForm();
-        if (error) {
-            Alert.alert("Erro", error);
-            return;
-        }
-
-        setLoading(true);
-        const resposta = await authService.login(email.trim(), password);
-
-        if (resposta.sucesso) {
-            Alert.alert("Sucesso", "Login realizado com sucesso!");
-            
-            // DECISÃO DE NAVEGAÇÃO BASEADA NO ROLE
-            if (resposta.user.role === "medico") {
-                // Médico vai para as tabs específicas do médico
-                router.replace("/(medicoTabs)/home");
-            } else if (resposta.user.role === "utente") {
-                // Utente vai para as tabs do utente
-                router.replace("/(utenteTabs)/ficha-medica");
-            } else if (resposta.user.role === "admin") {
-                // Admin vai para área administrativa
-                router.replace("/admin");
+    const handleLogin = async () => {
+        try {
+            const error = validateForm();
+            if (error) {
+                Alert.alert("Erro", error);
+                return;
             }
+
+            setLoading(true);
+            
+            // DEBUG - verificar se o serviço existe
+            if (!authService || typeof authService.login !== 'function') {
+                throw new Error("Serviço de autenticação não configurado");
+            }
+            
+            const resposta = await authService.login(email.trim(), password);
+            
+            // DEBUG - ver o que está retornando
+            console.log('Resposta do login:', JSON.stringify(resposta, null, 2));
+            
+            if (!resposta) {
+                throw new Error("Servidor não respondeu");
+            }
+            
+            if (resposta.sucesso) {
+                Alert.alert("Sucesso", "Login realizado com sucesso!");
+                
+                // Verificar se user existe
+                if (!resposta.user || !resposta.user.role) {
+                    throw new Error("Dados do usuário incompletos");
+                }
+                
+                // Navegação baseada no role
+                switch(resposta.user.role) {
+                    case "medico":
+                        router.replace("/(medicoTabs)/home");
+                        break;
+                    case "utente":
+                        router.replace("/(utenteTabs)/ficha-medica");
+                        break;
+                    case "admin":
+                        router.replace("/admin");
+                        break;
+                    default:
+                        throw new Error(`Role desconhecido: ${resposta.user.role}`);
+                }
+            } else {
+                Alert.alert("Erro", resposta.mensagem || "Falha no login");
+            }
+        } catch (error) {
+            console.error('Erro completo:', error);
+            Alert.alert(
+                "Erro no login",
+                error?.response?.data?.message || error.message || "Tente novamente mais tarde"
+            );
+        } finally {
+            setLoading(false);
         }
-    } catch (error) {
-        Alert.alert( "Erro no login");
-    } finally {
-        setLoading(false);
-    }
-};
+    };
 
     return (
         <>
@@ -75,42 +96,42 @@ const handleLogin = async () => {
                             secureTextEntry={!showPass}
                             value={password}
                             onChangeText={setPassword}
+                            editable={!loading}
                         />
-                        <View>
-                            <TouchableOpacity onPress={() => setShowPass(!showPass)}>
-                                <Image source={require('../../assets/images/eye-off.png')} />
-                            </TouchableOpacity>
-                        </View>
+                        <TouchableOpacity onPress={() => setShowPass(!showPass)}>
+                            <Text style={{ color: '#6B6B6B', fontWeight: '500' }}>
+                                {showPass ? 'Ocultar' : 'Mostrar'}
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
 
             <View style={{ marginTop: 18 }}>
-                <Text style={styles.noCountText}>
-                    Não tem conta?
-                    <Text style={{ color: 'blue' }}> criar</Text>
-                </Text>
+                <TouchableOpacity onPress={() => router.push('/register')}>
+                    <Text style={styles.noCountText}>
+                        Não tem conta?
+                        <Text style={{ color: 'blue' }}> criar</Text>
+                    </Text>
+                </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.loginBtn} 
-            onPress={() => router.push("/ficha-medica")}><Text>Entrar</Text></TouchableOpacity>
+            <TouchableOpacity style={[styles.loginBtn, loading && styles.disabledBtn]} onPress={handleLogin} disabled={loading}>
+                {loading ? <ActivityIndicator size="small" color="#FFFFFF" /> : <Text>Entrar</Text>}
+            </TouchableOpacity>
 
             <View style={{ marginTop: 16 }}>
                 <Image source={require('../../assets/images/or.png')} />
             </View>
              
-            <TouchableOpacity style={styles.googleBtn} onPress={() => 
-                {   
-                    handleLogin();
-                    router.push("/transitionPage")
-                }
-                }>
+            <TouchableOpacity style={[styles.googleBtn, loading && styles.disabledBtn]} onPress={handleLogin} disabled={loading}>
                 <Image style={{ margin: 5 }} source={require('../../assets/images/google.png')} />
-                <Text style={styles.googleText}>Entrar com Google </Text>
+                <Text style={styles.googleText}>Entrar com Google</Text>
             </TouchableOpacity>
         </>
     )
 }
+
 
 export default Login;
 
@@ -159,6 +180,10 @@ const styles = StyleSheet.create({
     noCountText: {
         color: 'gray',
         fontWeight: '400'
+    }
+    ,
+    disabledBtn: {
+        opacity: 0.6
     }
 
 });

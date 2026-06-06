@@ -1,18 +1,17 @@
 import { View, Text, ScrollView, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import CardParam from '../components/CardParam';
+import { AuthContext } from '../context/AuthContext';
 
 const FichaMedica = () => {
+    const { user } = useContext(AuthContext);
+    const profile = user?.utente || user?.medico;
+
     return (
-        <ScrollView
-            contentContainerStyle={{
-                paddingTop: 0,
-                paddingBottom: 200
-            }}
-        >
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.fichaText}>Ficha do Utente</Text>
+        <ScrollView contentContainerStyle={{ paddingTop: 0, paddingBottom: 200 }}>
+      <View style={styles.container}>
+        <View style={styles.header}>
+          <Text style={styles.fichaText}>Ficha do {user?.role === 'medico' ? 'Médico' : 'Utente'}</Text>
                     <View style={styles.securityContainer}>
                         <Image source={require('../../assets/images/security.png')} />
                         <Text style={{ fontWeight: '400', color: 'white' }}>Segurança da informação</Text>

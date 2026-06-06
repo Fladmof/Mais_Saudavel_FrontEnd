@@ -11,31 +11,45 @@ const api = axios.create({
     },
 });
 
-// Interceptor para adicionar token automaticamente
 api.interceptors.request.use(
     async (config) => {
-        const token = await AsyncStorage.getItem('@user_token');
+        const token = await AsyncStorage.getItem('auth_token');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Interceptor para tratar erros de autenticação
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        if (error.response?.status === 401) {
-            // Token expirado ou inválido
-            await AsyncStorage.removeItem('@user_token');
-            await AsyncStorage.removeItem('@user_data');
-            // Redirecionar para login
-            // Você pode usar um event emitter ou contexto para isso
+        const originalRequest = error.config;
+
+        if (error.response?.status === 401 && !originalRequest._retry) {
+            originalRequest._retry = true;
+
+            try {
+                const refreshToken = await AsyncStorage.getItem('refresh_token');
+                if (!refreshToken) throw new Error('No refresh token');
+
+                const response = await axios.post(
+                    `${API_CONFIG.baseURL}/auth/refresh`,
+                    { refreshToken }
+                );
+
+                const newToken = response.data.data.token;
+                await AsyncStorage.setItem('auth_token', newToken);
+                originalRequest.headers.Authorization = `Bearer ${newToken}`;
+
+                return api(originalRequest);
+            } catch (refreshError) {
+                await AsyncStorage.multiRemove(['auth_token', 'refresh_token', 'user_data']);
+                return Promise.reject(refreshError);
+            }
         }
+
         return Promise.reject(error);
     }
 );

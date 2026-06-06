@@ -8,6 +8,9 @@
     "scheme": "maissaudaveld",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "extra": {
+      "apiUrl": "http://172.20.10.13:3000"
+    },
     "ios": {
       "supportsTablet": true
     },

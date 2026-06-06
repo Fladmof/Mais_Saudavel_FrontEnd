@@ -2,53 +2,42 @@
 import api from './apiService';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const authService = {
-    // Login
-    login: async (email, password) => {
-        try {
-            const response = await api.post('/auth/login', { email, password });
-            
-            if (response.data.token) {
-                // Salvar token e dados do usuário
-                await AsyncStorage.setItem('@user_token', response.data.token);
-                await AsyncStorage.setItem('@user_data', JSON.stringify(response.data.user));
-                
-                // Configurar token padrão para próximas requisições
-                api.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-            }
-            
-            return response.data;
-        } catch (error) {
-            throw error.response?.data || error;
-        }
-    },
+class AuthService {
+    async register(userData) {
+  const response = await api.post('/auth/register', userData);
+  const { token, refreshToken, user } = response.data.data;
+  await AsyncStorage.multiSet([
+    ['auth_token', token],
+    ['refresh_token', refreshToken],
+    ['user_data', JSON.stringify(user)]
+  ]);
+  return response.data.data;
+}
 
-    // Verificar se token é válido (para manter login)
-    verifyToken: async () => {
-        try {
-            const response = await api.get('/auth/verify');
-            return response.data;
-        } catch (error) {
-            // Token inválido, fazer logout
-            await authService.logout();
-            throw error;
-        }
-    },
+async login(email, password) {
+  const response = await api.post('/auth/login', { email, password });
+  const { token, refreshToken, user } = response.data.data;
+  await AsyncStorage.multiSet([
+    ['auth_token', token],
+    ['refresh_token', refreshToken],
+    ['user_data', JSON.stringify(user)]
+  ]);
+  return response.data.data;
+}
 
-    // Logout
-    logout: async () => {
-        await AsyncStorage.removeItem('@user_token');
-        await AsyncStorage.removeItem('@user_data');
-        delete api.defaults.headers.common['Authorization'];
-    },
-
-    // Configurar token ao iniciar app
-    setupToken: async () => {
-        const token = await AsyncStorage.getItem('@user_token');
-        if (token) {
-            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            return true;
-        }
-        return false;
+async verify() {
+  const response = await api.get('/auth/me');
+  return response.data.data;
+}
+    async logout() {
+        await api.post('/auth/logout').catch(() => {});
+        await AsyncStorage.multiRemove(['auth_token', 'refresh_token', 'user_data']);
     }
-};
+
+    async getCurrentUser() {
+        const raw = await AsyncStorage.getItem('user_data');
+        return raw ? JSON.parse(raw) : null;
+    }
+}
+
+export default new AuthService();

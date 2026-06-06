@@ -1,8 +1,11 @@
 import { View, Text, StyleSheet, ScrollView, Alert, Image, TouchableOpacity, TextInput, TurboModuleRegistry } from "react-native";
-import { useState } from "react";
+import React, { useState, useContext } from "react";
 import SignUpComponent from "../components/sign-up";
 import { useRouter } from "expo-router";
+//import AuthContext from "../../context/AuthContext";
 
+import { AuthContext } from "../context/AuthContext";
+import authService from "../../services/authService";
 
 export default function SignUp() {
   const router = useRouter();
@@ -112,46 +115,50 @@ const validateForm = () => {
   return null;
 }
 
-const handleCreateAccount = () => {
-    try {
-      
-      const error = validateForm();
+const { setUser } = useContext(AuthContext);
 
-      if (error) {
-        Alert.alert("erro", error);
-        console.log(error);
-        return;
-      }
-
-      const payLoad = {
-        email: email.trim(),
-        password,
-        name: name.trim(),
-        nickname: nickname.trim(),
-        birthdate,
-        gender,
-        telefone: telefone.trim(),
-        passport: passport.trim(),
-        neighborhood: neighborhood.trim(),
-        job: job.trim(),
-        factorRH,
-        bloodType,
-        weight: Number(weight),
-        height: Number(height),
-        alergia: alergia.trim(),
-        specialCondition: specialCondition.trim(),
-        emergencyContactName: emergencyContactName.trim(),
-        setEmergencyContactRelatioship: emergencyContactRelatioship.trim(),
-        emergencyContact: emergencyContact.trim(),
-      };
-
-      // payload preparado console.log("payload: ",payload)
-      // BACKEND LIGA AQUI!!!!!!!!!!!!!!!!!!!!!!!!!! ----------------------------------
-
-    } catch (error) {
+const handleCreateAccount = async () => {
+  try {
+    const error = validateForm();
+    if (error) {
+      Alert.alert("Erro", error);
       console.log(error);
-      Alert.alert("Erro", "ocorreu um erro inseperado");
+      return;
     }
+
+    const payload = {
+      role: 'utente',
+      email: email.trim(),
+      nome: name.trim(),
+      password,
+      telefone: telefone.trim(),
+      datanascimento: birthdate,
+      genero: gender,
+      bi: passport.trim(),
+      morada: neighborhood.trim(),
+      gsanguineo: bloodType,
+      factorrh: factorRH,
+      peso: Number(weight),
+      altura: Number(height),
+      alergia: alergia.trim(),
+      detalhes: '',
+      condespeciais: specialCondition.trim(),
+      relacao: emergencyContactRelatioship.trim(),
+      telemergencia: emergencyContact.trim()
+    };
+
+    const resp = await authService.register(payload);
+    const user = resp.user;
+    if (user) {
+      setUser(user);
+      Alert.alert('Sucesso', 'Conta criada com sucesso!', [
+        { text: 'OK', onPress: () => router.replace('/(tabs)/ficha-medica') }
+      ]);
+    }
+  } catch (err) {
+    console.error("Erro ao criar conta:", err);
+    Alert.alert("Erro", "Ocorreu um erro inesperado. Tente novamente.");
+  }
 };
 
   return (
