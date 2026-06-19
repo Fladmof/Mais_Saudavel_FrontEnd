@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { AuthProvider } from './auth/AuthContext';
 import App from './App.jsx';
 
-test('App renderiza a marca +Saudavel', () => {
-  render(<MemoryRouter><App /></MemoryRouter>);
-  expect(screen.getByText(/Saudável/i)).toBeInTheDocument();
+test('rota raiz sem sessao redireciona para o login', () => {
+  render(<AuthProvider><MemoryRouter initialEntries={["/"]}><App /></MemoryRouter></AuthProvider>);
+  expect(screen.getByText('+Saudável Admin')).toBeInTheDocument();
 });
