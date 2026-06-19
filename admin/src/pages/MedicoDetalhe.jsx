@@ -36,7 +36,7 @@ export default function MedicoDetalhe() {
   if (!medico) return <p>A carregar…</p>;
   return (
     <div>
-      <h1 style={{ color: 'var(--verde)' }}>{medico.User?.nome || 'Médico'}</h1>
+      <h1 style={{ color: 'var(--verde)' }}>{medico.user?.nome || 'Médico'}</h1>
       <form className="card" style={{ maxWidth: 480 }} onSubmit={guardar}>
         <label>Especialidade</label>
         <input value={form.especialidade} onChange={(e) => setForm({ ...form, especialidade: e.target.value })} style={{ width: '100%', padding: 10, margin: '6px 0 14px' }} />
