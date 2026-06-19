@@ -8,7 +8,8 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => localStorage.getItem('admin_token'));
   const [user, setUser] = useState(() => {
     const raw = localStorage.getItem('admin_user');
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    try { return JSON.parse(raw); } catch { return null; }
   });
 
   async function login(email, password) {

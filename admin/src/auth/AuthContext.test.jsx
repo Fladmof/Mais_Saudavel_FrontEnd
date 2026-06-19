@@ -6,6 +6,8 @@ import { AuthProvider, useAuth } from './AuthContext';
 
 vi.mock('../api/apiClient');
 
+beforeEach(() => localStorage.clear());
+
 function Probe() {
   const { user, login } = useAuth();
   return (
@@ -21,6 +23,8 @@ test('login com role admin define o utilizador', async () => {
   render(<AuthProvider><Probe /></AuthProvider>);
   await act(async () => { screen.getByText('entrar').click(); });
   expect(screen.getByText('role:admin')).toBeInTheDocument();
+  expect(localStorage.getItem('admin_token')).toBe('t');
+  expect(JSON.parse(localStorage.getItem('admin_user')).role).toBe('admin');
 });
 
 test('login rejeita role nao-admin', async () => {
@@ -33,4 +37,6 @@ test('login rejeita role nao-admin', async () => {
   render(<AuthProvider><Probe2 /></AuthProvider>);
   await act(async () => { screen.getByText('go').click(); });
   expect(erro).toBeTruthy();
+  expect(localStorage.getItem('admin_token')).toBeNull();
+  expect(erro.code).toBe('NOT_ADMIN');
 });
