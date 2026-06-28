@@ -29,7 +29,7 @@ export function PasswordField({ label, value, onChangeText, placeholder, error }
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
-          placeholderTextColor={'#B9C0C9'}
+          placeholderTextColor={colors.placeholder}
           secureTextEntry={hidden}
           style={{ flex: 1, paddingVertical: spacing.md, fontFamily: fontFamily.regular }}
         />

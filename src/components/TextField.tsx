@@ -20,7 +20,7 @@ export function TextField({ label, value, onChangeText, placeholder, keyboardTyp
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
-        placeholderTextColor={'#B9C0C9'}
+        placeholderTextColor={colors.placeholder}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         style={{

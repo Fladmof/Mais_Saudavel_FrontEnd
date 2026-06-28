@@ -10,4 +10,5 @@ export const colors = {
   border: '#EDF1F3',
   white: '#FFFFFF',
   black: '#000000',
+  placeholder: '#B9C0C9',
 } as const;
