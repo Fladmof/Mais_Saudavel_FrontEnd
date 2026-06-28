@@ -1,2 +1,0 @@
-// jest.setup.ts
-// Extended matchers are built into @testing-library/react-native v12.4+
