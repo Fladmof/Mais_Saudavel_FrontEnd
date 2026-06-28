@@ -9,7 +9,7 @@ import PasswordField from "../components/passwordField";
 export default function SignUp() {
     const router = useRouter();
     const [tab, setTab] = useState('criar');
-    const [hidePassword, setHidePassword] = false;
+    const [hidePassword, setHidePassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordcheck, setPasswordcheck] = useState("");
@@ -68,7 +68,7 @@ export default function SignUp() {
                 password,
                 name: name.trim(),
                 nickname: nickname.trim(),
-                especialidade: especialidadetrim(),
+                especialidade: especialidade.trim(),
                 hospital: hospital.trim()
             };
 
@@ -134,9 +134,9 @@ export default function SignUp() {
                         <Text style={styles.upText}>Criar conta como paciente</Text>
                     </TouchableOpacity>
 
-                    <view style={styles.sectionInput}>
+                    <View style={styles.sectionInput}>
                         <Text style={styles.sectionTitle}>Conta</Text>
-                    </view>
+                    </View>
                     <InputField fieldName="Email" placeholder="seu@email.com" value={email} setValue={setEmail} />
                     <PasswordField fieldName={'Senha'} placeholder={'password'} value={password} setValue={setPassword} 
                     securityTextEntry={showPass1} 
@@ -147,24 +147,24 @@ export default function SignUp() {
                     securityTextEntry={showPass2} 
                     onToggleSecure={() => setShowPass2(!showPass2)}/>
 
-                    <view style={styles.sectionInput}>
+                    <View style={styles.sectionInput}>
                         <Text style={styles.sectionTitle}>Dados pessoais</Text>
-                    </view>
+                    </View>
 
-                    <view style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
-                        <view style={styles.nameField}>
+                    <View style={{ display: 'flex', flexDirection: 'row', margin: 12 }}>
+                        <View style={styles.nameField}>
                             <Text style={{ color: 'gray' }}>Nome</Text>
                             <TextInput placeholder='' style={styles.input} value={name} onChangeText={setName} />
-                        </view>
-                        <view style={styles.nameField}>
+                        </View>
+                        <View style={styles.nameField}>
                             <Text style={{ color: 'gray' }}>Apelido</Text>
                             <TextInput placeholder='' style={styles.input} value={nickname} onChangeText={setNickname} />
-                        </view>
-                    </view>
+                        </View>
+                    </View>
 
-                    <view style={styles.sectionInput}>
+                    <View style={styles.sectionInput}>
                         <Text style={styles.sectionTitle}>Dados Profissionais</Text>
-                    </view>
+                    </View>
                     <InputField fieldName="" placeholder="Especialidade" value={especialidade} setValue={setEspecialidade} />
                     <InputField fieldName="" placeholder="Hospital" value={hospital} setValue={setHospital} />
 
@@ -172,7 +172,7 @@ export default function SignUp() {
 
                     <TouchableOpacity style={styles.logupBtn}
                         onPress={() => router.push("../(medicoTabs)/home")}>
-                        Criar conta
+                        <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>Criar conta</Text>
                     </TouchableOpacity>
                 </>
 

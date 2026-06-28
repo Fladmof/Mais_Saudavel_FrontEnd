@@ -1,10 +1,12 @@
 import { StyleSheet, Text, ScrollView, View, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import Screen from "../components/Screen";
 
 const TransitionPage = () => {
     const router = useRouter();
 
     return (
+        <Screen edges={['bottom']}>
         <ScrollView>
             <View style={styles.container}>
                 <Image source={require("../assets/images/mais-saudavel-logo.png")} />
@@ -64,11 +66,14 @@ const TransitionPage = () => {
                 <TouchableOpacity style={{marginTop: 60}}
                 onPress={() => router.push("/(tabs)/ficha-medica")}>
                     <View style={{display: 'flex', flexDirection: 'row', alignItems: 'center', backgroundColor: '#0DF205', justifyContent: 'space-between', paddingHorizontal: 60, borderRadius: 16, paddingVertical: 0}}>
-                     <View></View>  <Text style={{fontWeight: '500', color: 'white'}}>Continuar</Text> <Image style={{marginRight: -50, marginVertical: -10}} source={require('../assets/images/arrow.png')}/>
+                     <View />
+                     <Text style={{fontWeight: '500', color: 'white'}}>Continuar</Text>
+                     <Image style={{marginRight: -50, marginVertical: -10}} source={require('../assets/images/arrow.png')}/>
                     </View>
                 </TouchableOpacity>
             </View>
         </ScrollView>
+        </Screen>
     )
 }
 

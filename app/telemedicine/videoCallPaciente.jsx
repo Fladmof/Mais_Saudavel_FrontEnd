@@ -68,7 +68,7 @@ const PacienteTelMedicin = () => {
 
                     <View style={{ width: '100%', display: 'flex', alignItems: 'center' }}>
                         <View>
-                            <View style={{ width: '98%', position: 'absolute', zIndex: 100, marginTop: 20, dsiplay: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ width: '98%', position: 'absolute', zIndex: 100, marginTop: 20, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                                 <View style={{
                                     marginLeft: 10, display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 3, borderWidth: 1, borderColor: '#B6B6B6', paddingHorizontal: 8,
                                     borderRadius: 12, paddingVertical: 2
@@ -104,7 +104,7 @@ const PacienteTelMedicin = () => {
                     </View>
 
                     <View style={{
-                        display: 'flex', flexDiretion: 'column', width: 450, backgroundColor: 'white',
+                        display: 'flex', flexDirection: 'column', width: 450, backgroundColor: 'white',
                         gap: 20, paddingVertical: 30, borderRadius: 32, paddingHorizontal: 20, borderWidth: 1,
                         borderColor: 'lightgreen', marginTop: 40, alignSelf: 'center'
                     }}>
@@ -121,7 +121,7 @@ const PacienteTelMedicin = () => {
             <View style={{
                 backgroundColor: 'white', marginVertical: 0, paddingBottom: 10,
                 borderColor: "#20F6591A", borderWidth: 1, borderRadius: 32,
-                paddingTop: 10, position: 'fixed', bottom: 0, left: 0, right: 20
+                paddingTop: 10, position: 'absolute', bottom: 0, left: 0, right: 20
             }}>
                 {/*<Text style={{
                         color: '#6C7278', fontWeight: '500', fontSize: 12,

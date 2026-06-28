@@ -5,7 +5,7 @@ import InputField from '../components/inputField'
 const SetDate = () => {
     return (
         <View style={{
-            display: 'flex', flexDiretion: 'column',
+            display: 'flex', flexDirection: 'column',
             alignItems: 'center', backgroundColor: 'white', justifyContent: 'center',
             borderRadius: 32, margin: 20, paddingBottom: 20, borderWidth:1, 
             borderColor: '#D9D9D9'
@@ -33,7 +33,7 @@ const SetDate = () => {
                 borderRadius: 8,
                 marginTop: 30,
             }}>
-                Agendar consulta
+                <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>Agendar consulta</Text>
             </TouchableOpacity>
 
              <TouchableOpacity style={{

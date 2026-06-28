@@ -23,7 +23,7 @@ const HistoricPart = ({ title, desc1, desc2 }) => {
                 <TouchableOpacity onPress={() => router.push("../components/add-consulta")}>
                     <View style={{
                         width: 90, borderWidth: 1, height: 52,
-                        borderRadius: 24, display: 'flex', flexDirecion: 'row',
+                        borderRadius: 24, display: 'flex', flexDirection: 'row',
                         alignItems: 'center', justifyContent: 'center',
                         borderColor: '#E8E8E8'
                     }}>
@@ -151,14 +151,14 @@ const Medication = () => {
                         <Text style={{ color: '#ABB5BE', fontSize: 14 }}>Clínica central de Luanda</Text>
                     </View>
                     <TouchableOpacity onPress={() => router.push("../components/set-up-date")}>
-                        <view style={{
+                        <View style={{
                             backgroundColor: 'red', width: 120, height: 48, display: 'flex',
                             flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             backgroundColor: '#0DF205', borderRadius: 24
                         }}>
                             <Image source={require('../../assets/images/telemedicina.png')} />
                             <Text style={{ color: 'white' }}>Telemedicina</Text>
-                        </view>
+                        </View>
                     </TouchableOpacity>
                 </View>
 

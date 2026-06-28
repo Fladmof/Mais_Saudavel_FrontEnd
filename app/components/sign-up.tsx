@@ -109,7 +109,7 @@ const SignUpComponent = ({email, setEmail, password, setPassword, passwordcheck,
                 <Pickery width={300} selectOptions={['', 'Comida', 'Enlatado', 'Cosméticos', 'Medicamentos', 'Doces', 'Outro']} 
                 value={alergia} setValue={setAlergia}/>
             </View>
-            <View style={{margin: 8}}>{' '}</View>
+            <View style={{margin: 8}} />
             <View style={styles.nameField}>
                 <Text style={{color: 'gray'}}>Condições especiais</Text>
                 <Pickery width={300} selectOptions={['', 'Diabete', 'Alergia', 'Albinismo', 'Cadeirante', 'Cegueira', 'Tensão arterial']} 

@@ -27,7 +27,7 @@ export default function DataPicker() {
                 mode='date'
                 display="spinner"
                 value={date}
-                onChange={onchange}
+                onChange={onChange}
             />
          
          { !showPicker &&

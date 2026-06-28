@@ -79,8 +79,10 @@ const Login = () => {
                 </Text>
             </View>
 
-            <TouchableOpacity style={styles.loginBtn} 
-            onPress={() => router.push("/ficha-medica")}>Entrar</TouchableOpacity>
+            <TouchableOpacity style={styles.loginBtn}
+            onPress={() => router.push("/ficha-medica")}>
+                <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>Entrar</Text>
+            </TouchableOpacity>
 
             <View style={{ marginTop: 16 }}>
                 <Image source={require('../../assets/images/or.png')} />

@@ -43,7 +43,7 @@ const AddConsulta = () => {
                     borderRadius: 8,
                     marginTop: 60,
                 }}>
-                    Agendar consulta
+                    <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>Agendar consulta</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={{

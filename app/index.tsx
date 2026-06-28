@@ -1,9 +1,11 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
+import Screen from "../components/Screen";
 
 const HomeScreen = () => {
   const router = useRouter();
   return (
+    <Screen edges={['bottom']}>
     <ScrollView>
       <View style={{ display: 'flex', flex: 1, flexDirection: 'column', width: '100%' }}>
         <View style={{
@@ -56,7 +58,8 @@ const HomeScreen = () => {
             backgroundColor: '#0DF205',
               justifyContent: 'space-between', paddingHorizontal: 50, borderRadius: 16, 
               paddingVertical: 0 }}>
-              <View></View>  <Text style={{ fontWeight: '500', color: 'white' }}>Continuar</Text> 
+              <View />
+              <Text style={{ fontWeight: '500', color: 'white' }}>Continuar</Text> 
               <Image style={{ marginRight: -70, marginVertical: -10 }} source={require('../assets/images/arrow.png')} />
             </View>
           </TouchableOpacity>
@@ -64,6 +67,7 @@ const HomeScreen = () => {
 
         </View>
     </ScrollView>
+    </Screen>
   )
 }
 

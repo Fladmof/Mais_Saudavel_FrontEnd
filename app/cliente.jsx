@@ -21,7 +21,7 @@ const HistoricPart = ({ title, desc1, desc2 }) => {
                 <TouchableOpacity>
                     <View style={{
                         width: 90, borderWidth: 1, height: 52,
-                        borderRadius: 24, display: 'flex', flexDirecion: 'row',
+                        borderRadius: 24, display: 'flex', flexDirection: 'row',
                         alignItems: 'center', justifyContent: 'center',
                         borderColor: '#E8E8E8'
                     }}>
@@ -211,14 +211,14 @@ const PacienteDetalhes = () => {
                         <Text style={{ color: '#ABB5BE', fontSize: 14 }}>Clínica central de Luanda</Text>
                     </View>
                     <TouchableOpacity onPress={() => router.push("/telemedicine/videoCallDoctor")}>
-                        <view style={{
+                        <View style={{
                             backgroundColor: 'red', width: 120, height: 48, display: 'flex',
                             flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
                             backgroundColor: '#0DF205', borderRadius: 24
                         }}>
                             <Image source={require('../assets/images/telemedicina.png')} />
                             <Text style={{ color: 'white' }}>Telemedicina</Text>
-                        </view>
+                        </View>
                     </TouchableOpacity>
                 </View>
 
@@ -258,7 +258,7 @@ const PacienteDetalhes = () => {
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={true} >
                     <View style={{ marginTop: 40, marginRight: 10, borderWidth: 1, borderColor: '#E8E8E8', width: 220, height: 220, backgroundColor: 'white', borderRadius: 20, padding: 14 }}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#1CA625', fontSize: 14, fontWeigth: '500' }}>Batimento {"\n"} cardíaco</Text>
+                            <Text style={{ color: '#1CA625', fontSize: 14, fontWeight: '500' }}>Batimento {"\n"} cardíaco</Text>
                             <Image source={require('../assets/images/wave.png')} />
                         </View>
                         <View style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
@@ -268,7 +268,7 @@ const PacienteDetalhes = () => {
                             <Text style={{ fontWeight: '500', color: 'white' }}>Sem dados</Text>
                         </View>
 
-                        <Text style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: '#B9C0C9', fontWeigth: '500' }}>
+                        <Text style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: '#B9C0C9', fontWeight: '500' }}>
                             sincronize o smartwatch para {'\n'}
                             consultar leituras
                         </Text>
@@ -280,7 +280,7 @@ const PacienteDetalhes = () => {
 
                     <View style={{ marginTop: 40, marginRight: 10, borderWidth: 1, borderColor: '#E8E8E8', width: 220, height: 220, backgroundColor: 'white', borderRadius: 20, padding: 14 }}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#1CA625', fontSize: 14, fontWeigth: '500' }}>Pressão {"\n"} arterial</Text>
+                            <Text style={{ color: '#1CA625', fontSize: 14, fontWeight: '500' }}>Pressão {"\n"} arterial</Text>
                             <Image source={require('../assets/images/footsteps.png')} />
                         </View>
                         <View style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
@@ -290,7 +290,7 @@ const PacienteDetalhes = () => {
                             <Text style={{ fontWeight: '500', color: 'white' }}>Sem dados</Text>
                         </View>
 
-                        <Text style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: '#B9C0C9', fontWeigth: '500' }}>
+                        <Text style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: '#B9C0C9', fontWeight: '500' }}>
                             sincronize o smartwatch para {'\n'}
                             consultar leituras
                         </Text>
@@ -302,8 +302,8 @@ const PacienteDetalhes = () => {
 
                     <View style={{ marginTop: 40, borderWidth: 1, borderColor: '#E8E8E8', width: 220, height: 220, backgroundColor: 'white', borderRadius: 20, padding: 14 }}>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#1CA625', fontSize: 14, fontWeigth: '500' }}>Calorias {"\n"} ingeridas</Text>
-                            <Image source={'../assets/images/footsteps.png'} />
+                            <Text style={{ color: '#1CA625', fontSize: 14, fontWeight: '500' }}>Calorias {"\n"} ingeridas</Text>
+                            <Image source={require('../assets/images/footsteps.png')} />
                         </View>
                         <View style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
                             <Image source={require('../assets/images/empty.png')} />
@@ -312,7 +312,7 @@ const PacienteDetalhes = () => {
                             <Text style={{ fontWeight: '500', color: 'white' }}>0 kcal</Text>
                         </View>
 
-                        <Text style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: '#B9C0C9', fontWeigth: '500' }}>
+                        <Text style={{ marginTop: 12, textAlign: 'center', fontSize: 12, color: '#B9C0C9', fontWeight: '500' }}>
                             sincronize o smartwatch para {'\n'}
                             consultar leituras
                         </Text>
