@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { authService } from '../services/authService';
 import { getToken } from '../api/tokenStore';
 import { User, Role } from '../api/types';
@@ -23,17 +23,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
 
   const loadSession = useCallback(async () => {
-    const token = await getToken();
-    if (!token) {
-      setStatus('unauthenticated');
-      return;
-    }
-    const r = await authService.fetchMe();
-    if (r.ok && r.user) {
-      setUser(r.user);
-      setStatus('authenticated');
-    } else {
-      await authService.signOut();
+    try {
+      const token = await getToken();
+      if (!token) {
+        setStatus('unauthenticated');
+        return;
+      }
+      const r = await authService.fetchMe();
+      if (r.ok && r.user) {
+        setUser(r.user);
+        setStatus('authenticated');
+      } else {
+        await authService.signOut();
+        setStatus('unauthenticated');
+      }
+    } catch {
+      await authService.signOut().catch(() => {});
       setStatus('unauthenticated');
     }
   }, []);
@@ -66,20 +71,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setStatus('unauthenticated');
   }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{
-        status,
-        user,
-        signIn,
-        registerUtente: (p) => doRegister(p, 'utente'),
-        registerMedico: (p) => doRegister(p, 'medico'),
-        signOut,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
+  const registerUtente = useCallback((p: RegisterPayload) => doRegister(p, 'utente'), [doRegister]);
+  const registerMedico = useCallback((p: RegisterPayload) => doRegister(p, 'medico'), [doRegister]);
+
+  const value = useMemo(
+    () => ({ status, user, signIn, registerUtente, registerMedico, signOut }),
+    [status, user, signIn, registerUtente, registerMedico, signOut]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {
