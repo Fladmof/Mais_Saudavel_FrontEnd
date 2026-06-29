@@ -6,10 +6,10 @@ import {
 } from '@expo-google-fonts/space-grotesk';
 
 export function useAppFonts(): boolean {
-  const [loaded] = useFonts({
+  const [loaded, error] = useFonts({
     SpaceGrotesk_400Regular,
     SpaceGrotesk_500Medium,
     SpaceGrotesk_700Bold,
   });
-  return loaded;
+  return loaded || !!error;
 }
