@@ -72,10 +72,12 @@ export interface Medicacao {
   ativo: boolean;
 }
 
+export type TipoRegisto = 'receita' | 'exame' | 'consulta';
+
 export interface RegistoClinico {
   id: number;
   utente_id: number;
-  tipo: 'receita' | 'exame';
+  tipo: TipoRegisto;
   titulo: string;
   descricao?: string | null;
   data?: string | null;

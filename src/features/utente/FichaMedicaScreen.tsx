@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Screen } from '../../components/Screen';
+import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
 import { Avatar } from '../../components/Avatar';
 import { InfoRow } from '../../components/InfoRow';
@@ -128,13 +129,7 @@ export function FichaMedicaScreen() {
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
       >
-        <View style={{ alignItems: 'center', backgroundColor: colors.white, paddingBottom: 14, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
-          <Text style={[typography.h2, { marginTop: spacing.md }]}>Ficha do Utente</Text>
-          <View style={{ backgroundColor: colors.primary, flexDirection: 'row', paddingHorizontal: 24, paddingVertical: 4, gap: 5, borderRadius: 12, marginTop: 14, alignItems: 'center' }}>
-            <Image source={require('../../../assets/images/security.png')} />
-            <Text style={{ color: colors.white, fontFamily: fontFamily.regular }}>Segurança da informação</Text>
-          </View>
-        </View>
+        <PageHeader title="Ficha do Utente" />
 
         <View style={{ paddingHorizontal: spacing.lg }}>
           <Card style={{ marginTop: spacing.xl, padding: spacing.xl }}>
