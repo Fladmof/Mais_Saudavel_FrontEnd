@@ -6,6 +6,9 @@ export interface User {
   email: string;
   role: Role;
   profile_picture?: string;
+  /** perfis aninhados devolvidos por /auth/login e /auth/me */
+  utente?: UtentePerfil | null;
+  medico?: MedicoPerfil | null;
 }
 
 export interface AuthData {

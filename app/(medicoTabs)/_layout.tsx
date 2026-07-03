@@ -1,9 +1,29 @@
 import { Redirect, Tabs } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../../src/context/AuthContext';
+import { colors } from '../../src/theme';
 
 export default function MedicoTabsLayout() {
   const { status, user } = useAuth();
-  if (status !== 'authenticated' || !user) return <Redirect href="/(auth)/login" />;
+  if (status !== 'authenticated' || !user) return <Redirect href="/(auth)/welcome" />;
   if (user.role !== 'medico') return <Redirect href="/(tabs)" />;
-  return <Tabs screenOptions={{ headerShown: false }} />;
+  return (
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Início',
+          tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
+        }}
+      />
+      <Tabs.Screen name="paciente/[id]" options={{ href: null }} />
+      <Tabs.Screen name="marcar/[utenteId]" options={{ href: null }} />
+    </Tabs>
+  );
 }
