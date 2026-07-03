@@ -2,6 +2,8 @@ export interface NormalizedResponse<T> {
   ok: boolean;
   data: T | null;
   message: string;
+  /** true quando o pedido nem chegou ao servidor (sem rede / servidor em baixo) */
+  network?: boolean;
 }
 
 export function normalize<T = any>(raw: any): NormalizedResponse<T> {
