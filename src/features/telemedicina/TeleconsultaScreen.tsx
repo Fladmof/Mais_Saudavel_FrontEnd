@@ -15,15 +15,28 @@ import { connectChat, joinRoom, sendMessage, mapHistoryRow, mapIncoming, ChatMes
 import { Consulta } from '../../api/types';
 import { colors, spacing, fontFamily } from '../../theme';
 
-// Teleconsulta (Figma 160:495 paciente / 178:1305 medico): area de video em
-// ecra cheio (WebView Jitsi quando iniciado; avatar + estado antes), overlay
-// de chat em tempo real (Socket.io) e controlo de terminar/sair por papel.
+// Teleconsulta (Figma 160:495 paciente / 178:1305 medico): vídeo em ecrã cheio
+// (Jitsi embutido num WebView), overlay de chat em tempo real (Socket.io) e
+// controlo de terminar/sair por papel. A entrada na chamada é AUTOMÁTICA: assim
+// que a consulta está `em_curso`, pede-se permissão de câmara/micro e liga-se —
+// o médico inicia e já está na chamada; o utente entra e encontra o médico.
 
 const ESTADOS_ATIVOS = ['agendada', 'em_curso'];
 
-// Constroi a URL da sala com o nome do participante e o pre-join desligado.
-function urlComNome(base: string, nome: string): string {
-  return `${base}#userInfo.displayName="${encodeURIComponent(nome)}"&config.prejoinConfig.enabled=false`;
+type EstadoVideo = 'inativo' | 'a_ligar' | 'ligado' | 'sem_permissao' | 'indisponivel';
+
+// Sala Jitsi com pré-join desligado, deep-linking desligado (fica no WebView em
+// vez de tentar abrir a app do Jitsi) e áudio/vídeo ligados à entrada.
+function jitsiUrl(base: string, nome: string): string {
+  const params = [
+    'config.prejoinConfig.enabled=false',
+    'config.prejoinPageEnabled=false',
+    'config.disableDeepLinking=true',
+    'config.startWithAudioMuted=false',
+    'config.startWithVideoMuted=false',
+    `userInfo.displayName="${encodeURIComponent(nome || 'Participante')}"`,
+  ];
+  return `${base}#${params.join('&')}`;
 }
 
 export function TeleconsultaScreen() {
@@ -37,8 +50,9 @@ export function TeleconsultaScreen() {
   const [texto, setTexto] = useState('');
   const [chatErro, setChatErro] = useState('');
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [aCarregarVideo, setACarregarVideo] = useState(false);
+  const [estadoVideo, setEstadoVideo] = useState<EstadoVideo>('inativo');
   const socketRef = useRef<Socket | null>(null);
+  const tentouLigar = useRef(false);
 
   const isMedico = user?.role === 'medico';
 
@@ -90,44 +104,39 @@ export function TeleconsultaScreen() {
     if (!r.ok) Alert.alert('Erro', r.error ?? 'Não foi possível enviar');
   };
 
-  // No Expo Go as permissoes do app.json nao se aplicam: e preciso pedi-las em
-  // runtime (camara + micro) para o getUserMedia do WebView funcionar.
-  const pedirPermissoes = async (): Promise<boolean> => {
+  // Liga a chamada: pede câmara+micro e carrega a sala. Chamado automaticamente
+  // quando a consulta está em curso, e disponível como "Tentar novamente".
+  const ligarVideo = useCallback(async () => {
+    if (!consultaId) return;
+    setEstadoVideo('a_ligar');
     const cam = await Camera.requestCameraPermissionsAsync();
     const mic = await Camera.requestMicrophonePermissionsAsync();
-    if (cam.granted && mic.granted) return true;
-    Alert.alert(
-      'Permissões necessárias',
-      'Autorize o acesso à câmara e ao microfone nas definições do telemóvel para usar o vídeo.'
-    );
-    return false;
-  };
-
-  const obterUrlVideo = async (): Promise<string | null> => {
-    if (!consultaId) return null;
-    const r = await consultaService.videoUrl(consultaId);
-    if (r.ok && r.data?.url) return r.data.url;
-    Alert.alert('Vídeo indisponível', r.message || 'A consulta continua por chat.');
-    return null;
-  };
-
-  const iniciarVideo = async () => {
-    setACarregarVideo(true);
-    const ok = await pedirPermissoes();
-    if (!ok) {
-      setACarregarVideo(false);
+    if (!cam.granted || !mic.granted) {
+      setEstadoVideo('sem_permissao');
       return;
     }
-    const url = await obterUrlVideo();
-    setACarregarVideo(false);
-    if (url) setVideoUrl(url);
-  };
+    const r = await consultaService.videoUrl(consultaId);
+    if (r.ok && r.data?.url) {
+      setVideoUrl(r.data.url);
+      setEstadoVideo('ligado');
+    } else {
+      setEstadoVideo('indisponivel');
+    }
+  }, [consultaId]);
 
-  // Fallback fiavel: abre a sala no navegador do sistema (getUserMedia funciona
-  // sempre num browser real, mesmo quando o WebView do Expo Go nao consegue).
+  // Entrada automática: assim que a consulta está `em_curso`, liga sozinha.
+  useEffect(() => {
+    if (consulta?.estado === 'em_curso' && !tentouLigar.current) {
+      tentouLigar.current = true;
+      ligarVideo();
+    }
+  }, [consulta?.estado, ligarVideo]);
+
+  // Fallback de último recurso (só aparece se a ligação in-app falhar).
   const abrirNoNavegador = async () => {
-    const url = await obterUrlVideo();
-    if (url) await WebBrowser.openBrowserAsync(urlComNome(url, user?.nome ?? ''));
+    if (!consultaId) return;
+    const r = await consultaService.videoUrl(consultaId);
+    if (r.ok && r.data?.url) await WebBrowser.openBrowserAsync(jitsiUrl(r.data.url, user?.nome ?? ''));
   };
 
   const terminar = () => {
@@ -160,6 +169,14 @@ export function TeleconsultaScreen() {
     );
   }
 
+  const legendaEstado: Record<EstadoVideo, string> = {
+    inativo: 'À espera do início da consulta',
+    a_ligar: 'A ligar câmara e microfone…',
+    ligado: '',
+    sem_permissao: 'Precisamos de acesso à câmara e ao microfone.',
+    indisponivel: 'Não foi possível ligar o vídeo agora.',
+  };
+
   return (
     <Screen style={{ backgroundColor: '#101418' }} edges={['top']}>
       <KeyboardAvoidingView
@@ -167,11 +184,11 @@ export function TeleconsultaScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={insets.top}
       >
-        {/* area de video */}
+        {/* área de vídeo */}
         <View style={{ flex: 1 }}>
-          {videoUrl ? (
+          {videoUrl && estadoVideo === 'ligado' ? (
             <WebView
-              source={{ uri: urlComNome(videoUrl, user?.nome ?? '') }}
+              source={{ uri: jitsiUrl(videoUrl, user?.nome ?? '') }}
               style={{ flex: 1, backgroundColor: '#000' }}
               javaScriptEnabled
               domStorageEnabled
@@ -179,9 +196,10 @@ export function TeleconsultaScreen() {
               mediaPlaybackRequiresUserAction={false}
               mediaCapturePermissionGrantType="grant"
               originWhitelist={['*']}
+              setSupportMultipleWindows={false}
               onError={() => {
                 setVideoUrl(null);
-                Alert.alert('Vídeo indisponível', 'Não foi possível abrir o vídeo aqui. Tente "Abrir no navegador".');
+                setEstadoVideo('indisponivel');
               }}
             />
           ) : (
@@ -190,29 +208,33 @@ export function TeleconsultaScreen() {
               <Text style={{ color: colors.white, fontFamily: fontFamily.medium, fontSize: 18, marginTop: spacing.lg }}>
                 {interlocutor ?? 'A carregar…'}
               </Text>
-              <Text style={{ color: colors.textMuted, marginTop: spacing.xs }}>
-                {consulta?.estado === 'em_curso' ? 'Consulta em curso' : 'À espera do início da consulta'}
+              <Text style={{ color: colors.textMuted, marginTop: spacing.xs, textAlign: 'center' }}>
+                {consulta?.estado === 'em_curso' ? legendaEstado[estadoVideo] : legendaEstado.inativo}
               </Text>
-              <TouchableOpacity
-                onPress={iniciarVideo}
-                disabled={aCarregarVideo || consulta?.estado !== 'em_curso'}
-                style={{
-                  marginTop: spacing.xl,
-                  backgroundColor: consulta?.estado === 'em_curso' ? colors.action : '#3D3C3C',
-                  paddingHorizontal: spacing.xl,
-                  paddingVertical: spacing.md,
-                  borderRadius: 24,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: spacing.sm,
-                }}
-              >
-                <Ionicons name="videocam" size={18} color={colors.white} />
-                <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>
-                  {aCarregarVideo ? 'A preparar…' : 'Iniciar vídeo'}
-                </Text>
-              </TouchableOpacity>
-              {consulta?.estado === 'em_curso' ? (
+
+              {consulta?.estado === 'em_curso' && estadoVideo !== 'a_ligar' && estadoVideo !== 'ligado' ? (
+                <TouchableOpacity
+                  onPress={ligarVideo}
+                  style={{
+                    marginTop: spacing.xl,
+                    backgroundColor: colors.action,
+                    paddingHorizontal: spacing.xl,
+                    paddingVertical: spacing.md,
+                    borderRadius: 24,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: spacing.sm,
+                  }}
+                >
+                  <Ionicons name="videocam" size={18} color={colors.white} />
+                  <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>
+                    {estadoVideo === 'inativo' ? 'Ligar vídeo' : 'Tentar novamente'}
+                  </Text>
+                </TouchableOpacity>
+              ) : null}
+
+              {/* fallback discreto: só quando a ligação in-app falhou */}
+              {consulta?.estado === 'em_curso' && (estadoVideo === 'indisponivel' || estadoVideo === 'sem_permissao') ? (
                 <TouchableOpacity onPress={abrirNoNavegador} style={{ marginTop: spacing.md }}>
                   <Text style={{ color: colors.textMuted, textDecorationLine: 'underline' }}>Abrir no navegador</Text>
                 </TouchableOpacity>
@@ -225,8 +247,8 @@ export function TeleconsultaScreen() {
             <TouchableOpacity onPress={() => router.back()} style={{ backgroundColor: '#00000080', borderRadius: 20, padding: spacing.sm }}>
               <Ionicons name="arrow-back" size={20} color={colors.white} />
             </TouchableOpacity>
-            {videoUrl ? (
-              <TouchableOpacity onPress={() => setVideoUrl(null)} style={{ backgroundColor: '#00000080', borderRadius: 20, padding: spacing.sm }}>
+            {estadoVideo === 'ligado' ? (
+              <TouchableOpacity onPress={() => { setVideoUrl(null); setEstadoVideo('inativo'); tentouLigar.current = false; }} style={{ backgroundColor: '#00000080', borderRadius: 20, padding: spacing.sm }}>
                 <Ionicons name="videocam-off" size={20} color={colors.white} />
               </TouchableOpacity>
             ) : null}

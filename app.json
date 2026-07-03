@@ -13,7 +13,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "A câmara é usada nas teleconsultas por vídeo.",
         "NSMicrophoneUsageDescription": "O microfone é usado nas teleconsultas por vídeo."
-      }
+      },
+      "bundleIdentifier": "com.maissaudavel.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,7 +29,8 @@
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
         "android.permission.MODIFY_AUDIO_SETTINGS"
-      ]
+      ],
+      "package": "com.maissaudavel.app"
     },
     "web": {
       "output": "static",
