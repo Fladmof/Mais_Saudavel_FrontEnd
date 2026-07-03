@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, Alert, RefreshControl } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
@@ -11,7 +11,8 @@ import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
 import { utenteService } from '../../services/utenteService';
-import { UtentePerfil } from '../../api/types';
+import { consultaService } from '../../services/consultaService';
+import { UtentePerfil, Consulta } from '../../api/types';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 
 // Ficha do Utente (Figma 75:390 / 127:410): cartao pessoal, dados biologicos,
@@ -73,7 +74,9 @@ function HealthCard({ titulo, icone }: { titulo: string; icone: any }) {
 type Edicao = { nome: string; telefone: string; morada: string; profissao: string; peso: string; altura: string };
 
 export function FichaMedicaScreen() {
+  const router = useRouter();
   const [perfil, setPerfil] = useState<UtentePerfil | null>(null);
+  const [proxima, setProxima] = useState<Consulta | null>(null);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
   const [erro, setErro] = useState('');
@@ -81,7 +84,7 @@ export function FichaMedicaScreen() {
   const [aGuardar, setAGuardar] = useState(false);
 
   const carregar = useCallback(async () => {
-    const r = await utenteService.fetchMeuPerfil();
+    const [r, rConsultas] = await Promise.all([utenteService.fetchMeuPerfil(), consultaService.minhasConsultas()]);
     setLoading(false);
     setNetworkError(!!r.network);
     if (r.ok && r.data?.utente) {
@@ -89,6 +92,10 @@ export function FichaMedicaScreen() {
       setErro('');
     } else if (!r.network) {
       setErro(r.message || 'Falha ao carregar a ficha');
+    }
+    if (rConsultas.ok && rConsultas.data) {
+      const ativas = rConsultas.data.consultas.filter((c) => c.estado === 'agendada' || c.estado === 'em_curso');
+      setProxima(ativas[0] ?? null);
     }
   }, []);
 
@@ -181,6 +188,45 @@ export function FichaMedicaScreen() {
               </>
             ) : null}
           </Card>
+
+          <Section title="Próxima consulta">
+            <Card>
+              {proxima ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 15 }}>
+                      Dr(a). {proxima.medico?.user?.nome ?? '—'}
+                    </Text>
+                    <Text style={typography.caption}>
+                      {new Date(proxima.data_hora).toLocaleString('pt-PT', { dateStyle: 'short', timeStyle: 'short' })}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() =>
+                      proxima.estado === 'em_curso'
+                        ? router.push(`/telemedicine/${proxima.id}`)
+                        : Alert.alert('Ainda não começou', 'A teleconsulta fica disponível quando o médico a iniciar.')
+                    }
+                  >
+                    <View
+                      style={{
+                        backgroundColor: proxima.estado === 'em_curso' ? colors.action : colors.tagBg,
+                        paddingVertical: 8,
+                        paddingHorizontal: 16,
+                        borderRadius: 20,
+                      }}
+                    >
+                      <Text style={{ color: proxima.estado === 'em_curso' ? colors.white : colors.primary, fontFamily: fontFamily.medium }}>
+                        {proxima.estado === 'em_curso' ? 'Entrar' : 'Agendada'}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <Text style={[typography.caption, { textAlign: 'center' }]}>Sem consultas marcadas</Text>
+              )}
+            </Card>
+          </Section>
 
           <Section title="Dados biológicos">
             <Card>

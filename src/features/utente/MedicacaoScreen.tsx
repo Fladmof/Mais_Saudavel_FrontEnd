@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
-import { useFocusEffect } from 'expo-router';
+import { View, Text, ScrollView, TouchableOpacity, Alert, RefreshControl, Image } from 'react-native';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
@@ -9,9 +9,11 @@ import { Section } from '../../components/Section';
 import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
+import { Avatar } from '../../components/Avatar';
 import { utenteService } from '../../services/utenteService';
 import { clinicoService } from '../../services/clinicoService';
-import { UtentePerfil, Medicacao, RegistoClinico, TipoRegisto } from '../../api/types';
+import { consultaService } from '../../services/consultaService';
+import { UtentePerfil, Medicacao, RegistoClinico, TipoRegisto, Consulta } from '../../api/types';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 
 // Ecra "Medicação" do Figma (131:540): condicoes especiais, alergia registrada,
@@ -50,7 +52,9 @@ function BotaoAdicionar({ onPress }: { onPress: () => void }) {
 }
 
 export function MedicacaoScreen() {
+  const router = useRouter();
   const [perfil, setPerfil] = useState<UtentePerfil | null>(null);
+  const [proxima, setProxima] = useState<Consulta | null>(null);
   const [medicacoes, setMedicacoes] = useState<Medicacao[]>([]);
   const [registos, setRegistos] = useState<RegistoClinico[]>([]);
   const [loading, setLoading] = useState(true);
@@ -73,12 +77,17 @@ export function MedicacaoScreen() {
       const u = rPerfil.data.utente;
       setPerfil(u);
       setDetalhes(u.detalhes ?? '');
-      const [rMeds, rRegs] = await Promise.all([
+      const [rMeds, rRegs, rConsultas] = await Promise.all([
         clinicoService.listarMedicacoes(u.id),
         clinicoService.listarRegistos(u.id),
+        consultaService.minhasConsultas(),
       ]);
       if (rMeds.ok && rMeds.data) setMedicacoes(rMeds.data.medicacoes);
       if (rRegs.ok && rRegs.data) setRegistos(rRegs.data.registos);
+      if (rConsultas.ok && rConsultas.data) {
+        const ativas = rConsultas.data.consultas.filter((c) => c.estado === 'agendada' || c.estado === 'em_curso');
+        setProxima(ativas[0] ?? null);
+      }
     }
     setLoading(false);
   }, []);
@@ -290,11 +299,35 @@ export function MedicacaoScreen() {
           </Section>
 
           <Section title="Médico assistente">
-            <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
-              <Text style={[typography.caption, { textAlign: 'center' }]}>
-                Sem médico assistente — será associado quando tiver uma consulta marcada
-              </Text>
-            </Card>
+            {proxima?.medico ? (
+              <Card style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
+                <Avatar nome={proxima.medico.user?.nome} size={64} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontFamily: fontFamily.medium, fontSize: 14 }}>Dr(a). {proxima.medico.user?.nome}</Text>
+                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{proxima.medico.especialidade}</Text>
+                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{proxima.medico.telefone ?? '—'}</Text>
+                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{proxima.medico.hospital}</Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    proxima.estado === 'em_curso'
+                      ? router.push(`/telemedicine/${proxima.id}`)
+                      : Alert.alert('Sem teleconsulta ativa', 'A teleconsulta fica disponível quando o médico a iniciar.')
+                  }
+                >
+                  <View style={{ backgroundColor: colors.action, width: 120, height: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 24 }}>
+                    <Image source={require('../../../assets/images/telemedicina.png')} />
+                    <Text style={{ color: colors.white }}>Telemedicina</Text>
+                  </View>
+                </TouchableOpacity>
+              </Card>
+            ) : (
+              <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
+                <Text style={[typography.caption, { textAlign: 'center' }]}>
+                  Sem médico assistente — será associado quando tiver uma consulta marcada
+                </Text>
+              </Card>
+            )}
           </Section>
 
           <View style={{ marginTop: spacing.xl }}>
