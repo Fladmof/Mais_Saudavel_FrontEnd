@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, Text, FlatList, TouchableOpacity, Alert, KeyboardAvoidingView, Platform, TextInput } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { WebView } from 'react-native-webview';
+import { Camera } from 'expo-camera';
+import * as WebBrowser from 'expo-web-browser';
 import type { Socket } from 'socket.io-client';
 import { Screen } from '../../components/Screen';
 import { Avatar } from '../../components/Avatar';
@@ -18,8 +21,14 @@ import { colors, spacing, fontFamily } from '../../theme';
 
 const ESTADOS_ATIVOS = ['agendada', 'em_curso'];
 
+// Constroi a URL da sala com o nome do participante e o pre-join desligado.
+function urlComNome(base: string, nome: string): string {
+  return `${base}#userInfo.displayName="${encodeURIComponent(nome)}"&config.prejoinConfig.enabled=false`;
+}
+
 export function TeleconsultaScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { consultaId } = useLocalSearchParams<{ consultaId: string }>();
   const { user } = useAuth();
   const [consulta, setConsulta] = useState<Consulta | null>(null);
@@ -81,13 +90,44 @@ export function TeleconsultaScreen() {
     if (!r.ok) Alert.alert('Erro', r.error ?? 'Não foi possível enviar');
   };
 
-  const iniciarVideo = async () => {
-    if (!consultaId) return;
-    setACarregarVideo(true);
+  // No Expo Go as permissoes do app.json nao se aplicam: e preciso pedi-las em
+  // runtime (camara + micro) para o getUserMedia do WebView funcionar.
+  const pedirPermissoes = async (): Promise<boolean> => {
+    const cam = await Camera.requestCameraPermissionsAsync();
+    const mic = await Camera.requestMicrophonePermissionsAsync();
+    if (cam.granted && mic.granted) return true;
+    Alert.alert(
+      'Permissões necessárias',
+      'Autorize o acesso à câmara e ao microfone nas definições do telemóvel para usar o vídeo.'
+    );
+    return false;
+  };
+
+  const obterUrlVideo = async (): Promise<string | null> => {
+    if (!consultaId) return null;
     const r = await consultaService.videoUrl(consultaId);
+    if (r.ok && r.data?.url) return r.data.url;
+    Alert.alert('Vídeo indisponível', r.message || 'A consulta continua por chat.');
+    return null;
+  };
+
+  const iniciarVideo = async () => {
+    setACarregarVideo(true);
+    const ok = await pedirPermissoes();
+    if (!ok) {
+      setACarregarVideo(false);
+      return;
+    }
+    const url = await obterUrlVideo();
     setACarregarVideo(false);
-    if (r.ok && r.data?.url) setVideoUrl(r.data.url);
-    else Alert.alert('Vídeo indisponível', r.message || 'A consulta continua por chat.');
+    if (url) setVideoUrl(url);
+  };
+
+  // Fallback fiavel: abre a sala no navegador do sistema (getUserMedia funciona
+  // sempre num browser real, mesmo quando o WebView do Expo Go nao consegue).
+  const abrirNoNavegador = async () => {
+    const url = await obterUrlVideo();
+    if (url) await WebBrowser.openBrowserAsync(urlComNome(url, user?.nome ?? ''));
   };
 
   const terminar = () => {
@@ -122,12 +162,16 @@ export function TeleconsultaScreen() {
 
   return (
     <Screen style={{ backgroundColor: '#101418' }} edges={['top']}>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={insets.top}
+      >
         {/* area de video */}
         <View style={{ flex: 1 }}>
           {videoUrl ? (
             <WebView
-              source={{ uri: `${videoUrl}#userInfo.displayName="${encodeURIComponent(user?.nome ?? '')}"&config.prejoinConfig.enabled=false` }}
+              source={{ uri: urlComNome(videoUrl, user?.nome ?? '') }}
               style={{ flex: 1, backgroundColor: '#000' }}
               javaScriptEnabled
               domStorageEnabled
@@ -137,11 +181,11 @@ export function TeleconsultaScreen() {
               originWhitelist={['*']}
               onError={() => {
                 setVideoUrl(null);
-                Alert.alert('Vídeo indisponível', 'A consulta continua por chat.');
+                Alert.alert('Vídeo indisponível', 'Não foi possível abrir o vídeo aqui. Tente "Abrir no navegador".');
               }}
             />
           ) : (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl }}>
               <Avatar nome={interlocutor} size={110} />
               <Text style={{ color: colors.white, fontFamily: fontFamily.medium, fontSize: 18, marginTop: spacing.lg }}>
                 {interlocutor ?? 'A carregar…'}
@@ -168,6 +212,11 @@ export function TeleconsultaScreen() {
                   {aCarregarVideo ? 'A preparar…' : 'Iniciar vídeo'}
                 </Text>
               </TouchableOpacity>
+              {consulta?.estado === 'em_curso' ? (
+                <TouchableOpacity onPress={abrirNoNavegador} style={{ marginTop: spacing.md }}>
+                  <Text style={{ color: colors.textMuted, textDecorationLine: 'underline' }}>Abrir no navegador</Text>
+                </TouchableOpacity>
+              ) : null}
             </View>
           )}
 
@@ -189,12 +238,22 @@ export function TeleconsultaScreen() {
           </View>
         </View>
 
-        {/* overlay de chat */}
-        <View style={{ height: 280, backgroundColor: '#161B20', borderTopLeftRadius: 16, borderTopRightRadius: 16, padding: spacing.md }}>
-          {chatErro ? <Text style={{ color: colors.danger, textAlign: 'center' }}>{chatErro}</Text> : null}
+        {/* overlay de chat — paddingBottom respeita a barra de navegação gestual */}
+        <View
+          style={{
+            backgroundColor: '#161B20',
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+            paddingHorizontal: spacing.md,
+            paddingTop: spacing.md,
+            paddingBottom: Math.max(insets.bottom, spacing.md),
+          }}
+        >
+          {chatErro ? <Text style={{ color: colors.danger, textAlign: 'center', marginBottom: spacing.sm }}>{chatErro}</Text> : null}
           <FlatList
             data={[...mensagens].reverse()}
             inverted
+            style={{ height: 180 }}
             keyExtractor={(m) => m.id}
             renderItem={({ item }) =>
               item.type === 'system' ? (
