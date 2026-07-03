@@ -32,6 +32,7 @@ export interface UtentePerfil {
   contato_emergencia?: string | null;
   relacao?: string | null;
   telemergencia?: string | null;
+  profissao?: string | null;
   user?: User;
 }
 
