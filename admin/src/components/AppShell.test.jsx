@@ -8,8 +8,10 @@ test('AppShell mostra os links de navegacao', () => {
   render(
     <AuthProvider><MemoryRouter><AppShell><div>conteudo</div></AppShell></MemoryRouter></AuthProvider>
   );
-  expect(screen.getByText('Dashboard')).toBeInTheDocument();
-  expect(screen.getByText('Pacientes')).toBeInTheDocument();
+  expect(screen.getByText('Início')).toBeInTheDocument();
+  expect(screen.getByText('Utilizadores')).toBeInTheDocument();
   expect(screen.getByText('Médicos')).toBeInTheDocument();
-  expect(screen.getByText('Sair')).toBeInTheDocument();
+  expect(screen.getByText('Pacientes')).toBeInTheDocument();
+  expect(screen.getByText('Consultas')).toBeInTheDocument();
+  expect(screen.getByText('Auditoria')).toBeInTheDocument();
 });
