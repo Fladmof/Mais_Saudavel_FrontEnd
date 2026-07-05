@@ -44,3 +44,18 @@ test('fetchMe devolve user de data.user', async () => {
   expect(http.get).toHaveBeenCalledWith('/auth/me');
   expect(r.user).toEqual(user);
 });
+
+test('forgotPassword chama POST /auth/forgot-password e propaga o devCode', async () => {
+  mockedPost.mockResolvedValue({ ok: true, data: { emailSent: false, devCode: '123456' }, message: '' });
+  const r = await authService.forgotPassword('a@b.com');
+  expect(http.post).toHaveBeenCalledWith('/auth/forgot-password', { email: 'a@b.com' });
+  expect(r.ok).toBe(true);
+  expect(r.devCode).toBe('123456');
+});
+
+test('resetPassword chama POST /auth/reset-password com email, code e password', async () => {
+  mockedPost.mockResolvedValue({ ok: true, data: {}, message: 'ok' });
+  const r = await authService.resetPassword('a@b.com', '123456', 'novasenha1');
+  expect(http.post).toHaveBeenCalledWith('/auth/reset-password', { email: 'a@b.com', code: '123456', password: 'novasenha1' });
+  expect(r.ok).toBe(true);
+});

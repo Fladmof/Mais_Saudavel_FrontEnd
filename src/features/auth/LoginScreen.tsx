@@ -10,8 +10,8 @@ import { Button } from '../../components/Button';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 
-// Ecra de Login do Figma (node 63:122): tabs Entrar/Criar conta,
-// "Esqueceu a senha? Recuperar" e Google ficam como UI (funcao adiada).
+// Ecra de Login do Figma (node 63:122): tabs Entrar/Criar conta.
+// "Recuperar" liga ao fluxo real de recuperacao de senha; Google fica adiado.
 export function LoginScreen() {
   const router = useRouter();
   const { signIn } = useAuth();
@@ -60,7 +60,7 @@ export function LoginScreen() {
 
             <View style={{ flexDirection: 'row', justifyContent: 'center', marginTop: spacing.lg }}>
               <Text style={typography.body}>Esqueceu a senha? </Text>
-              <TouchableOpacity onPress={brevemente}>
+              <TouchableOpacity onPress={() => router.push('/(auth)/recuperar-senha')}>
                 <Text style={[typography.body, { color: '#4D81E7' }]}>Recuperar</Text>
               </TouchableOpacity>
             </View>

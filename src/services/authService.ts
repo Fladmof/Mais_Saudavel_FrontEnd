@@ -33,4 +33,15 @@ async function signOut(): Promise<void> {
   await clearToken();
 }
 
-export const authService = { signIn, register, fetchMe, signOut };
+// Pede um codigo de recuperacao. Em dev (sem SMTP) o backend devolve devCode.
+async function forgotPassword(email: string): Promise<{ ok: boolean; message: string; devCode?: string }> {
+  const res = await post<{ emailSent: boolean; devCode?: string }>(endpoints.forgotPassword, { email });
+  return { ok: res.ok, message: res.message, devCode: res.data?.devCode };
+}
+
+async function resetPassword(email: string, code: string, password: string): Promise<{ ok: boolean; message: string }> {
+  const res = await post<Record<string, never>>(endpoints.resetPassword, { email, code, password });
+  return { ok: res.ok, message: res.message };
+}
+
+export const authService = { signIn, register, fetchMe, signOut, forgotPassword, resetPassword };

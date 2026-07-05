@@ -1,9 +1,10 @@
 import React from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { colors, spacing, typography, fontFamily } from '../theme';
 
-// Cabecalho das paginas internas: titulo verde + badge "Segurança da informação"
-export function PageHeader({ title }: { title: string }) {
+// Cabecalho das paginas internas: titulo verde + badge "Segurança da informação".
+// onSignOut opcional -> mostra um botao "Sair" no canto superior direito.
+export function PageHeader({ title, onSignOut }: { title: string; onSignOut?: () => void }) {
   return (
     <View
       style={{
@@ -15,6 +16,11 @@ export function PageHeader({ title }: { title: string }) {
       }}
     >
       <Text style={[typography.h2, { marginTop: spacing.md }]}>{title}</Text>
+      {onSignOut ? (
+        <TouchableOpacity onPress={onSignOut} style={{ position: 'absolute', right: spacing.lg, top: spacing.md }}>
+          <Text style={{ color: colors.danger, fontFamily: fontFamily.medium }}>Sair</Text>
+        </TouchableOpacity>
+      ) : null}
       <View
         style={{
           backgroundColor: colors.primary,

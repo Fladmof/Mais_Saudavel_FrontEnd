@@ -13,6 +13,7 @@ import { ServerError } from '../../components/ServerError';
 import { utenteService } from '../../services/utenteService';
 import { consultaService } from '../../services/consultaService';
 import { UtentePerfil, Consulta } from '../../api/types';
+import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 
 // Ficha do Utente (Figma 75:390 / 127:410): cartao pessoal, dados biologicos,
@@ -75,6 +76,7 @@ type Edicao = { nome: string; telefone: string; morada: string; profissao: strin
 
 export function FichaMedicaScreen() {
   const router = useRouter();
+  const { signOut } = useAuth();
   const [perfil, setPerfil] = useState<UtentePerfil | null>(null);
   const [proxima, setProxima] = useState<Consulta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -108,6 +110,12 @@ export function FichaMedicaScreen() {
   const brevemente = () =>
     Alert.alert('Disponível brevemente', 'Esta funcionalidade estará disponível numa próxima versão.');
 
+  const confirmarSair = () =>
+    Alert.alert('Terminar sessão', 'Deseja sair da sua conta?', [
+      { text: 'Cancelar', style: 'cancel' },
+      { text: 'Sair', style: 'destructive', onPress: () => signOut() },
+    ]);
+
   const guardar = async () => {
     if (!editar) return;
     setAGuardar(true);
@@ -136,7 +144,7 @@ export function FichaMedicaScreen() {
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
       >
-        <PageHeader title="Ficha do Utente" />
+        <PageHeader title="Ficha do Utente" onSignOut={confirmarSair} />
 
         <View style={{ paddingHorizontal: spacing.lg }}>
           <Card style={{ marginTop: spacing.xl, padding: spacing.xl }}>

@@ -2,6 +2,8 @@ export const endpoints = {
   login: '/auth/login',
   register: '/auth/register',
   me: '/auth/me',
+  forgotPassword: '/auth/forgot-password',
+  resetPassword: '/auth/reset-password',
   utenteMe: '/utente/me',
   utentes: '/utente',
   utenteSearch: (nome: string) => `/utente/search/${encodeURIComponent(nome)}`,
