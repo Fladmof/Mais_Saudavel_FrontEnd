@@ -1,8 +1,11 @@
 // Mais_Saudavel_FrontEnd/admin/src/api/apiClient.js
 import axios from 'axios';
 
+const defaultBackendUrl = 'https://maissaudavelbackend-production.up.railway.app';
+const apiBaseUrl = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? defaultBackendUrl : '');
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
+  baseURL: apiBaseUrl,
   headers: { 'Content-Type': 'application/json' }
 });
 
