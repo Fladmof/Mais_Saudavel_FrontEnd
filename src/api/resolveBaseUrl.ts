@@ -8,4 +8,13 @@ export function resolveBaseUrl(hostUri?: string | null, port: number = API_PORT)
   return `http://localhost:${port}`;
 }
 
-export const BASE_URL = resolveBaseUrl(Constants.expoConfig?.hostUri, API_PORT);
+// Escolhe a base da API:
+//  1) se houver um URL hospedado explicito (EXPO_PUBLIC_API_URL, ex. Railway), usa-o;
+//  2) caso contrario, deteta o host do Metro (dev local, sem IP fixo).
+export function pickBaseUrl(hostedUrl?: string | null, hostUri?: string | null, port: number = API_PORT): string {
+  const hosted = (hostedUrl ?? '').trim().replace(/\/+$/, '');
+  if (hosted) return hosted;
+  return resolveBaseUrl(hostUri, port);
+}
+
+export const BASE_URL = pickBaseUrl(process.env.EXPO_PUBLIC_API_URL, Constants.expoConfig?.hostUri, API_PORT);
