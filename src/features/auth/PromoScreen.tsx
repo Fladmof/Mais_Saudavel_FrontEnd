@@ -80,7 +80,7 @@ export function PromoScreen() {
         </View>
 
         <Image
-          source={require('../../../assets/images/welcome-photo.png')}
+          source={require('../../../assets/images/welcome-photo.jpg')}
           style={{ width: '100%', height: 260, marginTop: spacing.xl }}
           resizeMode="cover"
         />

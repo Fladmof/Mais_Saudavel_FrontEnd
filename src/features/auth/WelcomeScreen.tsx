@@ -21,13 +21,13 @@ export function WelcomeScreen() {
 
           <View style={{ width: '100%', height: 293, borderRadius: 32, overflow: 'hidden', marginTop: spacing.xxl }}>
             <Image
-              source={require('../../../assets/images/welcome-photo.png')}
+              source={require('../../../assets/images/welcome-photo.jpg')}
               style={{ width: '100%', height: '100%' }}
               resizeMode="cover"
             />
             <View style={{ position: 'absolute', right: 16, bottom: 12, width: 138, height: 129, borderRadius: 32, overflow: 'hidden' }}>
               <Image
-                source={require('../../../assets/images/welcome-photo-small.png')}
+                source={require('../../../assets/images/welcome-photo-small.jpg')}
                 style={{ width: '100%', height: '100%' }}
                 resizeMode="cover"
               />
