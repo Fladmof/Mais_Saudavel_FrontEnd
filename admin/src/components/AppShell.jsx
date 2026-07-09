@@ -8,6 +8,7 @@ const ITENS = [
   { to: '/medicos', label: 'Médicos', ic: '🩺' },
   { to: '/pacientes', label: 'Pacientes', ic: '🧑' },
   { to: '/consultas', label: 'Consultas', ic: '📅' },
+  { to: '/documentos', label: 'Documentos', ic: '📄' },
   { to: '/unidades', label: 'Unidades de saúde', ic: '🏥' },
   { to: '/pagamentos', label: 'Pagamentos', ic: '💳' },
   { to: '/relatorios', label: 'Relatórios', ic: '📊' },

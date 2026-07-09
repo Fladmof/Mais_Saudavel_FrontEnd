@@ -10,6 +10,7 @@ import PacienteDetalhe from './pages/PacienteDetalhe';
 import Medicos from './pages/Medicos';
 import MedicoDetalhe from './pages/MedicoDetalhe';
 import Consultas from './pages/Consultas';
+import Documentos from './pages/Documentos';
 import Auditoria from './pages/Auditoria';
 
 function Protegido({ children }) {
@@ -27,6 +28,7 @@ export default function App() {
       <Route path="/pacientes" element={<Protegido><Pacientes /></Protegido>} />
       <Route path="/pacientes/:id" element={<Protegido><PacienteDetalhe /></Protegido>} />
       <Route path="/consultas" element={<Protegido><Consultas /></Protegido>} />
+      <Route path="/documentos" element={<Protegido><Documentos /></Protegido>} />
       <Route path="/unidades" element={<Protegido><Placeholder titulo="Unidades de saúde" /></Protegido>} />
       <Route path="/pagamentos" element={<Protegido><Placeholder titulo="Pagamentos" /></Protegido>} />
       <Route path="/relatorios" element={<Protegido><Placeholder titulo="Relatórios" /></Protegido>} />
