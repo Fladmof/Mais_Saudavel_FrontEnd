@@ -12,7 +12,9 @@ import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
 import { utenteService } from '../../services/utenteService';
 import { consultaService } from '../../services/consultaService';
-import { UtentePerfil, Consulta } from '../../api/types';
+import { clinicoService } from '../../services/clinicoService';
+import { documentoService } from '../../services/documentoService';
+import { UtentePerfil, Consulta, Alergia, CondicaoEspecial } from '../../api/types';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 
@@ -79,6 +81,9 @@ export function FichaMedicaScreen() {
   const { signOut } = useAuth();
   const [perfil, setPerfil] = useState<UtentePerfil | null>(null);
   const [proxima, setProxima] = useState<Consulta | null>(null);
+  const [alergias, setAlergias] = useState<Alergia[]>([]);
+  const [condicoes, setCondicoes] = useState<CondicaoEspecial[]>([]);
+  const [contaValidada, setContaValidada] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
   const [erro, setErro] = useState('');
@@ -86,12 +91,22 @@ export function FichaMedicaScreen() {
   const [aGuardar, setAGuardar] = useState(false);
 
   const carregar = useCallback(async () => {
-    const [r, rConsultas] = await Promise.all([utenteService.fetchMeuPerfil(), consultaService.minhasConsultas()]);
+    const [r, rConsultas, rDocs] = await Promise.all([
+      utenteService.fetchMeuPerfil(),
+      consultaService.minhasConsultas(),
+      documentoService.estadoValidacao(),
+    ]);
     setLoading(false);
     setNetworkError(!!r.network);
     if (r.ok && r.data?.utente) {
       setPerfil(r.data.utente);
       setErro('');
+      const [rAlergias, rCondicoes] = await Promise.all([
+        clinicoService.listarAlergias(r.data.utente.id),
+        clinicoService.listarCondicoes(r.data.utente.id),
+      ]);
+      if (rAlergias.ok && rAlergias.data) setAlergias(rAlergias.data.alergias);
+      if (rCondicoes.ok && rCondicoes.data) setCondicoes(rCondicoes.data.condicoes);
     } else if (!r.network) {
       setErro(r.message || 'Falha ao carregar a ficha');
     }
@@ -99,6 +114,7 @@ export function FichaMedicaScreen() {
       const ativas = rConsultas.data.consultas.filter((c) => c.estado === 'agendada' || c.estado === 'em_curso');
       setProxima(ativas[0] ?? null);
     }
+    if (rDocs.ok && rDocs.data) setContaValidada(rDocs.data.validacaoCompleta);
   }, []);
 
   useFocusEffect(
@@ -236,6 +252,29 @@ export function FichaMedicaScreen() {
             </Card>
           </Section>
 
+          <Section title="Alergias e condições">
+            <Card>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+                {alergias.map((a) => (
+                  <View key={`a-${a.id}`} style={{ backgroundColor: '#FF383C1A', paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 20 }}>
+                    <Text style={{ color: colors.danger, fontFamily: fontFamily.medium, fontSize: 13 }}>{a.nome}</Text>
+                  </View>
+                ))}
+                {condicoes.map((c) => (
+                  <View key={`c-${c.id}`} style={{ backgroundColor: colors.tagBg, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 20 }}>
+                    <Text style={{ color: colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>{c.nome}</Text>
+                  </View>
+                ))}
+                {!alergias.length && !condicoes.length ? (
+                  <Text style={typography.caption}>Sem alergias ou condições registadas</Text>
+                ) : null}
+              </View>
+              <TouchableOpacity onPress={() => router.push('/alergias')} style={{ marginTop: spacing.md, alignSelf: 'flex-end' }}>
+                <Text style={{ color: colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>Editar</Text>
+              </TouchableOpacity>
+            </Card>
+          </Section>
+
           <Section title="Dados biológicos">
             <Card>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -269,15 +308,40 @@ export function FichaMedicaScreen() {
 
           <Section title="Histórico alimentar">
             <View style={{ alignItems: 'center' }}>
-              <TouchableOpacity onPress={brevemente}>
+              <TouchableOpacity onPress={() => router.push('/calorias')}>
                 <View style={{ backgroundColor: colors.action, paddingVertical: 8, paddingHorizontal: 80, borderRadius: 20 }}>
                   <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>Registrar refeição</Text>
                 </View>
               </TouchableOpacity>
-              <Card style={{ marginTop: spacing.lg, paddingVertical: 60, alignSelf: 'stretch', alignItems: 'center' }}>
-                <Text style={{ color: colors.textMuted, fontSize: 15, fontFamily: fontFamily.medium }}>Sem registos alimentares</Text>
-              </Card>
+              <TouchableOpacity onPress={() => router.push('/calorias')} style={{ alignSelf: 'stretch' }}>
+                <Card style={{ marginTop: spacing.lg, paddingVertical: 24, alignItems: 'center' }}>
+                  <Text style={{ color: colors.primary, fontSize: 15, fontFamily: fontFamily.medium }}>
+                    Ver histórico de calorias →
+                  </Text>
+                </Card>
+              </TouchableOpacity>
             </View>
+          </Section>
+
+          <Section title="Conta">
+            <Card>
+              <TouchableOpacity
+                onPress={() => router.push('/validacao-conta')}
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: spacing.sm }}
+              >
+                <Text style={{ fontFamily: fontFamily.medium, fontSize: 14 }}>Validação de conta</Text>
+                <Text style={{ color: contaValidada ? colors.primary : '#E8A200', fontFamily: fontFamily.medium, fontSize: 13 }}>
+                  {contaValidada == null ? '' : contaValidada ? '✓ Validada' : 'Pendente ›'}
+                </Text>
+              </TouchableOpacity>
+              <View style={{ height: 1, backgroundColor: colors.border }} />
+              <TouchableOpacity
+                onPress={() => router.push('/eliminar-conta')}
+                style={{ paddingVertical: spacing.sm, marginTop: spacing.xs }}
+              >
+                <Text style={{ color: colors.danger, fontFamily: fontFamily.medium, fontSize: 14 }}>Eliminar conta</Text>
+              </TouchableOpacity>
+            </Card>
           </Section>
         </View>
       </ScrollView>

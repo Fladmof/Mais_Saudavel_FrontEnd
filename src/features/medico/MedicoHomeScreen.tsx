@@ -10,6 +10,7 @@ import { ServerError } from '../../components/ServerError';
 import { Logo } from '../../components/Logo';
 import { useAuth } from '../../context/AuthContext';
 import { consultaService } from '../../services/consultaService';
+import { notificacaoService } from '../../services/notificacaoService';
 import { utenteService } from '../../services/utenteService';
 import { Consulta, UtentePerfil } from '../../api/types';
 import { colors, spacing, typography, fontFamily } from '../../theme';
@@ -84,6 +85,13 @@ export function MedicoHomeScreen() {
     router.push(`/telemedicine/${c.id}`);
   };
 
+  // Envia um lembrete da consulta ao utente (aparece nos Alertas dele)
+  const lembrar = async (c: Consulta) => {
+    const r = await notificacaoService.notificarConsulta(c.id);
+    if (r.ok) Alert.alert('Lembrete enviado', `${c.utente?.user?.nome ?? 'O paciente'} foi notificado.`);
+    else Alert.alert('Erro', r.message || 'Não foi possível notificar');
+  };
+
   if (networkError) return <ServerError onRetry={() => { setLoading(true); carregar(); }} />;
 
   const medico = user?.medico;
@@ -146,6 +154,13 @@ export function MedicoHomeScreen() {
                           <Text style={{ color: colors.primary, fontSize: 14 }}>{c.estado === 'em_curso' ? 'Retomar' : 'Iniciar'}</Text>
                         </View>
                       </TouchableOpacity>
+                      {c.estado === 'agendada' ? (
+                        <TouchableOpacity onPress={() => lembrar(c)}>
+                          <View style={{ borderWidth: 1, borderColor: colors.primary, borderRadius: 35, paddingHorizontal: 10, paddingVertical: 4 }}>
+                            <Text style={{ color: colors.primary, fontSize: 14 }}>Lembrar</Text>
+                          </View>
+                        </TouchableOpacity>
+                      ) : null}
                       <TouchableOpacity onPress={() => cancelar(c)}>
                         <View style={{ borderWidth: 1, borderColor: colors.danger, borderRadius: 35, paddingHorizontal: 10, paddingVertical: 4 }}>
                           <Text style={{ color: colors.danger, fontSize: 14 }}>Cancelar</Text>

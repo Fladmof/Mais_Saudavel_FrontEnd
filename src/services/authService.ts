@@ -1,4 +1,4 @@
-import { post, get } from '../api/http';
+import { post, get, patch } from '../api/http';
 import { endpoints } from '../api/endpoints';
 import { setToken, clearToken } from '../api/tokenStore';
 import { AuthData, User, Role } from '../api/types';
@@ -44,4 +44,11 @@ async function resetPassword(email: string, code: string, password: string): Pro
   return { ok: res.ok, message: res.message };
 }
 
-export const authService = { signIn, register, fetchMe, signOut, forgotPassword, resetPassword };
+// Eliminacao parcial: os dados clinicos ficam preservados mas o login e desativado.
+async function partialDelete(password: string): Promise<{ ok: boolean; message: string }> {
+  const res = await patch(endpoints.accountPartialDelete, { password });
+  if (res.ok) await clearToken();
+  return { ok: res.ok, message: res.message };
+}
+
+export const authService = { signIn, register, fetchMe, signOut, forgotPassword, resetPassword, partialDelete };

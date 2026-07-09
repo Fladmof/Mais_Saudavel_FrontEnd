@@ -17,4 +17,32 @@ export const endpoints = {
   registos: (utenteId: number | string) => `/utentes/${utenteId}/registos`,
   registo: (id: number | string) => `/registos/${id}`,
   chatHistory: (room: string) => `/mensagens/history/${encodeURIComponent(room)}`,
+  // Agendamento pelo utente
+  medicos: '/medicos',
+  medicosEspecialidades: '/medicos/especialidades',
+  medicoHorarios: (medicoId: number | string) => `/medicos/${medicoId}/horarios`,
+  meusHorarios: '/medicos/me/horarios',
+  slotsDisponiveis: (medicoId: number | string, data: string) =>
+    `/consultas/slots-disponiveis?medico_id=${medicoId}&data=${data}`,
+  agendar: '/consultas/agendar',
+  consultaNotificar: (id: number | string) => `/consultas/${id}/notificar`,
+  // Validacao de conta por documentos
+  documentosUpload: '/documentos/upload',
+  documentosStatus: '/documentos/status',
+  // Alergias e condicoes especiais
+  alergias: (utenteId: number | string) => `/utentes/${utenteId}/alergias`,
+  alergia: (id: number | string) => `/alergias/${id}`,
+  condicoes: (utenteId: number | string) => `/utentes/${utenteId}/condicoes`,
+  condicao: (id: number | string) => `/condicoes/${id}`,
+  // Calorias
+  calorias: '/calorias',
+  caloriasHistorico: (periodo: string) => `/calorias/historico?periodo=${periodo}`,
+  caloriaRegisto: (id: number | string) => `/calorias/${id}`,
+  // Notificacoes
+  notificacoes: '/notificacoes',
+  notificacoesContagem: '/notificacoes/contagem',
+  notificacaoLida: (id: number | string) => `/notificacoes/${id}/lida`,
+  notificacoesLidas: '/notificacoes/lidas',
+  // Conta
+  accountPartialDelete: '/auth/account/partial-delete',
 } as const;

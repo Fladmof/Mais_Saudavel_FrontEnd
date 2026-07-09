@@ -22,6 +22,13 @@ export default function MedicoTabsLayout() {
           tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
         }}
       />
+      <Tabs.Screen
+        name="horarios"
+        options={{
+          title: 'Horários',
+          tabBarIcon: ({ color, size }) => <Ionicons name="time-outline" color={color} size={size} />,
+        }}
+      />
       <Tabs.Screen name="paciente/[id]" options={{ href: null }} />
       <Tabs.Screen name="marcar/[utenteId]" options={{ href: null }} />
     </Tabs>

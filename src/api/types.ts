@@ -46,6 +46,10 @@ export interface MedicoPerfil {
   especialidade: string;
   crm?: string | null;
   telefone?: string | null;
+  bio?: string | null;
+  categorias?: string[];
+  avaliacao_media?: number;
+  numero_avaliacoes?: number;
   user?: User;
 }
 
@@ -84,4 +88,82 @@ export interface RegistoClinico {
   titulo: string;
   descricao?: string | null;
   data?: string | null;
+  foto_url?: string | null;
+  medico_id?: number | null;
+  validado_por_medico?: boolean;
+}
+
+// --- Agendamento ---
+
+export interface HorarioDisponibilidade {
+  id: number;
+  medico_id: number;
+  /** 0=domingo ... 6=sábado (convenção Date.getDay()) */
+  dia_semana: number;
+  hora_inicio: string;
+  hora_fim: string;
+  intervalo_minutos: number;
+  ativo: boolean;
+}
+
+// --- Validação de conta ---
+
+export type TipoDocumento = 'bi_frente' | 'bi_verso' | 'foto_pessoal';
+export type EstadoDocumento = 'pendente' | 'aprovado' | 'rejeitado';
+
+export interface Documento {
+  id: number;
+  user_id: string;
+  tipo: TipoDocumento;
+  ficheiro_url: string;
+  estado: EstadoDocumento;
+  motivo_rejeicao?: string | null;
+}
+
+// --- Alergias e condições ---
+
+export type Severidade = 'leve' | 'moderada' | 'grave';
+
+export interface Alergia {
+  id: number;
+  utente_id: number;
+  nome: string;
+  severidade: Severidade;
+  notas?: string | null;
+}
+
+export interface CondicaoEspecial {
+  id: number;
+  utente_id: number;
+  nome: string;
+  notas?: string | null;
+  ativa: boolean;
+}
+
+// --- Calorias ---
+
+export type TipoRefeicao = 'pequeno_almoco' | 'almoco' | 'lanche' | 'jantar';
+
+export interface RegistoCalorias {
+  id: number;
+  utente_id: number;
+  foto_url?: string | null;
+  alimentos: string[];
+  calorias_total: number;
+  tipo_refeicao: TipoRefeicao;
+  origem: 'ia' | 'descricao' | 'manual';
+  data_refeicao: string;
+}
+
+// --- Notificações ---
+
+export interface Notificacao {
+  id: number;
+  user_id: string;
+  type: string;
+  title: string;
+  message: string;
+  related_id?: number | null;
+  is_read: boolean;
+  createdAt: string;
 }
