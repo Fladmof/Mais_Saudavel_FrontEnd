@@ -13,10 +13,9 @@ import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
 import { utenteService } from '../../services/utenteService';
 import { clinicoService } from '../../services/clinicoService';
-import { UtentePerfil, Medicacao, RegistoClinico } from '../../api/types';
+import { UtentePerfil, Medicacao, RegistoClinico, Alergia, CondicaoEspecial } from '../../api/types';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 import { idadeDe, imcDe } from '../utente/FichaMedicaScreen';
-import { separarEtiquetas } from '../utente/MedicacaoScreen';
 
 // "Dados do paciente" (Figma 178:1015): vista read-only do medico sobre o utente
 // (ficha + medicacao combinadas); o medico pode adicionar receitas e marcar consulta.
@@ -33,6 +32,8 @@ export function PacienteDetalheScreen() {
   const [perfil, setPerfil] = useState<UtentePerfil | null>(null);
   const [medicacoes, setMedicacoes] = useState<Medicacao[]>([]);
   const [registos, setRegistos] = useState<RegistoClinico[]>([]);
+  const [alergias, setAlergias] = useState<Alergia[]>([]);
+  const [condicoes, setCondicoes] = useState<CondicaoEspecial[]>([]);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
   const [novaReceita, setNovaReceita] = useState<{ titulo: string; descricao: string } | null>(null);
@@ -49,12 +50,16 @@ export function PacienteDetalheScreen() {
     setNetworkError(false);
     if (r.ok && r.data?.utente) {
       setPerfil(r.data.utente);
-      const [rMeds, rRegs] = await Promise.all([
+      const [rMeds, rRegs, rAlergias, rCondicoes] = await Promise.all([
         clinicoService.listarMedicacoes(r.data.utente.id),
         clinicoService.listarRegistos(r.data.utente.id),
+        clinicoService.listarAlergias(r.data.utente.id),
+        clinicoService.listarCondicoes(r.data.utente.id),
       ]);
       if (rMeds.ok && rMeds.data) setMedicacoes(rMeds.data.medicacoes);
       if (rRegs.ok && rRegs.data) setRegistos(rRegs.data.registos);
+      if (rAlergias.ok && rAlergias.data) setAlergias(rAlergias.data.alergias);
+      if (rCondicoes.ok && rCondicoes.data) setCondicoes(rCondicoes.data.condicoes);
     }
   }, [id]);
 
@@ -83,9 +88,6 @@ export function PacienteDetalheScreen() {
   };
 
   if (networkError) return <ServerError onRetry={() => { setLoading(true); carregar(); }} />;
-
-  const condicoes = separarEtiquetas(perfil?.condespeciais);
-  const alergias = separarEtiquetas(perfil?.alergia);
 
   return (
     <Screen style={{ backgroundColor: '#F7F8FA' }}>
@@ -137,7 +139,7 @@ export function PacienteDetalheScreen() {
               {condicoes.length ? (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'center' }}>
                   {condicoes.map((c) => (
-                    <Chip key={c} label={c} />
+                    <Chip key={c.id} label={c.nome} />
                   ))}
                 </View>
               ) : (
@@ -151,7 +153,7 @@ export function PacienteDetalheScreen() {
               {alergias.length ? (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'center', marginBottom: spacing.md }}>
                   {alergias.map((a) => (
-                    <Chip key={a} label={a} />
+                    <Chip key={a.id} label={a.severidade ? `${a.nome} (${a.severidade})` : a.nome} />
                   ))}
                 </View>
               ) : (

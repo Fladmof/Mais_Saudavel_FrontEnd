@@ -13,17 +13,12 @@ import { Avatar } from '../../components/Avatar';
 import { utenteService } from '../../services/utenteService';
 import { clinicoService } from '../../services/clinicoService';
 import { consultaService } from '../../services/consultaService';
-import { UtentePerfil, Medicacao, RegistoClinico, TipoRegisto, Consulta } from '../../api/types';
+import { UtentePerfil, Medicacao, RegistoClinico, TipoRegisto, Consulta, Alergia, CondicaoEspecial } from '../../api/types';
 import { colors, spacing, typography, fontFamily } from '../../theme';
 
 // Ecra "Medicação" do Figma (131:540): condicoes especiais, alergia registrada,
 // medicacao atual (CRUD real), historicos (receitas/exames/consultas),
 // medico assistente, contacto de emergencia e emergencia.
-
-export function separarEtiquetas(texto?: string | null): string[] {
-  if (!texto) return [];
-  return texto.split(/[,;/]+/).map((s) => s.trim()).filter(Boolean);
-}
 
 const HISTORICOS: { tipo: TipoRegisto; titulo: string; desc: string }[] = [
   { tipo: 'receita', titulo: 'Receitas médicas', desc: 'Tire uma fotografia ou carregue a\nimagem da receita' },
@@ -57,6 +52,8 @@ export function MedicacaoScreen() {
   const [proxima, setProxima] = useState<Consulta | null>(null);
   const [medicacoes, setMedicacoes] = useState<Medicacao[]>([]);
   const [registos, setRegistos] = useState<RegistoClinico[]>([]);
+  const [alergias, setAlergias] = useState<Alergia[]>([]);
+  const [condicoes, setCondicoes] = useState<CondicaoEspecial[]>([]);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
   const [detalhes, setDetalhes] = useState('');
@@ -77,13 +74,17 @@ export function MedicacaoScreen() {
       const u = rPerfil.data.utente;
       setPerfil(u);
       setDetalhes(u.detalhes ?? '');
-      const [rMeds, rRegs, rConsultas] = await Promise.all([
+      const [rMeds, rRegs, rConsultas, rAlergias, rCondicoes] = await Promise.all([
         clinicoService.listarMedicacoes(u.id),
         clinicoService.listarRegistos(u.id),
         consultaService.minhasConsultas(),
+        clinicoService.listarAlergias(u.id),
+        clinicoService.listarCondicoes(u.id),
       ]);
       if (rMeds.ok && rMeds.data) setMedicacoes(rMeds.data.medicacoes);
       if (rRegs.ok && rRegs.data) setRegistos(rRegs.data.registos);
+      if (rAlergias.ok && rAlergias.data) setAlergias(rAlergias.data.alergias);
+      if (rCondicoes.ok && rCondicoes.data) setCondicoes(rCondicoes.data.condicoes);
       if (rConsultas.ok && rConsultas.data) {
         const ativas = rConsultas.data.consultas.filter((c) => c.estado === 'agendada' || c.estado === 'em_curso');
         setProxima(ativas[0] ?? null);
@@ -175,9 +176,6 @@ export function MedicacaoScreen() {
 
   if (networkError) return <ServerError onRetry={() => { setLoading(true); carregar(); }} />;
 
-  const condicoes = separarEtiquetas(perfil?.condespeciais);
-  const alergias = separarEtiquetas(perfil?.alergia);
-
   return (
     <Screen style={{ backgroundColor: '#F7F8FA' }}>
       <ScrollView
@@ -192,7 +190,7 @@ export function MedicacaoScreen() {
               {condicoes.length ? (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'center' }}>
                   {condicoes.map((c) => (
-                    <Chip key={c} label={c} />
+                    <Chip key={c.id} label={c.nome} />
                   ))}
                 </View>
               ) : (
@@ -209,7 +207,7 @@ export function MedicacaoScreen() {
               {alergias.length ? (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'center', marginBottom: spacing.md }}>
                   {alergias.map((a) => (
-                    <Chip key={a} label={a} />
+                    <Chip key={a.id} label={a.severidade ? `${a.nome} (${a.severidade})` : a.nome} />
                   ))}
                 </View>
               ) : null}
