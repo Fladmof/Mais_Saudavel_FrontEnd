@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { render, fireEvent } from '@testing-library/react-native';
 import { SelectField } from './SelectField';
 import { colors, spacing, racioContraste } from '../theme';
 
@@ -50,6 +50,21 @@ test('respeita o alvo de toque mínimo', () => {
   expect(limiteDoCampo(UNSAFE_root).minHeight).toBe(spacing.touchMin);
 });
 
+test('no iOS, o foco NÃO altera o limite (sem foco falso)', () => {
+  const { UNSAFE_root, getByLabelText } = render(
+    <SelectField label="Especialidade" value="" onValueChange={() => {}} options={['Cardiologia']} />,
+  );
+  fireEvent(getByLabelText('Especialidade'), 'focus');
+  const estilo = limiteDoCampo(UNSAFE_root);
+  // No iOS (plataforma por omissão do Jest neste projeto), o foco não
+  // influencia o limite: borderColor fica sempre em borderStrong, e
+  // borderWidth permanece 1px (nunca muda para 2px que seria o ramo Android).
+  // Este teste garante que não há "foco falso" — comportamento que desviaria
+  // à garantia de repouso visual permanente no iOS.
+  expect(estilo.borderColor).toBe(colors.borderStrong);
+  expect(estilo.borderWidth).toBe(1);
+});
+
 // Sobre o teste de foco condicional por plataforma (achado 2 da revisão):
 // tentei mutar `Platform.OS` (react-native) à volta do render para exercitar
 // os dois ramos do SelectField (Android com `borderFocus`, iOS em repouso).
@@ -61,3 +76,7 @@ test('respeita o alvo de toque mínimo', () => {
 // a instrução do brief, fica de fora em vez de simulado com um mock a fingir
 // fiabilidade que não existe. O comportamento condicional (Platform.OS ===
 // 'android') está coberto por leitura de código em SelectField.tsx.
+// Nota: o ramo iOS é testável diretamente (o teste acima) porque a plataforma
+// por omissão do Jest é já iOS neste projeto. O ramo Android exigiria uma
+// configuração do Jest com `haste.defaultPlatform: 'android'`, fora do âmbito
+// de um teste de componente único.
