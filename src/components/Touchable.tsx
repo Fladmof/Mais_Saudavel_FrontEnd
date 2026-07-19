@@ -42,7 +42,14 @@ export function Touchable({
       accessibilityRole={accessibilityRole}
       accessibilityHint={accessibilityHint}
       accessibilityState={{ disabled: inativo, busy, selected }}
-      hitSlop={{ top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }}
+      // hitSlop só se aplica quando alvoMinimo está desligado: alvos que já
+      // cumprem os 48 dp não precisam dele, e aplicá-lo sempre sobrepunha a
+      // separação mínima de 8 dp entre dois alvos vizinhos.
+      hitSlop={
+        alvoMinimo
+          ? undefined
+          : { top: spacing.sm, bottom: spacing.sm, left: spacing.sm, right: spacing.sm }
+      }
       style={({ pressed }) => [
         alvoMinimo
           ? { minHeight: spacing.touchMin, minWidth: spacing.touchMin, justifyContent: 'center' }

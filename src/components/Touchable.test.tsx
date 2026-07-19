@@ -2,6 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import { render, fireEvent } from '@testing-library/react-native';
 import { Touchable } from './Touchable';
+import { spacing } from '../theme';
 
 test('expõe a etiqueta e o papel de acessibilidade', () => {
   const { getByLabelText } = render(
@@ -70,7 +71,7 @@ test('comunica o estado a leitores de ecrã', () => {
   expect(alvo.props.accessibilityState).toMatchObject({ selected: true, disabled: false });
 });
 
-test('alvoMinimo=false dispensa o tamanho mínimo mas mantém hitSlop', () => {
+test('alvoMinimo=false dispensa o tamanho mínimo mas ganha hitSlop de spacing.sm', () => {
   const { getByLabelText } = render(
     <Touchable accessibilityLabel="Remover" alvoMinimo={false} onPress={() => {}}>
       <Text>–</Text>
@@ -80,5 +81,20 @@ test('alvoMinimo=false dispensa o tamanho mínimo mas mantém hitSlop', () => {
   const estilo = alvo.props.style;
   const achatado = Array.isArray(estilo) ? Object.assign({}, ...estilo.flat()) : estilo;
   expect(achatado.minHeight).toBeUndefined();
-  expect(alvo.props.hitSlop).toBeDefined();
+  expect(alvo.props.hitSlop).toEqual({
+    top: spacing.sm,
+    bottom: spacing.sm,
+    left: spacing.sm,
+    right: spacing.sm,
+  });
+});
+
+test('alvoMinimo por omissão (48 dp) não aplica hitSlop, para não sobrepor alvos vizinhos', () => {
+  const { getByLabelText } = render(
+    <Touchable accessibilityLabel="Guardar" onPress={() => {}}>
+      <Text>Guardar</Text>
+    </Touchable>,
+  );
+  const alvo = getByLabelText('Guardar');
+  expect(alvo.props.hitSlop).toBeUndefined();
 });
