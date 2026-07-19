@@ -12,6 +12,7 @@ type Props = {
   placeholder?: string;
   error?: string;
   mode?: 'date' | 'time';
+  accessibilityHint?: string;
 };
 
 function formatar(d: Date, mode: 'date' | 'time') {
@@ -21,13 +22,30 @@ function formatar(d: Date, mode: 'date' | 'time') {
 }
 
 // Campo de data/hora com o mesmo aspeto do TextField (abre o seletor nativo).
-export function DateField({ label, value, onChange, placeholder, error, mode = 'date' }: Props) {
+export function DateField({
+  label,
+  value,
+  onChange,
+  placeholder,
+  error,
+  mode = 'date',
+  accessibilityHint,
+}: Props) {
   const [aberto, setAberto] = useState(false);
 
   // O seletor aberto é o equivalente ao foco: mesmo tratamento visual do TextField.
   const corLimite = error ? colors.danger : aberto ? colors.borderFocus : colors.borderStrong;
   const rotuloAbrir = mode === 'date' ? 'Escolher data' : 'Escolher hora';
   const rotuloConfirmar = mode === 'date' ? 'Confirmar data selecionada' : 'Confirmar hora selecionada';
+
+  // O accessibilityLabel é o único texto que um leitor de ecrã associa ao
+  // campo: sem o erro incluído aqui, o TalkBack lê "Escolher data" mas nunca o erro.
+  const rotuloAcessivel = error ? `${rotuloAbrir}. Erro: ${error}` : rotuloAbrir;
+
+  // Sem hint explícito, mantém o comportamento existente (anunciar o valor
+  // atual); o hint explícito, quando fornecido pelo ecrã, tem prioridade.
+  const dicaAcessivel =
+    accessibilityHint ?? (value ? `Valor atual: ${formatar(value, mode)}` : undefined);
 
   return (
     <View style={{ marginTop: spacing.md }}>
@@ -46,8 +64,8 @@ export function DateField({ label, value, onChange, placeholder, error, mode = '
 
       <Touchable
         onPress={() => setAberto(true)}
-        accessibilityLabel={rotuloAbrir}
-        accessibilityHint={value ? `Valor atual: ${formatar(value, mode)}` : undefined}
+        accessibilityLabel={rotuloAcessivel}
+        accessibilityHint={dicaAcessivel}
         style={{
           minHeight: spacing.touchMin,
           justifyContent: 'center',
@@ -81,7 +99,10 @@ export function DateField({ label, value, onChange, placeholder, error, mode = '
       ) : null}
 
       {error ? (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}>
+        <View
+          accessibilityLiveRegion="polite"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}
+        >
           <Icon nome="alert-circle" tamanho="sm" cor={colors.danger} />
           <Text style={{ ...typography.caption, color: colors.danger }}>{error}</Text>
         </View>

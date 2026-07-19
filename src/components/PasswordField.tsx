@@ -10,14 +10,19 @@ type Props = {
   onChangeText: (t: string) => void;
   placeholder?: string;
   error?: string;
+  accessibilityHint?: string;
 };
 
-export function PasswordField({ label, value, onChangeText, placeholder, error }: Props) {
+export function PasswordField({ label, value, onChangeText, placeholder, error, accessibilityHint }: Props) {
   const [oculta, setOculta] = useState(true);
   const [focado, setFocado] = useState(false);
 
   // O erro tem três portadores: borda + ícone + texto. Nunca só cor.
   const corLimite = error ? colors.danger : focado ? colors.borderFocus : colors.borderStrong;
+
+  // O accessibilityLabel é o único texto que um leitor de ecrã associa ao
+  // input: sem o erro incluído aqui, o TalkBack lê o rótulo mas nunca o erro.
+  const rotuloAcessivel = error ? (label ? `${label}. Erro: ${error}` : `Erro: ${error}`) : label;
 
   return (
     <View style={{ marginTop: spacing.md }}>
@@ -53,7 +58,8 @@ export function PasswordField({ label, value, onChangeText, placeholder, error }
           placeholder={placeholder}
           placeholderTextColor={colors.inkMuted}
           secureTextEntry={oculta}
-          accessibilityLabel={label}
+          accessibilityLabel={rotuloAcessivel}
+          accessibilityHint={accessibilityHint}
           style={{ flex: 1, color: colors.ink, ...typography.body }}
         />
         <Touchable
@@ -65,7 +71,10 @@ export function PasswordField({ label, value, onChangeText, placeholder, error }
       </View>
 
       {error ? (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}>
+        <View
+          accessibilityLiveRegion="polite"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}
+        >
           <Icon nome="alert-circle" tamanho="sm" cor={colors.danger} />
           <Text style={{ ...typography.caption, color: colors.danger }}>{error}</Text>
         </View>

@@ -40,6 +40,10 @@ export function SelectField({
 
   const corLimite = error ? colors.danger : focoAtivo ? colors.borderFocus : colors.borderStrong;
 
+  // O accessibilityLabel é o único texto que um leitor de ecrã associa ao
+  // Picker: sem o erro incluído aqui, o TalkBack lê o rótulo mas nunca o erro.
+  const rotuloAcessivel = error ? (label ? `${label}. Erro: ${error}` : `Erro: ${error}`) : label;
+
   return (
     <View style={{ marginTop: spacing.md }}>
       {label ? (
@@ -69,7 +73,7 @@ export function SelectField({
           onValueChange={(v) => onValueChange(String(v))}
           onFocus={() => setFocado(true)}
           onBlur={() => setFocado(false)}
-          accessibilityLabel={label}
+          accessibilityLabel={rotuloAcessivel}
           accessibilityHint={accessibilityHint}
         >
           <Picker.Item label={placeholder ?? 'Selecionar…'} value="" color={colors.inkMuted} />
@@ -80,7 +84,10 @@ export function SelectField({
       </View>
 
       {error ? (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}>
+        <View
+          accessibilityLiveRegion="polite"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}
+        >
           <Icon nome="alert-circle" tamanho="sm" cor={colors.danger} />
           <Text style={{ ...typography.caption, color: colors.danger }}>{error}</Text>
         </View>

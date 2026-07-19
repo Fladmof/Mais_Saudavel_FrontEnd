@@ -31,6 +31,10 @@ export function TextField({
   // O erro tem três portadores: borda + ícone + texto. Nunca só cor.
   const corLimite = error ? colors.danger : focado ? colors.borderFocus : colors.borderStrong;
 
+  // O accessibilityLabel é o único texto que um leitor de ecrã associa ao
+  // input: sem o erro incluído aqui, o TalkBack lê o rótulo mas nunca o erro.
+  const rotuloAcessivel = error ? (label ? `${label}. Erro: ${error}` : `Erro: ${error}`) : label;
+
   return (
     <View style={{ marginTop: spacing.md }}>
       {label ? (
@@ -56,7 +60,7 @@ export function TextField({
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         multiline={multiline}
-        accessibilityLabel={label}
+        accessibilityLabel={rotuloAcessivel}
         accessibilityHint={accessibilityHint}
         style={{
           minHeight: spacing.touchMin,
@@ -74,7 +78,10 @@ export function TextField({
       />
 
       {error ? (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}>
+        <View
+          accessibilityLiveRegion="polite"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}
+        >
           <Icon nome="alert-circle" tamanho="sm" cor={colors.danger} />
           <Text style={{ ...typography.caption, color: colors.danger }}>{error}</Text>
         </View>
