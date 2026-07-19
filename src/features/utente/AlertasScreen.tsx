@@ -1,13 +1,15 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, RefreshControl } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
 import { ServerError } from '../../components/ServerError';
+import { Touchable } from '../../components/Touchable';
+import { EmptyState } from '../../components/EmptyState';
 import { notificacaoService } from '../../services/notificacaoService';
 import { Notificacao } from '../../api/types';
-import { colors, spacing, typography, fontFamily } from '../../theme';
+import { colors, spacing, typography, fontFamily, radii } from '../../theme';
 
 // Aba "Alertas": notificacoes do utilizador (marcacoes, lembretes do medico).
 // Tocar numa notificacao marca-a como lida; se tiver consulta associada abre-a.
@@ -47,7 +49,7 @@ export function AlertasScreen() {
   const naoLidas = notificacoes.filter((n) => !n.is_read).length;
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
@@ -55,35 +57,65 @@ export function AlertasScreen() {
         <PageHeader title="Alertas" />
         <View style={{ paddingHorizontal: spacing.lg }}>
           {naoLidas > 0 ? (
-            <TouchableOpacity onPress={marcarTodas} style={{ alignSelf: 'flex-end', marginTop: spacing.lg }}>
-              <Text style={{ color: colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>
+            <Touchable
+              onPress={marcarTodas}
+              accessibilityLabel="Marcar todos os alertas como lidos"
+              style={{ alignSelf: 'flex-end', marginTop: spacing.lg }}
+            >
+              <Text style={{ ...typography.caption, color: colors.actionInk, fontFamily: fontFamily.medium }}>
                 Marcar todas como lidas
               </Text>
-            </TouchableOpacity>
+            </Touchable>
           ) : null}
 
           <View style={{ marginTop: spacing.lg }}>
             {notificacoes.length ? (
               notificacoes.map((n) => (
-                <TouchableOpacity key={n.id} onPress={() => abrir(n)} activeOpacity={0.7}>
-                  <Card style={{ marginBottom: spacing.md, opacity: n.is_read ? 0.65 : 1 }}>
+                <Touchable
+                  key={n.id}
+                  onPress={() => abrir(n)}
+                  accessibilityLabel={`${n.title}. ${n.is_read ? 'Lida' : 'Não lida'}`}
+                  accessibilityHint={n.message}
+                  alvoMinimo={false}
+                >
+                  <Card style={{ marginBottom: spacing.md }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
                       {!n.is_read ? (
-                        <View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: colors.action }} />
+                        <View
+                          style={{
+                            width: spacing.sm,
+                            height: spacing.sm,
+                            borderRadius: radii.full,
+                            backgroundColor: colors.actionInk,
+                          }}
+                        />
                       ) : null}
-                      <Text style={{ fontFamily: fontFamily.medium, fontSize: 15, flex: 1 }}>{n.title}</Text>
+                      <Text
+                        style={{
+                          ...typography.title,
+                          fontFamily: n.is_read ? fontFamily.regular : fontFamily.bold,
+                          color: colors.ink,
+                          flex: 1,
+                        }}
+                      >
+                        {n.title}
+                      </Text>
                     </View>
-                    <Text style={[typography.caption, { marginTop: 4 }]}>{n.message}</Text>
-                    <Text style={{ color: colors.textMuted, fontSize: 11, marginTop: 6 }}>
+                    <Text style={{ ...typography.body, color: colors.inkSecondary, marginTop: spacing.xs }}>
+                      {n.message}
+                    </Text>
+                    <Text style={{ ...typography.caption, color: colors.inkMuted, marginTop: spacing.sm }}>
                       {new Date(n.createdAt).toLocaleString('pt-PT', { dateStyle: 'short', timeStyle: 'short' })}
                     </Text>
                   </Card>
-                </TouchableOpacity>
+                </Touchable>
               ))
             ) : (
-              <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
-                <Text style={typography.caption}>Sem alertas</Text>
-              </Card>
+              <EmptyState
+                icone="notifications-outline"
+                titulo="Sem alertas"
+                descricao="Avisamos aqui quando houver novidades sobre as suas consultas."
+              />
             )}
           </View>
         </View>
