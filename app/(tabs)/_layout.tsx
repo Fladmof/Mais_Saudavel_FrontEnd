@@ -28,36 +28,44 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: colors.actionInk,
+        tabBarInactiveTintColor: colors.inkMuted,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Ficha',
-          tabBarIcon: ({ color, size }) => <Ionicons name="document-text-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'document-text' : 'document-text-outline'} color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="consultas"
         options={{
           title: 'Consultas',
-          tabBarIcon: ({ color, size }) => <Ionicons name="calendar-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="medication"
         options={{
           title: 'Medicação',
-          tabBarIcon: ({ color, size }) => <Ionicons name="medkit-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'medkit' : 'medkit-outline'} color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="historico"
         options={{
           title: 'Histórico',
-          tabBarIcon: ({ color, size }) => <Ionicons name="folder-open-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'folder-open' : 'folder-open-outline'} color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -65,7 +73,9 @@ export default function TabsLayout() {
         options={{
           title: 'Alertas',
           tabBarBadge: naoLidas > 0 ? naoLidas : undefined,
-          tabBarIcon: ({ color, size }) => <Ionicons name="notifications-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size} />
+          ),
         }}
       />
     </Tabs>

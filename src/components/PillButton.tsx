@@ -1,40 +1,30 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { colors, fontFamily } from '../theme';
+import { Text } from 'react-native';
+import { Touchable } from './Touchable';
+import { Icon } from './Icon';
+import { colors, spacing, radii, typography } from '../theme';
 
 type Props = { title: string; onPress: () => void };
 
-// Botao pill verde com seta em circulo branco (padrao dos ecras Inicio/promo do Figma)
+// Botao pill verde com seta (padrao dos ecras Inicio/promo do Figma)
 export function PillButton({ title, onPress }: Props) {
   return (
-    <TouchableOpacity
+    <Touchable
       onPress={onPress}
-      activeOpacity={0.8}
+      accessibilityLabel={title}
       style={{
-        width: 234,
-        height: 48,
-        borderRadius: 24,
+        alignSelf: 'stretch',
+        borderRadius: radii.full,
         backgroundColor: colors.action,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
+        paddingHorizontal: spacing.xl,
+        gap: spacing.sm,
       }}
     >
-      <Text style={{ fontFamily: fontFamily.bold, fontSize: 18, color: colors.white }}>{title}</Text>
-      <View
-        style={{
-          position: 'absolute',
-          right: 6,
-          width: 36,
-          height: 36,
-          borderRadius: 18,
-          backgroundColor: colors.white,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ color: colors.action, fontSize: 18, fontFamily: fontFamily.bold }}>→</Text>
-      </View>
-    </TouchableOpacity>
+      <Text style={[typography.title, { color: colors.inkOnAction }]}>{title}</Text>
+      <Icon nome="arrow-forward" tamanho="sm" cor={colors.inkOnAction} />
+    </Touchable>
   );
 }

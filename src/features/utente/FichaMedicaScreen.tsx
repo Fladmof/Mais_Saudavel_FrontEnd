@@ -176,7 +176,7 @@ export function FichaMedicaScreen() {
                     <Text style={{ color: colors.textMuted, fontSize: 14 }}>{perfil.telefone}</Text>
                   </View>
                 </View>
-                <View style={{ height: 1, backgroundColor: colors.textMuted, marginVertical: spacing.lg }} />
+                <View style={{ height: 1, backgroundColor: colors.border, marginVertical: spacing.lg }} />
                 <Text style={{ color: colors.textMuted, fontSize: 12 }}>BI/Cartão de cidadão: {perfil.bi}</Text>
                 <Text style={{ color: colors.textMuted, fontSize: 12 }}>Morada: {perfil.morada}</Text>
                 <Text style={{ color: colors.textMuted, fontSize: 12 }}>Profissão: {perfil.profissao || '—'}</Text>

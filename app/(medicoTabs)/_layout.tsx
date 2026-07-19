@@ -11,22 +11,26 @@ export default function MedicoTabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: colors.actionInk,
+        tabBarInactiveTintColor: colors.inkMuted,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: 'Início',
-          tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen
         name="horarios"
         options={{
           title: 'Horários',
-          tabBarIcon: ({ color, size }) => <Ionicons name="time-outline" color={color} size={size} />,
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons name={focused ? 'time' : 'time-outline'} color={color} size={size} />
+          ),
         }}
       />
       <Tabs.Screen name="paciente/[id]" options={{ href: null }} />

@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TextInput, KeyboardTypeOptions } from 'react-native';
-import { colors, spacing, fontFamily } from '../theme';
+import { Icon } from './Icon';
+import { colors, spacing, radii, typography, fontFamily } from '../theme';
 
 type Props = {
   label?: string;
@@ -11,30 +12,80 @@ type Props = {
   autoCapitalize?: 'none' | 'sentences' | 'words' | 'characters';
   error?: string;
   multiline?: boolean;
+  accessibilityHint?: string;
 };
 
-export function TextField({ label, value, onChangeText, placeholder, keyboardType, autoCapitalize, error, multiline }: Props) {
+export function TextField({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType,
+  autoCapitalize,
+  error,
+  multiline,
+  accessibilityHint,
+}: Props) {
+  const [focado, setFocado] = useState(false);
+
+  // O erro tem três portadores: borda + ícone + texto. Nunca só cor.
+  const corLimite = error ? colors.danger : focado ? colors.borderFocus : colors.borderStrong;
+
+  // O accessibilityLabel é o único texto que um leitor de ecrã associa ao
+  // input: sem o erro incluído aqui, o TalkBack lê o rótulo mas nunca o erro.
+  const rotuloAcessivel = error ? (label ? `${label}. Erro: ${error}` : `Erro: ${error}`) : label;
+
   return (
     <View style={{ marginTop: spacing.md }}>
-      {label ? <Text style={{ color: colors.textSubtle, marginBottom: spacing.xs, fontFamily: fontFamily.regular }}>{label}</Text> : null}
+      {label ? (
+        <Text
+          style={{
+            ...typography.caption,
+            color: colors.inkSecondary,
+            marginBottom: spacing.xs,
+            fontFamily: fontFamily.medium,
+          }}
+        >
+          {label}
+        </Text>
+      ) : null}
+
       <TextInput
         value={value}
         onChangeText={onChangeText}
+        onFocus={() => setFocado(true)}
+        onBlur={() => setFocado(false)}
         placeholder={placeholder}
-        placeholderTextColor={colors.placeholder}
+        placeholderTextColor={colors.inkMuted}
         keyboardType={keyboardType}
         autoCapitalize={autoCapitalize}
         multiline={multiline}
+        accessibilityLabel={rotuloAcessivel}
+        accessibilityHint={accessibilityHint}
         style={{
-          borderWidth: 1,
-          borderColor: error ? colors.danger : colors.border,
-          borderRadius: 8,
-          padding: spacing.md,
-          fontFamily: fontFamily.regular,
-          ...(multiline ? { minHeight: 88, textAlignVertical: 'top' as const } : {}),
+          minHeight: spacing.touchMin,
+          borderWidth: focado || error ? 2 : 1,
+          borderColor: corLimite,
+          borderRadius: radii.sm,
+          paddingHorizontal: spacing.md,
+          paddingVertical: spacing.md,
+          color: colors.ink,
+          ...typography.body,
+          ...(multiline
+            ? { minHeight: spacing.touchMin + spacing.xxxl, textAlignVertical: 'top' as const }
+            : {}),
         }}
       />
-      {error ? <Text style={{ color: colors.danger, fontSize: 12, marginTop: spacing.xs }}>{error}</Text> : null}
+
+      {error ? (
+        <View
+          accessibilityLiveRegion="polite"
+          style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}
+        >
+          <Icon nome="alert-circle" tamanho="sm" cor={colors.danger} />
+          <Text style={{ ...typography.caption, color: colors.danger }}>{error}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }

@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { colors, spacing, typography, fontFamily } from '../theme';
+import { View, Text } from 'react-native';
+import { Touchable } from './Touchable';
+import { Icon } from './Icon';
+import { colors, spacing, radii, typography, fontFamily } from '../theme';
 
 // Cabecalho das paginas internas: titulo verde + badge "Segurança da informação".
 // onSignOut opcional -> mostra um botao "Sair" no canto superior direito.
@@ -9,32 +11,36 @@ export function PageHeader({ title, onSignOut }: { title: string; onSignOut?: ()
     <View
       style={{
         alignItems: 'center',
-        backgroundColor: colors.white,
-        paddingBottom: 14,
-        borderBottomLeftRadius: 16,
-        borderBottomRightRadius: 16,
+        backgroundColor: colors.surface,
+        paddingBottom: spacing.lg,
+        borderBottomLeftRadius: radii.lg,
+        borderBottomRightRadius: radii.lg,
       }}
     >
-      <Text style={[typography.h2, { marginTop: spacing.md }]}>{title}</Text>
+      <Text style={[typography.h2, { color: colors.actionInk, marginTop: spacing.md }]}>{title}</Text>
       {onSignOut ? (
-        <TouchableOpacity onPress={onSignOut} style={{ position: 'absolute', right: spacing.lg, top: spacing.md }}>
+        <Touchable
+          onPress={onSignOut}
+          accessibilityLabel="Terminar sessão"
+          style={{ position: 'absolute', right: spacing.lg, top: spacing.md }}
+        >
           <Text style={{ color: colors.danger, fontFamily: fontFamily.medium }}>Sair</Text>
-        </TouchableOpacity>
+        </Touchable>
       ) : null}
       <View
         style={{
-          backgroundColor: colors.primary,
+          backgroundColor: colors.actionInk,
           flexDirection: 'row',
-          paddingHorizontal: 24,
-          paddingVertical: 4,
-          gap: 5,
-          borderRadius: 12,
-          marginTop: 14,
+          paddingHorizontal: spacing.xl,
+          paddingVertical: spacing.xs,
+          gap: spacing.xs,
+          borderRadius: radii.md,
+          marginTop: spacing.lg,
           alignItems: 'center',
         }}
       >
-        <Image source={require('../../assets/images/security.png')} />
-        <Text style={{ color: colors.white, fontFamily: fontFamily.regular }}>Segurança da informação</Text>
+        <Icon nome="shield-checkmark" tamanho="sm" cor={colors.inkInverse} />
+        <Text style={{ color: colors.inkInverse, fontFamily: fontFamily.regular }}>Segurança da informação</Text>
       </View>
     </View>
   );
