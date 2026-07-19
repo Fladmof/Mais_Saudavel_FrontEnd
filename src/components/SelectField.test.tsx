@@ -80,3 +80,18 @@ test('no iOS, o foco NÃO altera o limite (sem foco falso)', () => {
 // por omissão do Jest é já iOS neste projeto. O ramo Android exigiria uma
 // configuração do Jest com `haste.defaultPlatform: 'android'`, fora do âmbito
 // de um teste de componente único.
+
+// Ver a nota em TextField.test.tsx: sem isto, a correção de anúncio de erro
+// pode ser revertida sem que nenhum teste acuse.
+test('o erro entra no nome acessível do campo', () => {
+  const { getByLabelText } = render(
+    <SelectField
+      label="Especialidade"
+      value=""
+      onValueChange={() => {}}
+      options={['Cardiologia']}
+      error="Selecione uma especialidade"
+    />,
+  );
+  expect(getByLabelText('Especialidade. Erro: Selecione uma especialidade')).toBeTruthy();
+});

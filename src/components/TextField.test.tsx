@@ -55,3 +55,22 @@ test('respeita o alvo de toque mínimo', () => {
   );
   expect(estiloDe(getByLabelText('Nome')).minHeight).toBe(spacing.touchMin);
 });
+
+// Sem este teste, toda a correção de anúncio de erro pode ser revertida com a
+// suite verde: o teste de "erro por texto" já passava antes dela existir.
+test('o erro entra no nome acessível do campo', () => {
+  const { getByLabelText } = render(
+    <TextField label="Email" value="x" onChangeText={() => {}} error="Email inválido" />,
+  );
+  expect(getByLabelText('Email. Erro: Email inválido')).toBeTruthy();
+});
+
+test('a linha de erro é uma região viva, para ser anunciada ao aparecer', () => {
+  const { UNSAFE_getByProps, queryByText } = render(
+    <TextField label="Email" value="x" onChangeText={() => {}} error="Email inválido" />,
+  );
+  // A região viva só existe quando há erro — no Android é o que faz o
+  // TalkBack anunciar a mensagem sem o utilizador voltar ao campo.
+  expect(UNSAFE_getByProps({ accessibilityLiveRegion: 'polite' })).toBeTruthy();
+  expect(queryByText('Email inválido')).toBeTruthy();
+});
