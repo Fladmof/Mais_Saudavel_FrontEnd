@@ -1,5 +1,6 @@
 import React from 'react';
-import { render, waitFor } from '@testing-library/react-native';
+import { render, waitFor, fireEvent } from '@testing-library/react-native';
+import { Alert } from 'react-native';
 import { FichaMedicaScreen } from './FichaMedicaScreen';
 import { utenteService } from '../../services/utenteService';
 import { consultaService } from '../../services/consultaService';
@@ -59,6 +60,12 @@ test('tocar numa consulta agendada explica porque ainda não se pode entrar', as
       ],
     },
   });
+  const alertSpy = jest.spyOn(Alert, 'alert');
   const { getByLabelText } = render(<FichaMedicaScreen />);
-  await waitFor(() => expect(getByLabelText(/A teleconsulta abre quando o médico a iniciar/i)).toBeTruthy());
+  const alvo = await waitFor(() => getByLabelText(/A teleconsulta abre quando o médico a iniciar/i));
+  // Não basta o Touchable existir: premi-lo tem de disparar o alerta —
+  // se o onPress for removido, este teste falha.
+  fireEvent.press(alvo);
+  expect(alertSpy).toHaveBeenCalledWith('Ainda não começou', expect.stringMatching(/quando o médico a iniciar/i));
+  alertSpy.mockRestore();
 });
