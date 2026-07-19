@@ -4,8 +4,11 @@ import { colors } from '../theme';
 
 export const tamanhosIcone = { sm: 16, md: 24, lg: 32 } as const;
 
+/** Único ponto de verdade para nomes de ícone: evita repetir `keyof typeof Ionicons.glyphMap`. */
+export type NomeIcone = keyof typeof Ionicons.glyphMap;
+
 type Props = {
-  nome: keyof typeof Ionicons.glyphMap;
+  nome: NomeIcone;
   tamanho?: keyof typeof tamanhosIcone;
   cor?: string;
 };

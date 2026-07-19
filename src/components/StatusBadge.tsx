@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Icon } from './Icon';
+import { Icon, NomeIcone } from './Icon';
 import { colors, spacing, radii, typography } from '../theme';
 
 type Estado = 'agendada' | 'em_curso' | 'concluida' | 'cancelada';
@@ -10,7 +9,7 @@ type Estado = 'agendada' | 'em_curso' | 'concluida' | 'cancelada';
 // cor, ícone E texto — a cor nunca é o único portador de significado.
 export const ESTADOS_CONSULTA: Record<
   Estado,
-  { rotulo: string; icone: keyof typeof Ionicons.glyphMap; tinta: string; fundo: string }
+  { rotulo: string; icone: NomeIcone; tinta: string; fundo: string }
 > = {
   agendada: { rotulo: 'Agendada', icone: 'calendar-outline', tinta: colors.info, fundo: colors.infoSurface },
   em_curso: { rotulo: 'Em curso', icone: 'radio-button-on', tinta: colors.warning, fundo: colors.warningSurface },

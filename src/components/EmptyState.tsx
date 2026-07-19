@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { Icon } from './Icon';
+import { Icon, NomeIcone } from './Icon';
 import { Button } from './Button';
 import { colors, spacing, typography } from '../theme';
 
 type Props = {
-  icone: keyof typeof Ionicons.glyphMap;
+  icone: NomeIcone;
   titulo: string;
   descricao?: string;
   /** Uma só ação de saída — nunca duas a competir. */
