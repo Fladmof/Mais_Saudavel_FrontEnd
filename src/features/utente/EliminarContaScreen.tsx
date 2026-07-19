@@ -66,7 +66,7 @@ export function EliminarContaScreen() {
           <PasswordField label="Confirme com a sua senha" value={password} onChangeText={setPassword} />
 
           <View style={{ marginTop: spacing.xl, gap: spacing.sm }}>
-            <Button title="Eliminar a minha conta" variant="outline" onPress={confirmar} loading={aEliminar} />
+            <Button title="Eliminar a minha conta" variant="danger" onPress={confirmar} loading={aEliminar} />
             <Button title="Cancelar" variant="ghost" onPress={() => router.back()} />
           </View>
         </View>
