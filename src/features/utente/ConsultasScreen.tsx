@@ -102,9 +102,14 @@ export function ConsultasScreen() {
       >
         <PageHeader title="Consultas" />
         <View style={{ paddingHorizontal: spacing.lg }}>
-          <View style={{ marginTop: spacing.xl }}>
-            <Button title="Marcar nova consulta" onPress={() => router.push('/agendar')} />
-          </View>
+          {/* Uma só ação primária por ecrã: com consultas, o botão de topo é o CTA;
+              sem consultas, o CTA passa para o EmptyState de "Próximas" (evita dois
+              botões verdes iguais empilhados no estado vazio). */}
+          {ativas.length ? (
+            <View style={{ marginTop: spacing.xl }}>
+              <Button title="Marcar nova consulta" onPress={() => router.push('/agendar')} />
+            </View>
+          ) : null}
           {erro ? <Text style={{ color: colors.danger, marginTop: spacing.md }}>{erro}</Text> : null}
 
           <Section title="Próximas">
