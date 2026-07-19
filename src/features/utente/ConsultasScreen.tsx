@@ -1,61 +1,44 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, RefreshControl } from 'react-native';
-import { useFocusEffect, useRouter } from 'expo-router';
+import { View, Text, ScrollView, Alert, RefreshControl } from 'react-native';
+import { useFocusEffect, router } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
+import { Section } from '../../components/Section';
+import { StatusBadge } from '../../components/StatusBadge';
+import { EmptyState } from '../../components/EmptyState';
 import { consultaService } from '../../services/consultaService';
-import { Consulta, EstadoConsulta } from '../../api/types';
-import { colors, spacing, typography, fontFamily } from '../../theme';
+import { Consulta } from '../../api/types';
+import { colors, spacing, typography } from '../../theme';
 
 // Aba "Consultas" do utente: lista as consultas com estado e permite marcar
 // nova consulta (fluxo /agendar), entrar na teleconsulta ou cancelar.
 
-const ESTADO_LABEL: Record<EstadoConsulta, string> = {
-  agendada: 'Agendada',
-  em_curso: 'Em curso',
-  concluida: 'Concluída',
-  cancelada: 'Cancelada',
-};
-
-const ESTADO_COR: Record<EstadoConsulta, string> = {
-  agendada: colors.primary,
-  em_curso: colors.action,
-  concluida: colors.textSubtle,
-  cancelada: colors.danger,
-};
-
 function ConsultaCard({ consulta, onEntrar, onCancelar }: { consulta: Consulta; onEntrar: () => void; onCancelar: () => void }) {
   const quando = new Date(consulta.data_hora).toLocaleString('pt-PT', { dateStyle: 'medium', timeStyle: 'short' });
+  const nomeMedico = consulta.medico?.user?.nome ?? 'médico';
   return (
     <Card style={{ marginBottom: spacing.md }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
         <View style={{ flex: 1 }}>
-          <Text style={{ fontFamily: fontFamily.medium, fontSize: 15 }}>
-            Dr(a). {consulta.medico?.user?.nome ?? '—'}
-          </Text>
+          <Text style={typography.title}>Dr(a). {consulta.medico?.user?.nome ?? '—'}</Text>
           <Text style={typography.caption}>{consulta.medico?.especialidade ?? ''}</Text>
-          <Text style={[typography.caption, { marginTop: 2 }]}>{quando}</Text>
+          <Text style={[typography.caption, { marginTop: spacing.xs }]}>{quando}</Text>
         </View>
         <View style={{ alignItems: 'flex-end', gap: spacing.sm }}>
-          <View style={{ backgroundColor: colors.tagBg, paddingVertical: 4, paddingHorizontal: 12, borderRadius: 14 }}>
-            <Text style={{ color: ESTADO_COR[consulta.estado], fontFamily: fontFamily.medium, fontSize: 12 }}>
-              {ESTADO_LABEL[consulta.estado]}
-            </Text>
-          </View>
+          <StatusBadge estado={consulta.estado} />
           {consulta.estado === 'em_curso' ? (
-            <TouchableOpacity onPress={onEntrar}>
-              <View style={{ backgroundColor: colors.action, paddingVertical: 6, paddingHorizontal: 16, borderRadius: 16 }}>
-                <Text style={{ color: colors.white, fontFamily: fontFamily.medium, fontSize: 13 }}>Entrar</Text>
-              </View>
-            </TouchableOpacity>
+            <Button title="Entrar" onPress={onEntrar} accessibilityLabel={`Entrar na teleconsulta de ${nomeMedico}`} />
           ) : null}
           {consulta.estado === 'agendada' ? (
-            <TouchableOpacity onPress={onCancelar}>
-              <Text style={{ color: colors.danger, fontSize: 12, fontFamily: fontFamily.medium }}>Cancelar</Text>
-            </TouchableOpacity>
+            <Button
+              title="Cancelar"
+              variant="danger"
+              onPress={onCancelar}
+              accessibilityLabel={`Cancelar consulta de ${nomeMedico}`}
+            />
           ) : null}
         </View>
       </View>
@@ -64,7 +47,6 @@ function ConsultaCard({ consulta, onEntrar, onCancelar }: { consulta: Consulta; 
 }
 
 export function ConsultasScreen() {
-  const router = useRouter();
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
@@ -112,7 +94,7 @@ export function ConsultasScreen() {
   const passadas = consultas.filter((c) => c.estado === 'concluida' || c.estado === 'cancelada');
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
@@ -124,33 +106,32 @@ export function ConsultasScreen() {
           </View>
           {erro ? <Text style={{ color: colors.danger, marginTop: spacing.md }}>{erro}</Text> : null}
 
-          <Text style={[typography.title, { color: colors.primary, marginTop: spacing.xl, marginBottom: spacing.sm }]}>
-            Próximas
-          </Text>
-          {ativas.length ? (
-            ativas.map((c) => (
-              <ConsultaCard
-                key={c.id}
-                consulta={c}
-                onEntrar={() => router.push(`/telemedicine/${c.id}`)}
-                onCancelar={() => cancelar(c)}
+          <Section title="Próximas">
+            {ativas.length ? (
+              ativas.map((c) => (
+                <ConsultaCard
+                  key={c.id}
+                  consulta={c}
+                  onEntrar={() => router.push(`/telemedicine/${c.id}`)}
+                  onCancelar={() => cancelar(c)}
+                />
+              ))
+            ) : (
+              <EmptyState
+                icone="calendar-outline"
+                titulo="Ainda não tem consultas marcadas"
+                descricao="Marque uma consulta para falar com um médico."
+                acao={{ titulo: 'Marcar consulta', onPress: () => router.push('/agendar') }}
               />
-            ))
-          ) : (
-            <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
-              <Text style={typography.caption}>Sem consultas marcadas</Text>
-            </Card>
-          )}
+            )}
+          </Section>
 
           {passadas.length ? (
-            <>
-              <Text style={[typography.title, { color: colors.primary, marginTop: spacing.xl, marginBottom: spacing.sm }]}>
-                Anteriores
-              </Text>
+            <Section title="Anteriores">
               {passadas.map((c) => (
                 <ConsultaCard key={c.id} consulta={c} onEntrar={() => {}} onCancelar={() => {}} />
               ))}
-            </>
+            </Section>
           ) : null}
         </View>
       </ScrollView>
