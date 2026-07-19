@@ -11,8 +11,8 @@ export default function MedicoTabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: colors.actionInk,
+        tabBarInactiveTintColor: colors.inkMuted,
       }}
     >
       <Tabs.Screen
