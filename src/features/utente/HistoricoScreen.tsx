@@ -1,16 +1,19 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, Image, Alert, RefreshControl } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
 import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
+import { Touchable } from '../../components/Touchable';
+import { Icon } from '../../components/Icon';
+import { EmptyState } from '../../components/EmptyState';
 import { clinicoService } from '../../services/clinicoService';
 import { useAuth } from '../../context/AuthContext';
 import { RegistoClinico, TipoRegisto } from '../../api/types';
 import { BASE_URL } from '../../api/resolveBaseUrl';
-import { colors, spacing, typography, fontFamily } from '../../theme';
+import { colors, spacing, typography, fontFamily, radii } from '../../theme';
 
 // Aba "Histórico" do utente: registos clínicos (receitas, exames, consultas)
 // com filtro por tipo, foto anexada e criação de novos registos.
@@ -79,7 +82,7 @@ export function HistoricoScreen() {
   const filtrados = filtro === 'todos' ? registos : registos.filter((r) => r.tipo === filtro);
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
@@ -95,20 +98,36 @@ export function HistoricoScreen() {
             {FILTROS.map((f) => {
               const ativo = filtro === f.key;
               return (
-                <TouchableOpacity key={f.key} onPress={() => setFiltro(f.key)} style={{ marginRight: spacing.sm }}>
+                <Touchable
+                  key={f.key}
+                  onPress={() => setFiltro(f.key)}
+                  accessibilityLabel={`Filtrar por ${f.label}`}
+                  accessibilityRole="tab"
+                  selected={ativo}
+                  alvoMinimo={false}
+                  style={{ marginRight: spacing.sm }}
+                >
                   <View
                     style={{
-                      backgroundColor: ativo ? colors.primary : colors.tagBg,
-                      paddingVertical: 8,
-                      paddingHorizontal: 16,
-                      borderRadius: 20,
+                      backgroundColor: ativo ? colors.actionInk : colors.tagBg,
+                      paddingHorizontal: spacing.lg,
+                      paddingVertical: spacing.sm,
+                      borderRadius: radii.md,
+                      minHeight: spacing.touchMin,
+                      justifyContent: 'center',
                     }}
                   >
-                    <Text style={{ color: ativo ? colors.white : colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>
+                    <Text
+                      style={{
+                        ...typography.caption,
+                        color: ativo ? colors.inkInverse : colors.actionInk,
+                        fontFamily: fontFamily.medium,
+                      }}
+                    >
                       {f.label}
                     </Text>
                   </View>
-                </TouchableOpacity>
+                </Touchable>
               );
             })}
           </ScrollView>
@@ -121,30 +140,50 @@ export function HistoricoScreen() {
                   <Card key={registo.id} style={{ marginBottom: spacing.md }}>
                     <View style={{ flexDirection: 'row', gap: spacing.md }}>
                       {foto ? (
-                        <Image source={{ uri: foto }} style={{ width: 64, height: 64, borderRadius: 12 }} resizeMode="cover" />
+                        <Image source={{ uri: foto }} style={{ width: 64, height: 64, borderRadius: radii.md }} resizeMode="cover" />
                       ) : null}
                       <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <Text style={{ fontFamily: fontFamily.medium, fontSize: 15, flex: 1 }}>{registo.titulo}</Text>
-                          <View style={{ backgroundColor: colors.tagBg, paddingVertical: 3, paddingHorizontal: 10, borderRadius: 12 }}>
-                            <Text style={{ color: colors.primary, fontSize: 11, fontFamily: fontFamily.medium }}>
+                          <Text style={{ ...typography.title, color: colors.ink, flex: 1 }}>{registo.titulo}</Text>
+                          <View
+                            style={{
+                              backgroundColor: colors.tagBg,
+                              paddingVertical: spacing.xs,
+                              paddingHorizontal: spacing.sm,
+                              borderRadius: radii.md,
+                            }}
+                          >
+                            <Text style={{ ...typography.caption, color: colors.actionInk, fontFamily: fontFamily.medium }}>
                               {TIPO_LABEL[registo.tipo]}
                             </Text>
                           </View>
                         </View>
                         {registo.descricao ? (
-                          <Text style={[typography.caption, { marginTop: 4 }]} numberOfLines={2}>
+                          <Text style={[typography.caption, { marginTop: spacing.xs }]} numberOfLines={2}>
                             {registo.descricao}
                           </Text>
                         ) : null}
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
-                          <Text style={{ color: colors.textMuted, fontSize: 12 }}>
-                            {registo.data ? new Date(registo.data).toLocaleDateString('pt-PT') : ''}
-                            {registo.validado_por_medico ? '  ✓ validado por médico' : ''}
-                          </Text>
-                          <TouchableOpacity onPress={() => apagar(registo)}>
-                            <Text style={{ color: colors.danger, fontSize: 12, fontFamily: fontFamily.medium }}>Remover</Text>
-                          </TouchableOpacity>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+                            <Text style={{ ...typography.caption, color: colors.inkMuted }}>
+                              {registo.data ? new Date(registo.data).toLocaleDateString('pt-PT') : ''}
+                            </Text>
+                            {registo.validado_por_medico ? (
+                              <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+                                <Icon nome="checkmark-circle" tamanho="sm" cor={colors.success} />
+                                <Text style={{ ...typography.caption, color: colors.success }}>Validado por médico</Text>
+                              </View>
+                            ) : null}
+                          </View>
+                          <Touchable
+                            onPress={() => apagar(registo)}
+                            accessibilityLabel={`Remover ${registo.titulo}`}
+                            alvoMinimo={false}
+                          >
+                            <Text style={{ ...typography.caption, color: colors.danger, fontFamily: fontFamily.medium }}>
+                              Remover
+                            </Text>
+                          </Touchable>
                         </View>
                       </View>
                     </View>
@@ -152,11 +191,11 @@ export function HistoricoScreen() {
                 );
               })
             ) : (
-              <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
-                <Text style={typography.caption}>
-                  {filtro === 'todos' ? 'Sem registos clínicos' : `Sem registos de ${FILTROS.find((f) => f.key === filtro)?.label.toLowerCase()}`}
-                </Text>
-              </Card>
+              <EmptyState
+                icone="folder-open-outline"
+                titulo="Sem registos neste filtro"
+                descricao="Experimente outro filtro ou adicione uma receita, exame ou consulta."
+              />
             )}
           </View>
         </View>

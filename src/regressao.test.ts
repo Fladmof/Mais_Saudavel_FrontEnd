@@ -12,6 +12,7 @@ const FICHEIROS_COBERTOS: string[] = [
   // Fase 2, vaga 1 — tabs do utente
   'src/features/utente/AlertasScreen.tsx',
   'src/features/utente/ConsultasScreen.tsx',
+  'src/features/utente/HistoricoScreen.tsx',
 ];
 
 // O primitivo Touchable é o único sítio onde TouchableOpacity é legítimo.
