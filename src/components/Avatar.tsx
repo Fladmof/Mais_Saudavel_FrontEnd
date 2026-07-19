@@ -21,7 +21,7 @@ export function Avatar({ nome, size = 48 }: { nome?: string | null; size?: numbe
         justifyContent: 'center',
       }}
     >
-      <Text style={{ fontFamily: fontFamily.medium, color: colors.primary, fontSize: Math.max(14, size * 0.3) }}>
+      <Text style={{ fontFamily: fontFamily.medium, color: colors.actionInk, fontSize: Math.max(14, size * 0.3) }}>
         {iniciais || '?'}
       </Text>
     </View>

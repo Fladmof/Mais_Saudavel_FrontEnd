@@ -8,7 +8,7 @@ type Props = { title: string; children: React.ReactNode };
 export function Section({ title, children }: Props) {
   return (
     <View style={{ marginTop: spacing.xl }}>
-      <Text style={[typography.title, { color: colors.primary, marginBottom: spacing.sm }]}>{title}</Text>
+      <Text style={[typography.title, { color: colors.actionInk, marginBottom: spacing.sm }]}>{title}</Text>
       {children}
     </View>
   );

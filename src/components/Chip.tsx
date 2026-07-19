@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { colors, spacing, fontFamily } from '../theme';
+import { colors, spacing, radii, typography, fontFamily } from '../theme';
 
 // Etiqueta arredondada (condicoes especiais / alergias)
 export function Chip({ label }: { label: string }) {
@@ -10,10 +10,10 @@ export function Chip({ label }: { label: string }) {
         backgroundColor: colors.tagBg,
         paddingHorizontal: spacing.lg,
         paddingVertical: spacing.sm,
-        borderRadius: 20,
+        borderRadius: radii.md,
       }}
     >
-      <Text style={{ color: colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>{label}</Text>
+      <Text style={[typography.caption, { color: colors.actionInk, fontFamily: fontFamily.medium }]}>{label}</Text>
     </View>
   );
 }

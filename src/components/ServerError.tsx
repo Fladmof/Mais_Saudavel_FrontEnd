@@ -15,17 +15,17 @@ export function ServerError({ onRetry, message }: Props) {
       </View>
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xxl }}>
         <View style={{ flexDirection: 'row' }}>
-          <Text style={{ fontFamily: fontFamily.bold, fontSize: 96, color: colors.primary }}>5</Text>
-          <Text style={{ fontFamily: fontFamily.bold, fontSize: 96, color: colors.action }}>0</Text>
-          <Text style={{ fontFamily: fontFamily.bold, fontSize: 96, color: colors.primary }}>0</Text>
+          <Text style={[typography.display, { color: colors.primary }]}>5</Text>
+          <Text style={[typography.display, { color: colors.action }]}>0</Text>
+          <Text style={[typography.display, { color: colors.primary }]}>0</Text>
         </View>
-        <Text style={[typography.h2, { color: colors.action, marginTop: spacing.md }]}>Problemas De Conexão</Text>
+        <Text style={[typography.h2, { color: colors.ink, marginTop: spacing.md }]}>Problemas De Conexão</Text>
         <View style={{ marginTop: spacing.xl, alignSelf: 'stretch' }}>
-          <Text style={typography.body}>
+          <Text style={[typography.body, { color: colors.inkSecondary }]}>
             {message ?? 'Desculpe, estamos enfrentando problemas técnicos no momento.'}
           </Text>
-          <Text style={[typography.body, { marginTop: spacing.md }]}>Já estamos trabalhando para resolver.</Text>
-          <Text style={[typography.body, { marginTop: spacing.xl }]}>Volte mais tarde!</Text>
+          <Text style={[typography.body, { color: colors.inkSecondary, marginTop: spacing.md }]}>Já estamos trabalhando para resolver.</Text>
+          <Text style={[typography.body, { color: colors.inkSecondary, marginTop: spacing.xl }]}>Volte mais tarde!</Text>
         </View>
         {onRetry ? (
           <View style={{ alignSelf: 'stretch', marginTop: spacing.xxl }}>
