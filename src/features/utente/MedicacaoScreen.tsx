@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert, RefreshControl, Image } from 'react-native';
+import { View, Text, ScrollView, Alert, RefreshControl, Image } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
@@ -10,11 +10,13 @@ import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
 import { Avatar } from '../../components/Avatar';
+import { Touchable } from '../../components/Touchable';
+import { EmptyState } from '../../components/EmptyState';
 import { utenteService } from '../../services/utenteService';
 import { clinicoService } from '../../services/clinicoService';
 import { consultaService } from '../../services/consultaService';
 import { UtentePerfil, Medicacao, RegistoClinico, TipoRegisto, Consulta, Alergia, CondicaoEspecial } from '../../api/types';
-import { colors, spacing, typography, fontFamily } from '../../theme';
+import { colors, spacing, typography, fontFamily, radii } from '../../theme';
 
 // Ecra "Medicação" do Figma (131:540): condicoes especiais, alergia registrada,
 // medicacao atual (CRUD real), historicos (receitas/exames/consultas),
@@ -25,26 +27,6 @@ const HISTORICOS: { tipo: TipoRegisto; titulo: string; desc: string }[] = [
   { tipo: 'exame', titulo: 'Exames', desc: 'Registrar imagens para\nconsulta posterior' },
   { tipo: 'consulta', titulo: 'Consultas que me lembro', desc: 'Descreva o hospital, os exames\nrealizados, a receita e o médico' },
 ];
-
-function BotaoAdicionar({ onPress }: { onPress: () => void }) {
-  return (
-    <TouchableOpacity onPress={onPress}>
-      <View
-        style={{
-          width: 90,
-          height: 52,
-          borderWidth: 1,
-          borderColor: '#E8E8E8',
-          borderRadius: 24,
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Text style={{ fontFamily: fontFamily.medium, fontSize: 14, color: colors.primary }}>Adicionar</Text>
-      </View>
-    </TouchableOpacity>
-  );
-}
 
 export function MedicacaoScreen() {
   const router = useRouter();
@@ -108,6 +90,8 @@ export function MedicacaoScreen() {
     setAGuardarDetalhes(false);
     if (!r.ok) Alert.alert('Erro', r.message || 'Não foi possível guardar');
   };
+
+  const abrirNovaMedicacao = () => setNovaMed({ nome: '', dosagem: '', frequencia: '' });
 
   const adicionarMedicacao = async () => {
     if (!perfil || !novaMed || !novaMed.nome.trim()) return;
@@ -177,7 +161,7 @@ export function MedicacaoScreen() {
   if (networkError) return <ServerError onRetry={() => { setLoading(true); carregar(); }} />;
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
@@ -186,17 +170,22 @@ export function MedicacaoScreen() {
 
         <View style={{ paddingHorizontal: spacing.lg }}>
           <Section title="Condições especiais">
-            <Card>
-              {condicoes.length ? (
+            {condicoes.length ? (
+              <Card>
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'center' }}>
                   {condicoes.map((c) => (
                     <Chip key={c.id} label={c.nome} />
                   ))}
                 </View>
-              ) : (
-                <Text style={[typography.caption, { textAlign: 'center' }]}>Sem condições registadas — edite na Ficha</Text>
-              )}
-            </Card>
+              </Card>
+            ) : (
+              <EmptyState
+                icone="alert-circle-outline"
+                titulo="Sem condições registadas"
+                descricao="As suas alergias e condições especiais aparecem aqui."
+                acao={{ titulo: 'Editar na Ficha', onPress: () => router.push('/(tabs)') }}
+              />
+            )}
           </Section>
 
           <Section title="Alergia registrada">
@@ -211,8 +200,7 @@ export function MedicacaoScreen() {
                   ))}
                 </View>
               ) : null}
-              <Text style={{ fontSize: 15, fontFamily: fontFamily.medium, marginBottom: spacing.sm }}>Descrição livre</Text>
-              <TextField value={detalhes} onChangeText={setDetalhes} placeholder="Amendoim e pólen" multiline />
+              <TextField label="Descrição livre" value={detalhes} onChangeText={setDetalhes} placeholder="Amendoim e pólen" multiline />
               <View style={{ marginTop: spacing.md }}>
                 <Button title="Guardar descrição" variant="ghost" onPress={guardarDetalhes} loading={aGuardarDetalhes} />
               </View>
@@ -220,42 +208,48 @@ export function MedicacaoScreen() {
           </Section>
 
           <Section title="Medicação atual">
-            <Card>
-              {medicacoes.length === 0 && !novaMed ? (
-                <Text style={[typography.caption, { textAlign: 'center' }]}>Sem medicação registada</Text>
-              ) : null}
-              {medicacoes.map((m) => (
-                <View
-                  key={m.id}
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.border }}
-                >
-                  <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 15 }}>{m.nome}</Text>
-                    <Text style={typography.caption}>
-                      {[m.dosagem, m.frequencia, m.horario].filter(Boolean).join(' · ') || '—'}
-                    </Text>
+            {medicacoes.length === 0 && !novaMed ? (
+              <EmptyState
+                icone="medkit-outline"
+                titulo="Sem medicação registada"
+                descricao="Adicione os medicamentos que toma para não se esquecer das tomas."
+                acao={{ titulo: 'Adicionar medicação', onPress: abrirNovaMedicacao }}
+              />
+            ) : (
+              <Card>
+                {medicacoes.map((m) => (
+                  <View
+                    key={m.id}
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.border }}
+                  >
+                    <View style={{ flex: 1 }}>
+                      <Text style={{ ...typography.title, color: colors.ink }}>{m.nome}</Text>
+                      <Text style={typography.caption}>
+                        {[m.dosagem, m.frequencia, m.horario].filter(Boolean).join(' · ') || '—'}
+                      </Text>
+                    </View>
+                    <Touchable onPress={() => removerMedicacao(m)} accessibilityLabel={`Remover ${m.nome}`}>
+                      <Text style={{ ...typography.caption, color: colors.danger, fontFamily: fontFamily.medium }}>Remover</Text>
+                    </Touchable>
                   </View>
-                  <TouchableOpacity onPress={() => removerMedicacao(m)}>
-                    <Text style={{ color: colors.danger, fontFamily: fontFamily.medium }}>Remover</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-              {novaMed ? (
-                <View style={{ marginTop: spacing.md }}>
-                  <TextField label="Nome" value={novaMed.nome} onChangeText={(v) => setNovaMed({ ...novaMed, nome: v })} placeholder="ex.: Paracetamol" />
-                  <TextField label="Dosagem" value={novaMed.dosagem} onChangeText={(v) => setNovaMed({ ...novaMed, dosagem: v })} placeholder="ex.: 500mg" />
-                  <TextField label="Frequência" value={novaMed.frequencia} onChangeText={(v) => setNovaMed({ ...novaMed, frequencia: v })} placeholder="ex.: 8/8h" />
-                  <View style={{ marginTop: spacing.md, gap: spacing.sm }}>
-                    <Button title="Adicionar" onPress={adicionarMedicacao} loading={aSubmeter} />
-                    <Button title="Cancelar" variant="ghost" onPress={() => setNovaMed(null)} />
+                ))}
+                {novaMed ? (
+                  <View style={{ marginTop: spacing.md }}>
+                    <TextField label="Nome" value={novaMed.nome} onChangeText={(v) => setNovaMed({ ...novaMed, nome: v })} placeholder="ex.: Paracetamol" />
+                    <TextField label="Dosagem" value={novaMed.dosagem} onChangeText={(v) => setNovaMed({ ...novaMed, dosagem: v })} placeholder="ex.: 500mg" />
+                    <TextField label="Frequência" value={novaMed.frequencia} onChangeText={(v) => setNovaMed({ ...novaMed, frequencia: v })} placeholder="ex.: 8/8h" />
+                    <View style={{ marginTop: spacing.md, gap: spacing.sm }}>
+                      <Button title="Adicionar" onPress={adicionarMedicacao} loading={aSubmeter} />
+                      <Button title="Cancelar" variant="ghost" onPress={() => setNovaMed(null)} />
+                    </View>
                   </View>
-                </View>
-              ) : (
-                <View style={{ alignItems: 'center', marginTop: spacing.md }}>
-                  <BotaoAdicionar onPress={() => setNovaMed({ nome: '', dosagem: '', frequencia: '' })} />
-                </View>
-              )}
-            </Card>
+                ) : (
+                  <View style={{ alignItems: 'center', marginTop: spacing.md }}>
+                    <Button title="Adicionar" variant="secondary" icone="add" onPress={abrirNovaMedicacao} />
+                  </View>
+                )}
+              </Card>
+            )}
           </Section>
 
           <Section title="Históricos">
@@ -264,20 +258,25 @@ export function MedicacaoScreen() {
                 const itens = registos.filter((r) => r.tipo === h.tipo);
                 return (
                   <View key={h.tipo} style={{ borderTopWidth: i ? 1 : 0, borderTopColor: colors.border, paddingTop: i ? spacing.lg : 0, marginTop: i ? spacing.lg : 0 }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 16 }}>{h.titulo}</Text>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.md }}>
-                      <Text style={{ color: colors.textMuted, fontSize: 14 }}>{h.desc}</Text>
-                      <BotaoAdicionar onPress={() => setNovoRegisto({ tipo: h.tipo, titulo: '', descricao: '' })} />
+                    <Text style={{ ...typography.title, color: colors.ink }}>{h.titulo}</Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.md, gap: spacing.md }}>
+                      <Text style={[typography.caption, { color: colors.inkMuted, flex: 1 }]}>{h.desc}</Text>
+                      <Button
+                        title="Adicionar"
+                        variant="secondary"
+                        icone="add"
+                        onPress={() => setNovoRegisto({ tipo: h.tipo, titulo: '', descricao: '' })}
+                      />
                     </View>
                     {itens.map((reg) => (
                       <View key={reg.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.sm }}>
                         <View style={{ flex: 1 }}>
-                          <Text style={{ fontSize: 14 }}>{reg.titulo}</Text>
+                          <Text style={{ ...typography.caption, color: colors.ink }}>{reg.titulo}</Text>
                           <Text style={typography.caption}>{reg.data ?? ''}</Text>
                         </View>
-                        <TouchableOpacity onPress={() => removerRegisto(reg)}>
-                          <Text style={{ color: colors.danger, fontSize: 13 }}>Remover</Text>
-                        </TouchableOpacity>
+                        <Touchable onPress={() => removerRegisto(reg)} accessibilityLabel={`Remover registo de ${reg.data}`}>
+                          <Text style={{ ...typography.caption, color: colors.danger, fontFamily: fontFamily.medium }}>Remover</Text>
+                        </Touchable>
                       </View>
                     ))}
                     {novoRegisto?.tipo === h.tipo ? (
@@ -301,60 +300,63 @@ export function MedicacaoScreen() {
               <Card style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
                 <Avatar nome={proxima.medico.user?.nome} size={64} />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontFamily: fontFamily.medium, fontSize: 14 }}>Dr(a). {proxima.medico.user?.nome}</Text>
-                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{proxima.medico.especialidade}</Text>
-                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{proxima.medico.telefone ?? '—'}</Text>
-                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{proxima.medico.hospital}</Text>
+                  <Text style={{ ...typography.title, color: colors.ink }}>Dr(a). {proxima.medico.user?.nome}</Text>
+                  <Text style={{ ...typography.caption, color: colors.inkMuted }}>{proxima.medico.especialidade}</Text>
+                  <Text style={{ ...typography.caption, color: colors.inkMuted }}>{proxima.medico.telefone ?? '—'}</Text>
+                  <Text style={{ ...typography.caption, color: colors.inkMuted }}>{proxima.medico.hospital}</Text>
                 </View>
-                <TouchableOpacity
+                <Touchable
                   onPress={() =>
                     proxima.estado === 'em_curso'
                       ? router.push(`/telemedicine/${proxima.id}`)
                       : Alert.alert('Sem teleconsulta ativa', 'A teleconsulta fica disponível quando o médico a iniciar.')
                   }
+                  accessibilityLabel="Entrar na teleconsulta"
+                  alvoMinimo={false}
                 >
-                  <View style={{ backgroundColor: colors.action, width: 120, height: 48, alignItems: 'center', justifyContent: 'center', borderRadius: 24 }}>
+                  <View style={{ backgroundColor: colors.action, width: 120, height: spacing.touchMin, alignItems: 'center', justifyContent: 'center', borderRadius: radii.full }}>
                     <Image source={require('../../../assets/images/telemedicina.png')} />
-                    <Text style={{ color: colors.white }}>Telemedicina</Text>
+                    <Text style={{ color: colors.inkOnAction }}>Telemedicina</Text>
                   </View>
-                </TouchableOpacity>
+                </Touchable>
               </Card>
             ) : (
-              <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
-                <Text style={[typography.caption, { textAlign: 'center' }]}>
-                  Sem médico assistente — será associado quando tiver uma consulta marcada
-                </Text>
-              </Card>
+              <EmptyState
+                icone="person-outline"
+                titulo="Sem médico assistente"
+                descricao="Será associado quando tiver uma consulta marcada."
+              />
             )}
           </Section>
 
           <View style={{ marginTop: spacing.xl }}>
             <Text style={[typography.title, { color: colors.danger, marginBottom: spacing.sm }]}>Contacto de emergência</Text>
             <Card style={{ flexDirection: 'row', gap: spacing.lg, alignItems: 'center' }}>
-              <View style={{ width: 64, height: 64, borderRadius: 32, backgroundColor: '#F620201A', alignItems: 'center', justifyContent: 'center' }}>
-                <Text style={{ color: colors.danger, fontFamily: fontFamily.medium, fontSize: 18 }}>
+              <View style={{ width: 64, height: 64, borderRadius: radii.full, backgroundColor: colors.dangerSurface, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ ...typography.title, color: colors.danger }}>
                   {(perfil?.contato_emergencia ?? '?').split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]?.toUpperCase()).join('') || '?'}
                 </Text>
               </View>
               <View>
-                <Text style={{ fontFamily: fontFamily.medium, fontSize: 16, marginBottom: 4 }}>
+                <Text style={{ ...typography.title, color: colors.ink, marginBottom: spacing.xs }}>
                   {perfil?.contato_emergencia || 'Sem contacto registado'}
                 </Text>
-                <Text style={{ color: colors.textSubtle }}>{perfil?.relacao || '—'}</Text>
-                <Text style={{ color: colors.danger }}>{perfil?.telemergencia || '—'}</Text>
+                <Text style={{ ...typography.caption, color: colors.inkSecondary }}>{perfil?.relacao || '—'}</Text>
+                <Text style={{ ...typography.caption, color: colors.danger }}>{perfil?.telemergencia || '—'}</Text>
               </View>
             </Card>
           </View>
 
           <Section title="Emergência">
             <Card style={{ alignItems: 'center', paddingVertical: spacing.xl }}>
-              <Text style={{ color: colors.primary, fontSize: 16, fontFamily: fontFamily.medium, marginBottom: spacing.xl }}>Emergência</Text>
-              <Text style={{ color: colors.textMuted, fontFamily: fontFamily.bold, fontSize: 15, marginBottom: spacing.lg }}>Serviço indisponível</Text>
-              <TouchableOpacity onPress={brevemente}>
-                <View style={{ backgroundColor: colors.action, paddingVertical: 8, paddingHorizontal: 80, borderRadius: 20 }}>
-                  <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>Chamar apoio</Text>
+              <Text style={{ ...typography.title, color: colors.inkMuted, fontFamily: fontFamily.bold, marginBottom: spacing.lg }}>
+                Serviço indisponível
+              </Text>
+              <Touchable onPress={brevemente} accessibilityLabel="Chamar apoio">
+                <View style={{ backgroundColor: colors.action, paddingVertical: spacing.sm, paddingHorizontal: 80, borderRadius: radii.full }}>
+                  <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Chamar apoio</Text>
                 </View>
-              </TouchableOpacity>
+              </Touchable>
             </Card>
           </Section>
         </View>

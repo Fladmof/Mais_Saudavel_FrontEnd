@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, Image, TouchableOpacity, Alert, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, Image, Alert, RefreshControl } from 'react-native';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
@@ -10,13 +10,17 @@ import { Section } from '../../components/Section';
 import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
+import { Touchable } from '../../components/Touchable';
+import { Icon } from '../../components/Icon';
+import { StatusBadge, ESTADOS_CONSULTA } from '../../components/StatusBadge';
+import { Chip } from '../../components/Chip';
 import { utenteService } from '../../services/utenteService';
 import { consultaService } from '../../services/consultaService';
 import { clinicoService } from '../../services/clinicoService';
 import { documentoService } from '../../services/documentoService';
 import { UtentePerfil, Consulta, Alergia, CondicaoEspecial } from '../../api/types';
 import { useAuth } from '../../context/AuthContext';
-import { colors, spacing, typography, fontFamily } from '../../theme';
+import { colors, spacing, typography, fontFamily, radii } from '../../theme';
 
 // Ficha do Utente (Figma 75:390 / 127:410): cartao pessoal, dados biologicos,
 // parametros de saude (smartwatch "Sem dados") e historico alimentar.
@@ -52,22 +56,30 @@ function HealthCard({ titulo, icone }: { titulo: string; icone: any }) {
         borderWidth: 1,
         borderColor: colors.border,
         backgroundColor: colors.surface,
-        borderRadius: 20,
-        padding: 14,
+        borderRadius: radii.lg,
+        padding: spacing.md,
         marginRight: spacing.md,
       }}
     >
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: colors.primary, fontSize: 14, fontFamily: fontFamily.medium }}>{titulo}</Text>
+        <Text style={{ ...typography.caption, color: colors.actionInk, fontFamily: fontFamily.medium }}>{titulo}</Text>
         <Image source={icone} resizeMode="contain" style={{ width: 24, height: 24 }} />
       </View>
       <View style={{ alignItems: 'center', marginVertical: spacing.md }}>
         <Image source={require('../../../assets/images/empty.png')} resizeMode="contain" />
       </View>
-      <View style={{ backgroundColor: colors.action, paddingVertical: 4, borderRadius: 14, alignItems: 'center' }}>
-        <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>Sem dados</Text>
+      <View style={{ backgroundColor: colors.action, paddingVertical: spacing.xs, borderRadius: radii.md, alignItems: 'center' }}>
+        <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Sem dados</Text>
       </View>
-      <Text style={{ marginTop: spacing.md, textAlign: 'center', fontSize: 12, color: colors.placeholder, fontFamily: fontFamily.medium }}>
+      <Text
+        style={{
+          ...typography.caption,
+          marginTop: spacing.md,
+          textAlign: 'center',
+          color: colors.inkMuted,
+          fontFamily: fontFamily.medium,
+        }}
+      >
         sincronize o smartwatch para{'\n'}consultar leituras
       </Text>
     </View>
@@ -155,7 +167,7 @@ export function FichaMedicaScreen() {
   if (networkError) return <ServerError onRetry={() => { setLoading(true); carregar(); }} />;
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
@@ -167,20 +179,26 @@ export function FichaMedicaScreen() {
             {erro ? <Text style={{ color: colors.danger }}>{erro}</Text> : null}
             {perfil && !editar ? (
               <>
-                <View style={{ flexDirection: 'row', gap: 20 }}>
+                <View style={{ flexDirection: 'row', gap: spacing.lg }}>
                   <Avatar nome={perfil.user?.nome} size={90} />
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 16, marginBottom: 6 }}>{perfil.user?.nome}</Text>
-                    <Text style={{ color: colors.textMuted, fontSize: 14 }}>{idadeDe(perfil.datanascimento)} anos - {perfil.genero}</Text>
-                    <Text style={{ color: colors.textMuted, fontSize: 14 }}>Nº de utente: UT-{String(perfil.id).padStart(7, '0')}</Text>
-                    <Text style={{ color: colors.textMuted, fontSize: 14 }}>{perfil.telefone}</Text>
+                    <Text style={{ ...typography.title, color: colors.ink, marginBottom: spacing.xs }}>
+                      {perfil.user?.nome}
+                    </Text>
+                    <Text style={{ ...typography.caption, color: colors.inkMuted }}>
+                      {idadeDe(perfil.datanascimento)} anos - {perfil.genero}
+                    </Text>
+                    <Text style={{ ...typography.caption, color: colors.inkMuted }}>
+                      Nº de utente: UT-{String(perfil.id).padStart(7, '0')}
+                    </Text>
+                    <Text style={{ ...typography.caption, color: colors.inkMuted }}>{perfil.telefone}</Text>
                   </View>
                 </View>
                 <View style={{ height: 1, backgroundColor: colors.border, marginVertical: spacing.lg }} />
-                <Text style={{ color: colors.textMuted, fontSize: 12 }}>BI/Cartão de cidadão: {perfil.bi}</Text>
-                <Text style={{ color: colors.textMuted, fontSize: 12 }}>Morada: {perfil.morada}</Text>
-                <Text style={{ color: colors.textMuted, fontSize: 12 }}>Profissão: {perfil.profissao || '—'}</Text>
-                <TouchableOpacity
+                <Text style={{ ...typography.caption, color: colors.inkMuted }}>BI/Cartão de cidadão: {perfil.bi}</Text>
+                <Text style={{ ...typography.caption, color: colors.inkMuted }}>Morada: {perfil.morada}</Text>
+                <Text style={{ ...typography.caption, color: colors.inkMuted }}>Profissão: {perfil.profissao || '—'}</Text>
+                <Touchable
                   onPress={() =>
                     setEditar({
                       nome: perfil.user?.nome ?? '',
@@ -191,10 +209,13 @@ export function FichaMedicaScreen() {
                       altura: String(perfil.altura ?? ''),
                     })
                   }
+                  accessibilityLabel="Editar dados pessoais"
                   style={{ position: 'absolute', top: spacing.lg, right: spacing.lg }}
                 >
-                  <Text style={{ color: colors.primary, fontFamily: fontFamily.medium }}>Editar</Text>
-                </TouchableOpacity>
+                  <Text style={{ ...typography.caption, color: colors.actionInk, fontFamily: fontFamily.medium }}>
+                    Editar
+                  </Text>
+                </Touchable>
               </>
             ) : null}
             {perfil && editar ? (
@@ -218,33 +239,31 @@ export function FichaMedicaScreen() {
               {proxima ? (
                 <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
                   <View style={{ flex: 1 }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 15 }}>
+                    <Text style={{ ...typography.title, color: colors.ink }}>
                       Dr(a). {proxima.medico?.user?.nome ?? '—'}
                     </Text>
                     <Text style={typography.caption}>
                       {new Date(proxima.data_hora).toLocaleString('pt-PT', { dateStyle: 'short', timeStyle: 'short' })}
                     </Text>
                   </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      proxima.estado === 'em_curso'
-                        ? router.push(`/telemedicine/${proxima.id}`)
-                        : Alert.alert('Ainda não começou', 'A teleconsulta fica disponível quando o médico a iniciar.')
-                    }
-                  >
-                    <View
-                      style={{
-                        backgroundColor: proxima.estado === 'em_curso' ? colors.action : colors.tagBg,
-                        paddingVertical: 8,
-                        paddingHorizontal: 16,
-                        borderRadius: 20,
-                      }}
+                  {proxima.estado === 'em_curso' ? (
+                    <Button
+                      title="Entrar"
+                      onPress={() => router.push(`/telemedicine/${proxima.id}`)}
+                      accessibilityLabel={`Entrar na teleconsulta com Dr(a). ${proxima.medico?.user?.nome ?? 'o seu médico'}`}
+                    />
+                  ) : (
+                    // Tocar no estado explica porque ainda não se pode entrar —
+                    // informação útil para quem aguarda a teleconsulta.
+                    <Touchable
+                      onPress={() =>
+                        Alert.alert('Ainda não começou', 'A teleconsulta fica disponível quando o médico a iniciar.')
+                      }
+                      accessibilityLabel={`Estado da consulta: ${ESTADOS_CONSULTA[proxima.estado].rotulo}. A teleconsulta abre quando o médico a iniciar.`}
                     >
-                      <Text style={{ color: proxima.estado === 'em_curso' ? colors.white : colors.primary, fontFamily: fontFamily.medium }}>
-                        {proxima.estado === 'em_curso' ? 'Entrar' : 'Agendada'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
+                      <StatusBadge estado={proxima.estado} />
+                    </Touchable>
+                  )}
                 </View>
               ) : (
                 <Text style={[typography.caption, { textAlign: 'center' }]}>Sem consultas marcadas</Text>
@@ -256,22 +275,36 @@ export function FichaMedicaScreen() {
             <Card>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
                 {alergias.map((a) => (
-                  <View key={`a-${a.id}`} style={{ backgroundColor: '#FF383C1A', paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 20 }}>
-                    <Text style={{ color: colors.danger, fontFamily: fontFamily.medium, fontSize: 13 }}>{a.nome}</Text>
+                  <View
+                    key={`a-${a.id}`}
+                    style={{
+                      backgroundColor: colors.dangerSurface,
+                      paddingHorizontal: spacing.lg,
+                      paddingVertical: spacing.sm,
+                      borderRadius: radii.md,
+                    }}
+                  >
+                    <Text style={{ ...typography.caption, color: colors.danger, fontFamily: fontFamily.medium }}>
+                      {a.nome}
+                    </Text>
                   </View>
                 ))}
                 {condicoes.map((c) => (
-                  <View key={`c-${c.id}`} style={{ backgroundColor: colors.tagBg, paddingHorizontal: spacing.lg, paddingVertical: spacing.sm, borderRadius: 20 }}>
-                    <Text style={{ color: colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>{c.nome}</Text>
-                  </View>
+                  <Chip key={`c-${c.id}`} label={c.nome} />
                 ))}
                 {!alergias.length && !condicoes.length ? (
                   <Text style={typography.caption}>Sem alergias ou condições registadas</Text>
                 ) : null}
               </View>
-              <TouchableOpacity onPress={() => router.push('/alergias')} style={{ marginTop: spacing.md, alignSelf: 'flex-end' }}>
-                <Text style={{ color: colors.primary, fontFamily: fontFamily.medium, fontSize: 13 }}>Editar</Text>
-              </TouchableOpacity>
+              <Touchable
+                onPress={() => router.push('/alergias')}
+                accessibilityLabel="Editar alergias e condições"
+                style={{ marginTop: spacing.md, alignSelf: 'flex-end' }}
+              >
+                <Text style={{ ...typography.caption, color: colors.actionInk, fontFamily: fontFamily.medium }}>
+                  Editar
+                </Text>
+              </Touchable>
             </Card>
           </Section>
 
@@ -289,15 +322,23 @@ export function FichaMedicaScreen() {
           </Section>
 
           <Section title="Parâmetro de Saúde">
-            <View style={{ backgroundColor: colors.tagBg, paddingVertical: 25, alignItems: 'center', borderRadius: 16 }}>
-              <Text style={{ textAlign: 'center', color: colors.primary, fontSize: 15 }}>
+            <View style={{ backgroundColor: colors.tagBg, paddingVertical: spacing.xl, alignItems: 'center', borderRadius: radii.lg }}>
+              <Text style={{ ...typography.body, textAlign: 'center', color: colors.actionInk }}>
                 Ligue o seu smartwatch para sincronizar{'\n'}automaticamente os seus parâmetros de saúde
               </Text>
-              <TouchableOpacity onPress={brevemente}>
-                <View style={{ backgroundColor: colors.action, paddingVertical: 8, paddingHorizontal: 16, borderRadius: 20, marginTop: 20 }}>
-                  <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>Ligar dispositivo</Text>
+              <Touchable onPress={brevemente} accessibilityLabel="Ligar dispositivo">
+                <View
+                  style={{
+                    backgroundColor: colors.action,
+                    paddingVertical: spacing.sm,
+                    paddingHorizontal: spacing.lg,
+                    borderRadius: radii.full,
+                    marginTop: spacing.xl,
+                  }}
+                >
+                  <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Ligar dispositivo</Text>
                 </View>
-              </TouchableOpacity>
+              </Touchable>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginTop: spacing.lg }}>
               {PARAMETROS.map((p) => (
@@ -308,39 +349,54 @@ export function FichaMedicaScreen() {
 
           <Section title="Histórico alimentar">
             <View style={{ alignItems: 'center' }}>
-              <TouchableOpacity onPress={() => router.push('/calorias')}>
-                <View style={{ backgroundColor: colors.action, paddingVertical: 8, paddingHorizontal: 80, borderRadius: 20 }}>
-                  <Text style={{ color: colors.white, fontFamily: fontFamily.medium }}>Registrar refeição</Text>
+              <Touchable onPress={() => router.push('/calorias')} accessibilityLabel="Registar refeição">
+                <View style={{ backgroundColor: colors.action, paddingVertical: spacing.sm, paddingHorizontal: 80, borderRadius: radii.full }}>
+                  <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Registar refeição</Text>
                 </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => router.push('/calorias')} style={{ alignSelf: 'stretch' }}>
-                <Card style={{ marginTop: spacing.lg, paddingVertical: 24, alignItems: 'center' }}>
-                  <Text style={{ color: colors.primary, fontSize: 15, fontFamily: fontFamily.medium }}>
-                    Ver histórico de calorias →
-                  </Text>
-                </Card>
-              </TouchableOpacity>
+              </Touchable>
+              <Touchable
+                onPress={() => router.push('/calorias')}
+                accessibilityLabel="Ver histórico de calorias"
+                style={{ marginTop: spacing.lg, alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: spacing.xs }}
+              >
+                <Text style={{ ...typography.body, color: colors.actionInk, fontFamily: fontFamily.medium }}>
+                  Ver histórico de calorias
+                </Text>
+                <Icon nome="arrow-forward" tamanho="sm" cor={colors.actionInk} />
+              </Touchable>
             </View>
           </Section>
 
           <Section title="Conta">
             <Card>
-              <TouchableOpacity
+              <Touchable
                 onPress={() => router.push('/validacao-conta')}
+                accessibilityLabel="Validar conta"
                 style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: spacing.sm }}
               >
-                <Text style={{ fontFamily: fontFamily.medium, fontSize: 14 }}>Validação de conta</Text>
-                <Text style={{ color: contaValidada ? colors.primary : '#E8A200', fontFamily: fontFamily.medium, fontSize: 13 }}>
-                  {contaValidada == null ? '' : contaValidada ? '✓ Validada' : 'Pendente ›'}
-                </Text>
-              </TouchableOpacity>
+                <Text style={{ ...typography.caption, fontFamily: fontFamily.medium }}>Validação de conta</Text>
+                {contaValidada == null ? null : contaValidada ? (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+                    <Icon nome="checkmark-circle" tamanho="sm" cor={colors.success} />
+                    <Text style={{ ...typography.caption, color: colors.success }}>Validada</Text>
+                  </View>
+                ) : (
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs }}>
+                    <Icon nome="time-outline" tamanho="sm" cor={colors.warning} />
+                    <Text style={{ ...typography.caption, color: colors.warning }}>Pendente</Text>
+                  </View>
+                )}
+              </Touchable>
               <View style={{ height: 1, backgroundColor: colors.border }} />
-              <TouchableOpacity
+              <Touchable
                 onPress={() => router.push('/eliminar-conta')}
+                accessibilityLabel="Eliminar conta"
                 style={{ paddingVertical: spacing.sm, marginTop: spacing.xs }}
               >
-                <Text style={{ color: colors.danger, fontFamily: fontFamily.medium, fontSize: 14 }}>Eliminar conta</Text>
-              </TouchableOpacity>
+                <Text style={{ ...typography.caption, color: colors.danger, fontFamily: fontFamily.medium }}>
+                  Eliminar conta
+                </Text>
+              </Touchable>
             </Card>
           </Section>
         </View>
