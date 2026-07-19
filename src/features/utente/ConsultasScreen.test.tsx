@@ -6,7 +6,7 @@ import { consultaService } from '../../services/consultaService';
 jest.mock('../../services/consultaService');
 jest.mock('expo-router', () => ({
   useFocusEffect: (cb: () => void) => cb(),
-  router: { push: jest.fn() },
+  useRouter: () => ({ push: jest.fn() }),
 }));
 
 const mockListar = consultaService.minhasConsultas as jest.Mock;

@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { View, Text, ScrollView, Alert, RefreshControl } from 'react-native';
-import { useFocusEffect, router } from 'expo-router';
+import { useFocusEffect, useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { PageHeader } from '../../components/PageHeader';
 import { Card } from '../../components/Card';
@@ -47,6 +47,7 @@ function ConsultaCard({ consulta, onEntrar, onCancelar }: { consulta: Consulta; 
 }
 
 export function ConsultasScreen() {
+  const router = useRouter();
   const [consultas, setConsultas] = useState<Consulta[]>([]);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
