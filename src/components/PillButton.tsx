@@ -2,7 +2,7 @@ import React from 'react';
 import { Text } from 'react-native';
 import { Touchable } from './Touchable';
 import { Icon } from './Icon';
-import { colors, spacing, radii, fontFamily } from '../theme';
+import { colors, spacing, radii, typography } from '../theme';
 
 type Props = { title: string; onPress: () => void };
 
@@ -23,7 +23,7 @@ export function PillButton({ title, onPress }: Props) {
         gap: spacing.sm,
       }}
     >
-      <Text style={{ fontFamily: fontFamily.bold, fontSize: 18, color: colors.inkOnAction }}>{title}</Text>
+      <Text style={[typography.title, { color: colors.inkOnAction }]}>{title}</Text>
       <Icon nome="arrow-forward" tamanho="sm" cor={colors.inkOnAction} />
     </Touchable>
   );

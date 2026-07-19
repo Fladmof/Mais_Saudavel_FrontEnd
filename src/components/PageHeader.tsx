@@ -29,7 +29,7 @@ export function PageHeader({ title, onSignOut }: { title: string; onSignOut?: ()
       ) : null}
       <View
         style={{
-          backgroundColor: colors.primary,
+          backgroundColor: colors.actionInk,
           flexDirection: 'row',
           paddingHorizontal: spacing.xl,
           paddingVertical: spacing.xs,

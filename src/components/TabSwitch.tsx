@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { Touchable } from './Touchable';
-import { colors, spacing, radii, fontFamily } from '../theme';
+import { colors, spacing, radii, typography } from '../theme';
 
 type Props = { options: [string, string]; value: 0 | 1; onChange: (i: 0 | 1) => void };
 
@@ -27,7 +27,7 @@ export function TabSwitch({ options, value, onChange }: Props) {
               backgroundColor: ativo ? colors.surface : 'transparent',
             }}
           >
-            <Text style={{ fontFamily: fontFamily.medium, fontSize: 15, color: ativo ? colors.actionInk : colors.inkSecondary }}>
+            <Text style={[typography.title, { color: ativo ? colors.actionInk : colors.inkSecondary }]}>
               {label}
             </Text>
           </Touchable>
