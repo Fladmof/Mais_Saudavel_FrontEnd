@@ -64,6 +64,12 @@ test('respeita o alvo de toque mínimo', () => {
   expect(estiloDe(getByLabelText('Entrar')).minHeight).toBe(spacing.touchMin);
 });
 
+test('sem onPress fica desativado, em vez de focável e inerte', () => {
+  const { getByLabelText } = render(<Button title="Entrar" />);
+  const alvo = getByLabelText('Entrar');
+  expect(alvo.props.accessibilityState).toMatchObject({ disabled: true });
+});
+
 test('a variante danger tem um limite visível sobre o fundo da página', () => {
   const { getByLabelText } = render(
     <Button title="Eliminar" variant="danger" onPress={() => {}} />,

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Text, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { Touchable } from './Touchable';
-import { Icon } from './Icon';
+import { Icon, NomeIcone } from './Icon';
 import { colors, spacing, radii, typography } from '../theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -13,7 +12,7 @@ type Props = {
   variant?: Variant;
   disabled?: boolean;
   loading?: boolean;
-  icone?: keyof typeof Ionicons.glyphMap;
+  icone?: NomeIcone;
   accessibilityLabel?: string;
   accessibilityHint?: string;
 };
@@ -54,13 +53,16 @@ export function Button({
   accessibilityLabel,
   accessibilityHint,
 }: Props) {
-  const inativo = disabled || loading;
+  // Sem onPress não há ação: um botão focável e anunciado como acionável que
+  // não faz nada é pior do que um botão desativado. Trata-se como disabled.
+  const semAcao = !onPress;
+  const inativo = disabled || loading || semAcao;
   const corTexto = (inativo && !loading ? colors.inkMuted : tinta[variant].color) as string;
 
   return (
     <Touchable
       onPress={onPress ?? (() => {})}
-      disabled={disabled}
+      disabled={disabled || semAcao}
       busy={loading}
       accessibilityLabel={accessibilityLabel ?? title}
       accessibilityHint={accessibilityHint}
