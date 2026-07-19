@@ -17,7 +17,7 @@ export function PageHeader({ title, onSignOut }: { title: string; onSignOut?: ()
         borderBottomRightRadius: radii.lg,
       }}
     >
-      <Text style={[typography.h2, { marginTop: spacing.md }]}>{title}</Text>
+      <Text style={[typography.h2, { color: colors.actionInk, marginTop: spacing.md }]}>{title}</Text>
       {onSignOut ? (
         <Touchable
           onPress={onSignOut}
