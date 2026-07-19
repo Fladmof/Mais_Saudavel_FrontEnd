@@ -3,7 +3,7 @@ import { Text, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Touchable } from './Touchable';
 import { Icon } from './Icon';
-import { colors, spacing, radii, fontFamily } from '../theme';
+import { colors, spacing, radii, typography } from '../theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -28,7 +28,13 @@ const fundo: Record<Variant, ViewStyle> = {
     borderColor: colors.borderStrong,
   },
   ghost: { backgroundColor: 'transparent' },
-  danger: { backgroundColor: colors.dangerSurface },
+  // `dangerSurface` sobre `background` dá só 1.075:1 — praticamente invisível.
+  // A borda torna a ação destrutiva inequívoca, tal como `secondary` já tem.
+  danger: {
+    backgroundColor: colors.dangerSurface,
+    borderWidth: 1,
+    borderColor: colors.danger,
+  },
 };
 
 const tinta: Record<Variant, TextStyle> = {
@@ -81,9 +87,7 @@ export function Button({
           {icone ? <Icon nome={icone} tamanho="sm" cor={corTexto} /> : null}
           <Text
             style={{
-              fontFamily: fontFamily.medium,
-              fontSize: 16,
-              lineHeight: 24,
+              ...typography.title,
               textAlign: 'center',
               color: corTexto,
             }}

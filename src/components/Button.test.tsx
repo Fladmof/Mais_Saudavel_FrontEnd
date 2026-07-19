@@ -24,22 +24,22 @@ function estiloDe(no: { props: { style: unknown } }) {
   return Array.isArray(s) ? Object.assign({}, ...(s as object[]).flat()) : (s as Record<string, unknown>);
 }
 
-test('a variante primária usa tinta legível sobre o verde de ação', () => {
-  const { getByText } = render(<Button title="Entrar" onPress={() => {}} />);
-  const cor = estiloDe(getByText('Entrar')).color as string;
-  expect(racioContraste(cor, colors.action)).toBeGreaterThanOrEqual(4.5);
-});
-
-test('todas as variantes cumprem AA', () => {
-  const pares: [string, string][] = [
-    [colors.inkOnAction, colors.action], // primary
-    [colors.actionInk, colors.surface], // secondary
-    [colors.actionInk, colors.background], // ghost
-    [colors.danger, colors.dangerSurface], // danger
-  ];
-  pares.forEach(([tinta, fundo]) =>
-    expect(racioContraste(tinta, fundo)).toBeGreaterThanOrEqual(4.5),
-  );
+// Renderiza mesmo cada variante e lê a cor real do nó de texto — ao contrário
+// de comparar pares de tokens à parte, isto apanha um erro de MAPEAMENTO
+// entre `variant` e o token de tinta (ex.: trocar `danger` por `actionInk`
+// no objeto `tinta` não fazia esta suite falhar antes desta correção).
+// Substitui tanto o antigo 'todas as variantes cumprem AA' (tautológico:
+// nunca renderizava o Button) como 'a variante primária usa tinta legível
+// sobre o verde de ação' (o caso 'primary' abaixo cobre-o por inteiro).
+test.each([
+  ['primary', colors.action],
+  ['secondary', colors.surface],
+  ['ghost', colors.background],
+  ['danger', colors.dangerSurface],
+] as const)('a variante %s mapeia para tinta que cumpre AA sobre o seu fundo', (variante, fundo) => {
+  const { getByText } = render(<Button title="Ação" variant={variante} onPress={() => {}} />);
+  const cor = estiloDe(getByText('Ação')).color as string;
+  expect(racioContraste(cor, fundo)).toBeGreaterThanOrEqual(4.5);
 });
 
 test('o estado desativado continua legível (não usa opacity 0.5)', () => {
@@ -62,4 +62,13 @@ test('o estado de carregamento anuncia-se e bloqueia o toque', () => {
 test('respeita o alvo de toque mínimo', () => {
   const { getByLabelText } = render(<Button title="Entrar" onPress={() => {}} />);
   expect(estiloDe(getByLabelText('Entrar')).minHeight).toBe(spacing.touchMin);
+});
+
+test('a variante danger tem um limite visível sobre o fundo da página', () => {
+  const { getByLabelText } = render(
+    <Button title="Eliminar" variant="danger" onPress={() => {}} />,
+  );
+  const estilo = estiloDe(getByLabelText('Eliminar'));
+  expect(estilo.borderWidth).toBeGreaterThanOrEqual(1);
+  expect(racioContraste(estilo.borderColor as string, colors.background)).toBeGreaterThanOrEqual(3);
 });
