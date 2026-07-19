@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Platform } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { Icon } from './Icon';
 import { colors, spacing, radii, typography, fontFamily } from '../theme';
@@ -16,12 +16,16 @@ type Props = {
 
 // Campo de escolha com o mesmo aspeto do TextField.
 //
-// Nota sobre o foco: ao contrário do TextInput, o Picker do
-// @react-native-picker/picker só documenta onFocus/onBlur para Android
-// (ver typings/Picker.d.ts, "@platform android"). No iOS não há um evento
-// fiável de foco a expor aqui — em vez de simular um estado de foco que só
-// funcionaria numa plataforma, este campo fica sem esse terceiro estado
-// visual e mantém sempre o limite `borderStrong`/`danger`. Ver task-7-report.md.
+// Nota sobre o foco: o Picker do @react-native-picker/picker só documenta
+// onFocus/onBlur para Android (ver typings/Picker.d.ts, "@platform android");
+// os typings instalados não declaram equivalente para iOS. Decisão do
+// controlador: o público-alvo desta app é maioritariamente Android de gama
+// baixa/média, logo foco real no Android vale mais do que nenhum foco em
+// lado nenhum. O estado `focado` liga sempre a onFocus/onBlur (tal como no
+// TextField), mas só influencia o limite quando `Platform.OS === 'android'`.
+// No iOS o campo permanece sempre no estado de repouso (`borderStrong`,
+// 1px) — nunca um foco falso. Isto é uma restrição dos typings do Picker,
+// não uma omissão da implementação.
 export function SelectField({
   label,
   value,
@@ -31,7 +35,10 @@ export function SelectField({
   error,
   accessibilityHint,
 }: Props) {
-  const corLimite = error ? colors.danger : colors.borderStrong;
+  const [focado, setFocado] = useState(false);
+  const focoAtivo = focado && Platform.OS === 'android';
+
+  const corLimite = error ? colors.danger : focoAtivo ? colors.borderFocus : colors.borderStrong;
 
   return (
     <View style={{ marginTop: spacing.md }}>
@@ -51,7 +58,7 @@ export function SelectField({
       <View
         style={{
           minHeight: spacing.touchMin,
-          borderWidth: error ? 2 : 1,
+          borderWidth: focoAtivo || error ? 2 : 1,
           borderColor: corLimite,
           borderRadius: radii.sm,
           justifyContent: 'center',
@@ -60,6 +67,8 @@ export function SelectField({
         <Picker
           selectedValue={value}
           onValueChange={(v) => onValueChange(String(v))}
+          onFocus={() => setFocado(true)}
+          onBlur={() => setFocado(false)}
           accessibilityLabel={label}
           accessibilityHint={accessibilityHint}
         >

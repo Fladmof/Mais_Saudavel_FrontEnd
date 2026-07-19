@@ -67,7 +67,9 @@ export function TextField({
           paddingVertical: spacing.md,
           color: colors.ink,
           ...typography.body,
-          ...(multiline ? { minHeight: 88, textAlignVertical: 'top' as const } : {}),
+          ...(multiline
+            ? { minHeight: spacing.touchMin + spacing.xxxl, textAlignVertical: 'top' as const }
+            : {}),
         }}
       />
 
