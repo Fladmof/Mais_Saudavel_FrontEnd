@@ -349,9 +349,9 @@ export function FichaMedicaScreen() {
 
           <Section title="Histórico alimentar">
             <View style={{ alignItems: 'center' }}>
-              <Touchable onPress={() => router.push('/calorias')} accessibilityLabel="Registrar refeição">
+              <Touchable onPress={() => router.push('/calorias')} accessibilityLabel="Registar refeição">
                 <View style={{ backgroundColor: colors.action, paddingVertical: spacing.sm, paddingHorizontal: 80, borderRadius: radii.full }}>
-                  <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Registrar refeição</Text>
+                  <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Registar refeição</Text>
                 </View>
               </Touchable>
               <Touchable
