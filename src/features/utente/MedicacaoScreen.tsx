@@ -263,7 +263,7 @@ export function MedicacaoScreen() {
               {HISTORICOS.map((h, i) => {
                 const itens = registos.filter((r) => r.tipo === h.tipo);
                 return (
-                  <View key={h.tipo} style={{ borderTopWidth: i ? 1 : 0, borderTopColor: colors.textMuted, paddingTop: i ? spacing.lg : 0, marginTop: i ? spacing.lg : 0 }}>
+                  <View key={h.tipo} style={{ borderTopWidth: i ? 1 : 0, borderTopColor: colors.border, paddingTop: i ? spacing.lg : 0, marginTop: i ? spacing.lg : 0 }}>
                     <Text style={{ fontFamily: fontFamily.medium, fontSize: 16 }}>{h.titulo}</Text>
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: spacing.md }}>
                       <Text style={{ color: colors.textMuted, fontSize: 14 }}>{h.desc}</Text>
