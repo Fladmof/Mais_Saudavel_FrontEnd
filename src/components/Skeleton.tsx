@@ -26,6 +26,7 @@ export function Skeleton({ altura = spacing.lg, largura = '100%', radio = 'sm' }
 
   return (
     <Animated.View
+      accessible
       accessibilityLabel="A carregar"
       accessibilityRole="progressbar"
       style={{
