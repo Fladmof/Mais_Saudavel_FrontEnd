@@ -47,6 +47,14 @@ test('action é cor de preenchimento, nunca de texto', () => {
   expect(racioContraste('#FFFFFF', colors.action)).toBeLessThan(3);
 });
 
+test('primary serve ícones e bordas, nunca texto normal', () => {
+  // Limítrofe por construção: cumpre 3:1 para ícones e limites…
+  expect(racioContraste(colors.primary, colors.background)).toBeGreaterThanOrEqual(3);
+  expect(racioContraste(colors.primary, colors.surface)).toBeGreaterThanOrEqual(3);
+  // …mas NÃO cumpre 4.5:1, e por isso não é cor de texto. Verde-texto é `actionInk`.
+  expect(racioContraste(colors.primary, colors.background)).toBeLessThan(4.5);
+});
+
 // ── Aliases de compatibilidade ──────────────────────────────────────────
 
 test('os nomes antigos apontam para os valores NOVOS e acessíveis', () => {
