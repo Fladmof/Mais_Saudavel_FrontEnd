@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { colors, spacing, fontFamily } from '../theme';
+import { Touchable } from './Touchable';
+import { Icon } from './Icon';
+import { colors, spacing, radii, typography, fontFamily } from '../theme';
 
 type Props = {
   label?: string;
@@ -13,30 +15,53 @@ type Props = {
 };
 
 function formatar(d: Date, mode: 'date' | 'time') {
-  return mode === 'date' ? d.toLocaleDateString('pt-PT') : d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
+  return mode === 'date'
+    ? d.toLocaleDateString('pt-PT')
+    : d.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' });
 }
 
-// Campo de data/hora com o mesmo aspeto do TextField (abre o picker nativo)
+// Campo de data/hora com o mesmo aspeto do TextField (abre o seletor nativo).
 export function DateField({ label, value, onChange, placeholder, error, mode = 'date' }: Props) {
   const [aberto, setAberto] = useState(false);
+
+  // O seletor aberto é o equivalente ao foco: mesmo tratamento visual do TextField.
+  const corLimite = error ? colors.danger : aberto ? colors.borderFocus : colors.borderStrong;
+  const rotuloAbrir = mode === 'date' ? 'Escolher data' : 'Escolher hora';
+  const rotuloConfirmar = mode === 'date' ? 'Confirmar data selecionada' : 'Confirmar hora selecionada';
+
   return (
     <View style={{ marginTop: spacing.md }}>
       {label ? (
-        <Text style={{ color: colors.textSubtle, marginBottom: spacing.xs, fontFamily: fontFamily.regular }}>{label}</Text>
+        <Text
+          style={{
+            ...typography.caption,
+            color: colors.inkSecondary,
+            marginBottom: spacing.xs,
+            fontFamily: fontFamily.medium,
+          }}
+        >
+          {label}
+        </Text>
       ) : null}
-      <TouchableOpacity
+
+      <Touchable
         onPress={() => setAberto(true)}
+        accessibilityLabel={rotuloAbrir}
+        accessibilityHint={value ? `Valor atual: ${formatar(value, mode)}` : undefined}
         style={{
-          borderWidth: 1,
-          borderColor: error ? colors.danger : colors.border,
-          borderRadius: 8,
-          padding: spacing.md,
+          minHeight: spacing.touchMin,
+          justifyContent: 'center',
+          borderWidth: aberto || error ? 2 : 1,
+          borderColor: corLimite,
+          borderRadius: radii.sm,
+          paddingHorizontal: spacing.md,
         }}
       >
-        <Text style={{ fontFamily: fontFamily.regular, color: value ? colors.black : colors.placeholder }}>
+        <Text style={{ ...typography.body, color: value ? colors.ink : colors.inkMuted }}>
           {value ? formatar(value, mode) : placeholder ?? 'Selecionar…'}
         </Text>
-      </TouchableOpacity>
+      </Touchable>
+
       {aberto ? (
         <DateTimePicker
           value={value ?? new Date(2000, 0, 1)}
@@ -48,12 +73,19 @@ export function DateField({ label, value, onChange, placeholder, error, mode = '
           }}
         />
       ) : null}
+
       {aberto && Platform.OS === 'ios' ? (
-        <TouchableOpacity onPress={() => setAberto(false)} style={{ alignSelf: 'flex-end', padding: spacing.sm }}>
-          <Text style={{ color: colors.primary, fontFamily: fontFamily.medium }}>OK</Text>
-        </TouchableOpacity>
+        <Touchable onPress={() => setAberto(false)} accessibilityLabel={rotuloConfirmar} style={{ alignSelf: 'flex-end' }}>
+          <Text style={{ ...typography.title, color: colors.actionInk }}>OK</Text>
+        </Touchable>
       ) : null}
-      {error ? <Text style={{ color: colors.danger, fontSize: 12, marginTop: spacing.xs }}>{error}</Text> : null}
+
+      {error ? (
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, marginTop: spacing.xs }}>
+          <Icon nome="alert-circle" tamanho="sm" cor={colors.danger} />
+          <Text style={{ ...typography.caption, color: colors.danger }}>{error}</Text>
+        </View>
+      ) : null}
     </View>
   );
 }
