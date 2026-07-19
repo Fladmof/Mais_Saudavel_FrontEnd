@@ -178,7 +178,6 @@ export function HistoricoScreen() {
                           <Touchable
                             onPress={() => apagar(registo)}
                             accessibilityLabel={`Remover ${registo.titulo}`}
-                            alvoMinimo={false}
                           >
                             <Text style={{ ...typography.caption, color: colors.danger, fontFamily: fontFamily.medium }}>
                               Remover
