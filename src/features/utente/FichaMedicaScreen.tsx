@@ -12,7 +12,7 @@ import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
 import { Touchable } from '../../components/Touchable';
 import { Icon } from '../../components/Icon';
-import { StatusBadge } from '../../components/StatusBadge';
+import { StatusBadge, ESTADOS_CONSULTA } from '../../components/StatusBadge';
 import { Chip } from '../../components/Chip';
 import { utenteService } from '../../services/utenteService';
 import { consultaService } from '../../services/consultaService';
@@ -250,10 +250,19 @@ export function FichaMedicaScreen() {
                     <Button
                       title="Entrar"
                       onPress={() => router.push(`/telemedicine/${proxima.id}`)}
-                      accessibilityLabel={`Entrar na teleconsulta com Dr(a). ${proxima.medico?.user?.nome ?? ''}`}
+                      accessibilityLabel={`Entrar na teleconsulta com Dr(a). ${proxima.medico?.user?.nome ?? 'o seu médico'}`}
                     />
                   ) : (
-                    <StatusBadge estado={proxima.estado} />
+                    // Tocar no estado explica porque ainda não se pode entrar —
+                    // informação útil para quem aguarda a teleconsulta.
+                    <Touchable
+                      onPress={() =>
+                        Alert.alert('Ainda não começou', 'A teleconsulta fica disponível quando o médico a iniciar.')
+                      }
+                      accessibilityLabel={`Estado da consulta: ${ESTADOS_CONSULTA[proxima.estado].rotulo}. A teleconsulta abre quando o médico a iniciar.`}
+                    >
+                      <StatusBadge estado={proxima.estado} />
+                    </Touchable>
                   )}
                 </View>
               ) : (

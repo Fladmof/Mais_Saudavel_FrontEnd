@@ -46,3 +46,19 @@ test('a conta validada anuncia-se por texto, não só pelo ícone', async () => 
   // Era o glifo `✓ Validada`; passa a Icon + Text, dois portadores.
   await waitFor(() => expect(getByText('Validada')).toBeTruthy());
 });
+
+test('tocar numa consulta agendada explica porque ainda não se pode entrar', async () => {
+  // Ao trocar a pílula por StatusBadge perdeu-se o alerta "Ainda não começou".
+  // O StatusBadge é envolvido num Touchable que o restitui — informação útil
+  // para quem aguarda a teleconsulta.
+  (consultaService.minhasConsultas as jest.Mock).mockResolvedValue({
+    ok: true,
+    data: {
+      consultas: [
+        { id: 3, estado: 'agendada', data_hora: '2026-07-25T09:00:00Z', medico: { user: { nome: 'Rui Sá' } } },
+      ],
+    },
+  });
+  const { getByLabelText } = render(<FichaMedicaScreen />);
+  await waitFor(() => expect(getByLabelText(/A teleconsulta abre quando o médico a iniciar/i)).toBeTruthy());
+});
