@@ -21,26 +21,12 @@ import { documentoService } from '../../services/documentoService';
 import { UtentePerfil, Consulta, Alergia, CondicaoEspecial } from '../../api/types';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography, fontFamily, radii } from '../../theme';
+import { idadeDe, imcDe } from '../../utils/saude';
 
 // Ficha do Utente (Figma 75:390 / 127:410): cartao pessoal, dados biologicos,
 // parametros de saude (smartwatch "Sem dados") e historico alimentar.
 
-export function idadeDe(datanascimento?: string | null): string {
-  if (!datanascimento) return '—';
-  const nasc = new Date(datanascimento);
-  if (isNaN(nasc.getTime())) return '—';
-  const hoje = new Date();
-  let anos = hoje.getFullYear() - nasc.getFullYear();
-  const m = hoje.getMonth() - nasc.getMonth();
-  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) anos--;
-  return `${anos}`;
-}
-
-export function imcDe(peso?: number | null, altura?: number | null): string {
-  if (!peso || !altura) return '—';
-  const v = peso / (altura * altura);
-  return isFinite(v) ? v.toFixed(1) : '—';
-}
+export { idadeDe, imcDe };
 
 const PARAMETROS = [
   { titulo: 'Batimento\ncardíaco', icone: require('../../../assets/images/wave.png') },
