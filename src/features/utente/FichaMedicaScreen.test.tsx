@@ -42,6 +42,15 @@ test('o atalho para o histórico de calorias descreve a ação', async () => {
   await waitFor(() => expect(getByLabelText(/histórico de calorias/i)).toBeTruthy());
 });
 
+test('mostra o banner "Validar conta" no topo quando a conta está pendente', async () => {
+  (documentoService.estadoValidacao as jest.Mock).mockResolvedValue({
+    ok: true,
+    data: { documentos: [], validacaoCompleta: false, tiposEmFalta: ['bi_frente'] },
+  });
+  const { findByText } = render(<FichaMedicaScreen />);
+  expect(await findByText('Validar conta')).toBeTruthy();
+});
+
 test('a conta validada anuncia-se por texto, não só pelo ícone', async () => {
   const { getByText } = render(<FichaMedicaScreen />);
   // Era o glifo `✓ Validada`; passa a Icon + Text, dois portadores.
