@@ -14,15 +14,15 @@ beforeEach(() => jest.clearAllMocks());
 test('signIn ok guarda token e devolve user', async () => {
   const user = { id: '1', nome: 'Ana', email: 'a@a.com', role: 'utente' };
   mockedPost.mockResolvedValue({ ok: true, data: { token: 'tok', user }, message: 'Login bem sucedido' });
-  const r = await authService.signIn('a@a.com', 'secret');
-  expect(http.post).toHaveBeenCalledWith('/auth/login', { email: 'a@a.com', password: 'secret' });
+  const r = await authService.signIn('934000111', 'secret');
+  expect(http.post).toHaveBeenCalledWith('/auth/login', { telefone: '934000111', password: 'secret' });
   expect(store.setToken).toHaveBeenCalledWith('tok');
   expect(r).toEqual({ ok: true, user, message: 'Login bem sucedido' });
 });
 
 test('signIn falhado não guarda token', async () => {
-  mockedPost.mockResolvedValue({ ok: false, data: null, message: 'Email ou senha inválidos' });
-  const r = await authService.signIn('a@a.com', 'x');
+  mockedPost.mockResolvedValue({ ok: false, data: null, message: 'Telefone ou senha inválidos' });
+  const r = await authService.signIn('934000111', 'x');
   expect(mockedSetToken).not.toHaveBeenCalled();
   expect(r.ok).toBe(false);
   expect(r.user).toBeNull();
