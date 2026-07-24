@@ -94,6 +94,12 @@ export function AgendarConsultaScreen() {
       Alert.alert('Consulta agendada', `Dr(a). ${medico.user?.nome} — ${new Date(`${data}T${hora}`).toLocaleString('pt-PT', { dateStyle: 'long', timeStyle: 'short' })}`, [
         { text: 'OK', onPress: () => router.back() },
       ]);
+    } else if (r.status === 403) {
+      // Defesa do backend: sem conta validada não se marca. Encaminha à validação.
+      Alert.alert('Conta por validar', 'Valide a sua conta antes de marcar consultas.', [
+        { text: 'Validar conta', onPress: () => router.push('/validacao-conta') },
+        { text: 'Cancelar', style: 'cancel' },
+      ]);
     } else {
       Alert.alert('Não foi possível agendar', r.message || 'Tente outro horário');
       if (r.message?.includes('indisponível')) escolherData(data);
@@ -123,7 +129,7 @@ export function AgendarConsultaScreen() {
 
           {!loading && passo === 'especialidade' ? (
             <>
-              <Text style={[typography.title, { color: colors.primary, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
+              <Text style={[typography.h2, { color: colors.ink, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
                 Escolha a especialidade
               </Text>
               {especialidades.length ? (
@@ -147,7 +153,7 @@ export function AgendarConsultaScreen() {
 
           {!loading && passo === 'medico' ? (
             <>
-              <Text style={[typography.title, { color: colors.primary, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
+              <Text style={[typography.h2, { color: colors.ink, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
                 {especialidade}: escolha o médico
               </Text>
               {medicos.length ? (
@@ -187,7 +193,7 @@ export function AgendarConsultaScreen() {
 
           {!loading && passo === 'dataHora' && medico ? (
             <>
-              <Text style={[typography.title, { color: colors.primary, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
+              <Text style={[typography.h2, { color: colors.ink, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
                 Dr(a). {medico.user?.nome}: escolha o dia
               </Text>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -219,7 +225,7 @@ export function AgendarConsultaScreen() {
 
               {data ? (
                 <>
-                  <Text style={[typography.title, { color: colors.primary, marginTop: spacing.xl, marginBottom: spacing.sm }]}>
+                  <Text style={[typography.title, { color: colors.ink, marginTop: spacing.xl, marginBottom: spacing.sm }]}>
                     Horários disponíveis
                   </Text>
                   {loadingSlots ? (
@@ -232,9 +238,9 @@ export function AgendarConsultaScreen() {
                           <TouchableOpacity key={s} onPress={() => setHora(s)}>
                             <View
                               style={{
-                                backgroundColor: ativo ? colors.action : colors.white,
+                                backgroundColor: ativo ? colors.primary : colors.white,
                                 borderWidth: 1,
-                                borderColor: ativo ? colors.action : colors.border,
+                                borderColor: ativo ? colors.primary : colors.border,
                                 borderRadius: 20,
                                 paddingVertical: 8,
                                 paddingHorizontal: 18,
@@ -263,7 +269,7 @@ export function AgendarConsultaScreen() {
 
           {!loading && passo === 'confirmar' && medico ? (
             <>
-              <Text style={[typography.title, { color: colors.primary, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
+              <Text style={[typography.h2, { color: colors.ink, marginTop: spacing.lg, marginBottom: spacing.sm }]}>
                 Confirmar marcação
               </Text>
               <Card>
