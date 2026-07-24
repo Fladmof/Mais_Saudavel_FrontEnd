@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
   });
 
   async function login(email, password) {
-    const resp = await apiClient.post('/auth/login', { email, password });
+    const resp = await apiClient.post('/auth/admin-login', { email, password });
     const { token: tk, user: u } = resp.data.data;
     if (!u || u.role !== 'admin') {
       const err = new Error('Apenas administradores podem aceder a este painel.');
