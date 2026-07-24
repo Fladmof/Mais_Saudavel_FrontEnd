@@ -35,7 +35,7 @@ function FeatureCard({ icone, titulo }: { icone: ImageSourcePropType; titulo: st
         style={{
           fontFamily: fontFamily.medium,
           fontSize: 13,
-          color: colors.primary,
+          color: colors.actionInk,
           textAlign: 'center',
           marginTop: spacing.sm,
         }}
@@ -59,7 +59,7 @@ export function PromoScreen() {
           <Text style={[typography.h2, { textAlign: 'center', marginTop: spacing.xl }]}>
             +20 especialidades registradas no +Saudável
           </Text>
-          <Text style={[typography.body, { color: '#626262', textAlign: 'center', marginTop: spacing.md, paddingHorizontal: spacing.lg }]}>
+          <Text style={[typography.body, { color: colors.inkMuted, textAlign: 'center', marginTop: spacing.md, paddingHorizontal: spacing.lg }]}>
             Registre, acompanhe e partilhe os seus dados clínicos com segurança e total controlo
           </Text>
 
@@ -70,7 +70,7 @@ export function PromoScreen() {
           </View>
 
           <Text style={[typography.h2, { textAlign: 'center', marginTop: spacing.xxl }]}>Mais qualidade de vida!</Text>
-          <Text style={[typography.body, { color: '#626262', textAlign: 'center', marginTop: spacing.md }]}>
+          <Text style={[typography.body, { color: colors.inkMuted, textAlign: 'center', marginTop: spacing.md }]}>
             O +Saudável simplifica o acompanhamento diário e devolve autonomia ao paciente e à família. Cuidar da saúde
             nunca foi fácil!
           </Text>
@@ -95,16 +95,16 @@ export function PromoScreen() {
               width: 44,
               height: 44,
               borderRadius: 12,
-              backgroundColor: colors.action,
+              backgroundColor: colors.primary,
               alignItems: 'center',
               justifyContent: 'center',
               marginTop: spacing.xl,
             }}
           >
-            <Text style={{ fontFamily: fontFamily.bold, fontSize: 22, color: colors.white }}>”</Text>
+            <Text style={{ fontFamily: fontFamily.bold, fontSize: 22, color: colors.inkInverse }}>”</Text>
           </View>
 
-          <Text style={[typography.body, { color: '#626262', textAlign: 'center', marginTop: spacing.lg }]}>
+          <Text style={[typography.body, { color: colors.inkMuted, textAlign: 'center', marginTop: spacing.lg }]}>
             O +Saudável simplifica o acompanhamento diário e devolve autonomia ao paciente e à família. Cuidar da saúde
             nunca foi fácil!
           </Text>
