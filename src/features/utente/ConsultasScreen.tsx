@@ -10,6 +10,7 @@ import { Section } from '../../components/Section';
 import { StatusBadge } from '../../components/StatusBadge';
 import { EmptyState } from '../../components/EmptyState';
 import { consultaService } from '../../services/consultaService';
+import { documentoService } from '../../services/documentoService';
 import { Consulta } from '../../api/types';
 import { colors, spacing, typography } from '../../theme';
 
@@ -49,12 +50,16 @@ function ConsultaCard({ consulta, onEntrar, onCancelar }: { consulta: Consulta; 
 export function ConsultasScreen() {
   const router = useRouter();
   const [consultas, setConsultas] = useState<Consulta[]>([]);
+  const [validada, setValidada] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
   const [networkError, setNetworkError] = useState(false);
   const [erro, setErro] = useState('');
 
   const carregar = useCallback(async () => {
-    const r = await consultaService.minhasConsultas();
+    const [r, rDocs] = await Promise.all([
+      consultaService.minhasConsultas(),
+      documentoService.estadoValidacao(),
+    ]);
     setLoading(false);
     setNetworkError(!!r.network);
     if (r.ok && r.data) {
@@ -67,7 +72,11 @@ export function ConsultasScreen() {
     } else if (!r.network) {
       setErro(r.message || 'Falha ao carregar as consultas');
     }
+    if (rDocs.ok && rDocs.data) setValidada(rDocs.data.validacaoCompleta);
   }, []);
+
+  // Sem conta autêntica não se marca consulta: encaminha para a validação.
+  const irMarcar = () => router.push(validada ? '/agendar' : '/validacao-conta');
 
   useFocusEffect(
     useCallback(() => {
@@ -105,9 +114,14 @@ export function ConsultasScreen() {
           {/* Uma só ação primária por ecrã: com consultas, o botão de topo é o CTA;
               sem consultas, o CTA passa para o EmptyState de "Próximas" (evita dois
               botões verdes iguais empilhados no estado vazio). */}
+          {validada === false ? (
+            <Text style={{ ...typography.caption, color: colors.warning, marginTop: spacing.lg }}>
+              Valide a conta para marcar consultas.
+            </Text>
+          ) : null}
           {ativas.length ? (
-            <View style={{ marginTop: spacing.xl }}>
-              <Button title="Marcar nova consulta" onPress={() => router.push('/agendar')} />
+            <View style={{ marginTop: spacing.md }}>
+              <Button title="Marcar nova consulta" onPress={irMarcar} />
             </View>
           ) : null}
           {erro ? <Text style={{ color: colors.danger, marginTop: spacing.md }}>{erro}</Text> : null}
@@ -127,7 +141,7 @@ export function ConsultasScreen() {
                 icone="calendar-outline"
                 titulo="Ainda não tem consultas marcadas"
                 descricao="Marque uma consulta para falar com um médico."
-                acao={{ titulo: 'Marcar consulta', onPress: () => router.push('/agendar') }}
+                acao={{ titulo: 'Marcar consulta', onPress: irMarcar }}
               />
             )}
           </Section>
