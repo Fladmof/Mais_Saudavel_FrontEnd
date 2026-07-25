@@ -74,6 +74,7 @@ export function RegisterMedicoScreen() {
         <Touchable
           onPress={() => router.replace('/(auth)/register-utente')}
           accessibilityLabel="Criar conta como paciente"
+          accessibilityRole="link"
           style={{ alignItems: 'center', marginTop: spacing.sm }}
         >
           <Text style={[typography.body, { color: colors.info }]}>Criar conta como paciente</Text>

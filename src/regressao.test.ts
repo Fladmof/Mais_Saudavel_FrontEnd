@@ -20,7 +20,7 @@ const FICHEIROS_COBERTOS: string[] = [
   'src/features/medico/PacienteDetalheScreen.tsx',
   'src/features/medico/HorariosMedicoScreen.tsx',
   'src/features/medico/MarcarConsultaScreen.tsx',
-  // Fase 2, vaga 3 — ecrãs de autenticação
+  // Fase 2, vaga 2 — registo do médico (ecrã de auth)
   'src/features/auth/RegisterMedicoScreen.tsx',
 ];
 
