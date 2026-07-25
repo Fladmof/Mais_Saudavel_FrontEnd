@@ -20,6 +20,8 @@ const FICHEIROS_COBERTOS: string[] = [
   'src/features/medico/PacienteDetalheScreen.tsx',
   'src/features/medico/HorariosMedicoScreen.tsx',
   'src/features/medico/MarcarConsultaScreen.tsx',
+  // Fase 2, vaga 3 — ecrãs de autenticação
+  'src/features/auth/RegisterMedicoScreen.tsx',
 ];
 
 // O primitivo Touchable é o único sítio onde TouchableOpacity é legítimo.

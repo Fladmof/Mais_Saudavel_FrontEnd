@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Screen } from '../../components/Screen';
 import { Logo } from '../../components/Logo';
@@ -7,6 +7,7 @@ import { Section } from '../../components/Section';
 import { TextField } from '../../components/TextField';
 import { PasswordField } from '../../components/PasswordField';
 import { Button } from '../../components/Button';
+import { Touchable } from '../../components/Touchable';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography } from '../../theme';
 
@@ -70,11 +71,13 @@ export function RegisterMedicoScreen() {
           <Logo />
         </View>
         <Text style={[typography.h2, { textAlign: 'center' }]}>Criar conta de médico</Text>
-        <TouchableOpacity onPress={() => router.replace('/(auth)/register-utente')}>
-          <Text style={[typography.body, { color: '#4D81E7', textAlign: 'center', marginTop: spacing.sm }]}>
-            Criar conta como paciente
-          </Text>
-        </TouchableOpacity>
+        <Touchable
+          onPress={() => router.replace('/(auth)/register-utente')}
+          accessibilityLabel="Criar conta como paciente"
+          style={{ alignItems: 'center', marginTop: spacing.sm }}
+        >
+          <Text style={[typography.body, { color: colors.info }]}>Criar conta como paciente</Text>
+        </Touchable>
 
         <Section title="Conta">
           <TextField label="Email" value={form.email} onChangeText={set('email')} placeholder="seu@email.com" keyboardType="email-address" autoCapitalize="none" error={erros.email} />
