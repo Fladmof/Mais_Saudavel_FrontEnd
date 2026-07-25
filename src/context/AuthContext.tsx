@@ -10,7 +10,7 @@ type RegisterPayload = { email: string; nome: string; password: string; [k: stri
 interface AuthContextValue {
   status: Status;
   user: User | null;
-  signIn: (email: string, password: string) => Promise<{ ok: boolean; message: string }>;
+  signIn: (telefone: string, password: string) => Promise<{ ok: boolean; message: string }>;
   registerUtente: (payload: RegisterPayload) => Promise<{ ok: boolean; message: string }>;
   registerMedico: (payload: RegisterPayload) => Promise<{ ok: boolean; message: string }>;
   signOut: () => Promise<void>;
@@ -47,8 +47,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadSession();
   }, [loadSession]);
 
-  const signIn = useCallback(async (email: string, password: string) => {
-    const r = await authService.signIn(email, password);
+  const signIn = useCallback(async (telefone: string, password: string) => {
+    const r = await authService.signIn(telefone, password);
     if (r.ok && r.user) {
       setUser(r.user);
       setStatus('authenticated');

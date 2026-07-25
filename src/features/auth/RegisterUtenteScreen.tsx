@@ -9,19 +9,20 @@ import { SelectField } from '../../components/SelectField';
 import { DateField } from '../../components/DateField';
 import { Button } from '../../components/Button';
 import { useAuth } from '../../context/AuthContext';
-import { colors, spacing, typography } from '../../theme';
+import { colors, spacing, typography, fontFamily } from '../../theme';
+import { factorRhDe, imcDe } from '../../utils/saude';
 
 // Registo de utente (Figma 64:160): Conta, Dados pessoais, Dados Biologicos,
 // Historico medico (com Detalhes) e Contacto de emergencia.
+// O Factor RH é derivado do grupo sanguíneo e o IMC é calculado — nunca pedidos.
 
 const GENEROS = ['Masculino', 'Feminino', 'Outro'];
 const GRUPOS = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
-const FACTOR_RH = ['Positivo', 'Negativo'];
 
 type Form = {
   email: string; password: string; confirmar: string;
   nome: string; apelido: string; genero: string; telefone: string; bi: string; morada: string; profissao: string;
-  gsanguineo: string; factorrh: string; peso: string; altura: string;
+  gsanguineo: string; peso: string; altura: string;
   alergia: string; condespeciais: string; detalhes: string;
   contato_emergencia: string; relacao: string; telemergencia: string;
 };
@@ -29,7 +30,7 @@ type Form = {
 const VAZIO: Form = {
   email: '', password: '', confirmar: '',
   nome: '', apelido: '', genero: '', telefone: '', bi: '', morada: '', profissao: '',
-  gsanguineo: '', factorrh: '', peso: '', altura: '',
+  gsanguineo: '', peso: '', altura: '',
   alergia: '', condespeciais: '', detalhes: '',
   contato_emergencia: '', relacao: '', telemergencia: '',
 };
@@ -55,7 +56,6 @@ export function RegisterUtenteScreen() {
     if (!form.bi.trim()) e.bi = 'Obrigatório';
     if (!form.morada.trim()) e.morada = 'Obrigatório';
     if (!form.gsanguineo) e.gsanguineo = 'Obrigatório';
-    if (!form.factorrh) e.factorrh = 'Obrigatório';
     if (!form.peso || isNaN(parseFloat(form.peso))) e.peso = 'Número inválido';
     if (!form.altura || isNaN(parseFloat(form.altura))) e.altura = 'Número inválido';
     setErros(e);
@@ -76,7 +76,6 @@ export function RegisterUtenteScreen() {
       morada: form.morada.trim(),
       profissao: form.profissao.trim() || undefined,
       gsanguineo: form.gsanguineo,
-      factorrh: form.factorrh,
       peso: parseFloat(form.peso),
       altura: parseFloat(form.altura),
       alergia: form.alergia.trim() || undefined,
@@ -118,9 +117,18 @@ export function RegisterUtenteScreen() {
 
         <Section title="Dados Biológicos">
           <SelectField label="Grupo sanguíneo" value={form.gsanguineo} onValueChange={set('gsanguineo')} options={GRUPOS} error={erros.gsanguineo} />
-          <SelectField label="Factor RH" value={form.factorrh} onValueChange={set('factorrh')} options={FACTOR_RH} error={erros.factorrh} />
+          {form.gsanguineo ? (
+            <Text style={{ ...typography.caption, color: colors.inkMuted, marginTop: -spacing.sm, marginBottom: spacing.md }}>
+              Factor RH: {factorRhDe(form.gsanguineo)} — definido automaticamente
+            </Text>
+          ) : null}
           <TextField label="Peso (kg)" value={form.peso} onChangeText={set('peso')} placeholder="70" keyboardType="numeric" error={erros.peso} />
           <TextField label="Altura (m)" value={form.altura} onChangeText={set('altura')} placeholder="1.75" keyboardType="numeric" error={erros.altura} />
+          {form.peso && form.altura ? (
+            <Text style={{ ...typography.caption, color: colors.actionInk, fontFamily: fontFamily.medium }}>
+              IMC: {imcDe(parseFloat(form.peso), parseFloat(form.altura))} kg/m² (calculado)
+            </Text>
+          ) : null}
         </Section>
 
         <Section title="Histórico médico">

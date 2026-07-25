@@ -16,7 +16,7 @@ export function LoginScreen() {
   const router = useRouter();
   const { signIn } = useAuth();
   const [tab, setTab] = useState<0 | 1>(0);
-  const [email, setEmail] = useState('');
+  const [telefone, setTelefone] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -26,12 +26,12 @@ export function LoginScreen() {
 
   const onSubmit = async () => {
     setError('');
-    if (!email.trim() || !password) {
-      setError('Preencha email e senha');
+    if (!telefone.trim() || !password) {
+      setError('Preencha telefone e senha');
       return;
     }
     setLoading(true);
-    const r = await signIn(email.trim(), password);
+    const r = await signIn(telefone.trim(), password);
     setLoading(false);
     if (!r.ok) setError(r.message || 'Falha no login');
     // sucesso: o guard da raiz encaminha automaticamente
@@ -49,11 +49,11 @@ export function LoginScreen() {
         {tab === 0 ? (
           <View style={{ marginTop: spacing.xl }}>
             <TextField
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="fortunatofortran@gmail.com"
-              keyboardType="email-address"
+              label="Telefone"
+              value={telefone}
+              onChangeText={setTelefone}
+              placeholder="9XX XXX XXX"
+              keyboardType="phone-pad"
               autoCapitalize="none"
             />
             <PasswordField label="Senha" value={password} onChangeText={setPassword} placeholder="•••••••" />

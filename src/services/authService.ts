@@ -5,8 +5,8 @@ import { AuthData, User, Role } from '../api/types';
 
 type AuthResult = { ok: boolean; user: User | null; message: string };
 
-async function signIn(email: string, password: string): Promise<AuthResult> {
-  const res = await post<AuthData>(endpoints.login, { email, password });
+async function signIn(telefone: string, password: string): Promise<AuthResult> {
+  const res = await post<AuthData>(endpoints.login, { telefone, password });
   if (res.ok && res.data?.token) {
     await setToken(res.data.token);
     return { ok: true, user: res.data.user, message: res.message };

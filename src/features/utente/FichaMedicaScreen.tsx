@@ -21,26 +21,12 @@ import { documentoService } from '../../services/documentoService';
 import { UtentePerfil, Consulta, Alergia, CondicaoEspecial } from '../../api/types';
 import { useAuth } from '../../context/AuthContext';
 import { colors, spacing, typography, fontFamily, radii } from '../../theme';
+import { idadeDe, imcDe } from '../../utils/saude';
 
 // Ficha do Utente (Figma 75:390 / 127:410): cartao pessoal, dados biologicos,
 // parametros de saude (smartwatch "Sem dados") e historico alimentar.
 
-export function idadeDe(datanascimento?: string | null): string {
-  if (!datanascimento) return '—';
-  const nasc = new Date(datanascimento);
-  if (isNaN(nasc.getTime())) return '—';
-  const hoje = new Date();
-  let anos = hoje.getFullYear() - nasc.getFullYear();
-  const m = hoje.getMonth() - nasc.getMonth();
-  if (m < 0 || (m === 0 && hoje.getDate() < nasc.getDate())) anos--;
-  return `${anos}`;
-}
-
-export function imcDe(peso?: number | null, altura?: number | null): string {
-  if (!peso || !altura) return '—';
-  const v = peso / (altura * altura);
-  return isFinite(v) ? v.toFixed(1) : '—';
-}
+export { idadeDe, imcDe };
 
 const PARAMETROS = [
   { titulo: 'Batimento\ncardíaco', icone: require('../../../assets/images/wave.png') },
@@ -68,8 +54,8 @@ function HealthCard({ titulo, icone }: { titulo: string; icone: any }) {
       <View style={{ alignItems: 'center', marginVertical: spacing.md }}>
         <Image source={require('../../../assets/images/empty.png')} resizeMode="contain" />
       </View>
-      <View style={{ backgroundColor: colors.action, paddingVertical: spacing.xs, borderRadius: radii.md, alignItems: 'center' }}>
-        <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Sem dados</Text>
+      <View style={{ backgroundColor: colors.surfaceSunken, paddingVertical: spacing.xs, borderRadius: radii.md, alignItems: 'center' }}>
+        <Text style={{ color: colors.inkMuted, fontFamily: fontFamily.medium }}>Sem dados</Text>
       </View>
       <Text
         style={{
@@ -173,6 +159,41 @@ export function FichaMedicaScreen() {
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
       >
         <PageHeader title="Ficha do Utente" onSignOut={confirmarSair} />
+
+        {contaValidada === false ? (
+          <View
+            style={{
+              marginHorizontal: spacing.lg,
+              marginTop: spacing.lg,
+              backgroundColor: colors.warningSurface,
+              borderRadius: radii.lg,
+              padding: spacing.lg,
+            }}
+          >
+            <Text style={{ ...typography.title, color: colors.warning }}>Conta por validar</Text>
+            <Text style={{ ...typography.caption, color: colors.inkSecondary, marginTop: spacing.xs }}>
+              Valide a sua conta para poder marcar consultas.
+            </Text>
+            <View style={{ marginTop: spacing.md }}>
+              <Button title="Validar conta" onPress={() => router.push('/validacao-conta')} />
+            </View>
+          </View>
+        ) : contaValidada ? (
+          <View
+            style={{
+              marginHorizontal: spacing.lg,
+              marginTop: spacing.lg,
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: spacing.xs,
+            }}
+          >
+            <Icon nome="checkmark-circle" tamanho="sm" cor={colors.success} />
+            <Text style={{ ...typography.caption, color: colors.success, fontFamily: fontFamily.medium }}>
+              Conta validada
+            </Text>
+          </View>
+        ) : null}
 
         <View style={{ paddingHorizontal: spacing.lg }}>
           <Card style={{ marginTop: spacing.xl, padding: spacing.xl }}>
@@ -329,14 +350,16 @@ export function FichaMedicaScreen() {
               <Touchable onPress={brevemente} accessibilityLabel="Ligar dispositivo">
                 <View
                   style={{
-                    backgroundColor: colors.action,
+                    backgroundColor: colors.surface,
+                    borderWidth: 1,
+                    borderColor: colors.borderStrong,
                     paddingVertical: spacing.sm,
                     paddingHorizontal: spacing.lg,
                     borderRadius: radii.full,
                     marginTop: spacing.xl,
                   }}
                 >
-                  <Text style={{ color: colors.inkOnAction, fontFamily: fontFamily.medium }}>Ligar dispositivo</Text>
+                  <Text style={{ color: colors.actionInk, fontFamily: fontFamily.medium }}>Ligar dispositivo</Text>
                 </View>
               </Touchable>
             </View>

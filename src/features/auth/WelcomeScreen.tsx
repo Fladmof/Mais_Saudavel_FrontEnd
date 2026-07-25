@@ -12,7 +12,7 @@ import { colors, spacing, fontFamily } from '../../theme';
 export function WelcomeScreen() {
   const router = useRouter();
   return (
-    <LinearGradient colors={['#E7F8E8', '#FFFFFF', '#E7F8E8']} style={{ flex: 1 }}>
+    <LinearGradient colors={[colors.successSurface, colors.surface, colors.successSurface]} style={{ flex: 1 }}>
       <Screen style={{ backgroundColor: 'transparent' }}>
         <View style={{ flex: 1, alignItems: 'center', paddingHorizontal: spacing.xl }}>
           <View style={{ marginTop: spacing.xl }}>
@@ -51,7 +51,7 @@ export function WelcomeScreen() {
                 fontFamily: fontFamily.regular,
                 fontSize: 15,
                 lineHeight: 20,
-                color: '#626262',
+                color: colors.inkMuted,
                 textAlign: 'center',
                 width: 278,
                 marginTop: spacing.lg,
@@ -60,9 +60,9 @@ export function WelcomeScreen() {
               O +Saudável centraliza tudo num único lugar, acessível a qualquer momento
             </Text>
             <View style={{ flexDirection: 'row', gap: 4, marginTop: spacing.xxl }}>
-              <View style={{ width: 4, height: 4, borderRadius: 56, backgroundColor: '#3D3C3C', opacity: 0.3 }} />
+              <View style={{ width: 4, height: 4, borderRadius: 56, backgroundColor: colors.ink, opacity: 0.3 }} />
               <View style={{ width: 17, height: 4, borderRadius: 56, backgroundColor: colors.primary }} />
-              <View style={{ width: 4, height: 4, borderRadius: 56, backgroundColor: '#3D3C3C', opacity: 0.3 }} />
+              <View style={{ width: 4, height: 4, borderRadius: 56, backgroundColor: colors.ink, opacity: 0.3 }} />
             </View>
           </View>
 
