@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import { PageHeader } from '../../components/PageHeader';
 import { Screen } from '../../components/Screen';
 import { Card } from '../../components/Card';
 import { Avatar } from '../../components/Avatar';
@@ -72,14 +72,9 @@ export function MarcarConsultaScreen() {
   };
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView contentContainerStyle={{ paddingBottom: spacing.xxl }} keyboardShouldPersistTaps="handled">
-        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white, padding: spacing.lg, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: spacing.md }}>
-            <Ionicons name="arrow-back" size={24} color={colors.primary} />
-          </TouchableOpacity>
-          <Text style={typography.h2}>Marcar consulta</Text>
-        </View>
+        <PageHeader title="Marcar consulta" onBack={() => router.back()} />
 
         <View style={{ paddingHorizontal: spacing.lg }}>
           <Card style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginTop: spacing.xl }}>
