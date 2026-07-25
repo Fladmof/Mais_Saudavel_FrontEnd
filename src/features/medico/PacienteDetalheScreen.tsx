@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, ScrollView, Alert } from 'react-native';
 import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { Screen } from '../../components/Screen';
 import { Card } from '../../components/Card';
 import { Avatar } from '../../components/Avatar';
@@ -10,12 +9,13 @@ import { InfoRow } from '../../components/InfoRow';
 import { Section } from '../../components/Section';
 import { TextField } from '../../components/TextField';
 import { Button } from '../../components/Button';
+import { PageHeader } from '../../components/PageHeader';
 import { ServerError } from '../../components/ServerError';
 import { utenteService } from '../../services/utenteService';
 import { clinicoService } from '../../services/clinicoService';
 import { UtentePerfil, Medicacao, RegistoClinico, Alergia, CondicaoEspecial } from '../../api/types';
-import { colors, spacing, typography, fontFamily } from '../../theme';
-import { idadeDe, imcDe } from '../utente/FichaMedicaScreen';
+import { colors, spacing, typography } from '../../theme';
+import { idadeDe, imcDe } from '../../utils/saude';
 
 // "Dados do paciente" (Figma 178:1015): vista read-only do medico sobre o utente
 // (ficha + medicacao combinadas); o medico pode adicionar receitas e marcar consulta.
@@ -90,14 +90,9 @@ export function PacienteDetalheScreen() {
   if (networkError) return <ServerError onRetry={() => { setLoading(true); carregar(); }} />;
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView contentContainerStyle={{ paddingBottom: spacing.xxl }}>
-        <View style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: colors.white, padding: spacing.lg, borderBottomLeftRadius: 16, borderBottomRightRadius: 16 }}>
-          <TouchableOpacity onPress={() => router.back()} style={{ marginRight: spacing.md }}>
-            <Ionicons name="arrow-back" size={24} color={colors.primary} />
-          </TouchableOpacity>
-          <Text style={typography.h2}>Dados do paciente</Text>
-        </View>
+        <PageHeader title="Dados do paciente" onBack={() => router.back()} />
 
         <View style={{ paddingHorizontal: spacing.lg }}>
           <Card style={{ marginTop: spacing.xl, padding: spacing.xl }}>
@@ -106,10 +101,10 @@ export function PacienteDetalheScreen() {
               <View style={{ flexDirection: 'row', gap: 20 }}>
                 <Avatar nome={perfil.user?.nome} size={90} />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontFamily: fontFamily.medium, fontSize: 16, marginBottom: 6 }}>{perfil.user?.nome}</Text>
-                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{idadeDe(perfil.datanascimento)} anos - {perfil.genero}</Text>
-                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>Nº de utente: UT-{String(perfil.id).padStart(7, '0')}</Text>
-                  <Text style={{ color: colors.textMuted, fontSize: 14 }}>{perfil.telefone}</Text>
+                  <Text style={{ ...typography.title, color: colors.ink, marginBottom: spacing.xs }}>{perfil.user?.nome}</Text>
+                  <Text style={{ ...typography.caption, color: colors.inkMuted }}>{idadeDe(perfil.datanascimento)} anos - {perfil.genero}</Text>
+                  <Text style={{ ...typography.caption, color: colors.inkMuted }}>Nº de utente: UT-{String(perfil.id).padStart(7, '0')}</Text>
+                  <Text style={{ ...typography.caption, color: colors.inkMuted }}>{perfil.telefone}</Text>
                 </View>
               </View>
             ) : null}
@@ -148,7 +143,7 @@ export function PacienteDetalheScreen() {
             </Card>
           </Section>
 
-          <Section title="Alergia registrada">
+          <Section title="Alergia registada">
             <Card>
               {alergias.length ? (
                 <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, justifyContent: 'center', marginBottom: spacing.md }}>
@@ -170,7 +165,7 @@ export function PacienteDetalheScreen() {
               ) : (
                 medicacoes.map((m) => (
                   <View key={m.id} style={{ paddingVertical: spacing.sm, borderBottomWidth: 1, borderBottomColor: colors.border }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 15 }}>{m.nome}</Text>
+                    <Text style={{ ...typography.title, color: colors.ink }}>{m.nome}</Text>
                     <Text style={typography.caption}>{[m.dosagem, m.frequencia, m.horario].filter(Boolean).join(' · ') || '—'}</Text>
                   </View>
                 ))
@@ -184,13 +179,13 @@ export function PacienteDetalheScreen() {
                 const itens = registos.filter((r) => r.tipo === t.tipo);
                 return (
                   <View key={t.tipo} style={{ marginTop: i ? spacing.lg : 0 }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 16 }}>{t.titulo}</Text>
+                    <Text style={{ ...typography.title, color: colors.ink }}>{t.titulo}</Text>
                     {itens.length === 0 ? (
                       <Text style={typography.caption}>Sem registos</Text>
                     ) : (
                       itens.map((reg) => (
                         <View key={reg.id} style={{ marginTop: spacing.sm }}>
-                          <Text style={{ fontSize: 14 }}>{reg.titulo}</Text>
+                          <Text style={{ ...typography.body, color: colors.ink }}>{reg.titulo}</Text>
                           <Text style={typography.caption}>{[reg.data, reg.descricao].filter(Boolean).join(' — ')}</Text>
                         </View>
                       ))
@@ -218,11 +213,11 @@ export function PacienteDetalheScreen() {
           <View style={{ marginTop: spacing.xl }}>
             <Text style={[typography.title, { color: colors.danger, marginBottom: spacing.sm }]}>Contacto de emergência</Text>
             <Card>
-              <Text style={{ fontFamily: fontFamily.medium, fontSize: 16, marginBottom: 4 }}>
+              <Text style={{ ...typography.title, color: colors.ink, marginBottom: spacing.xs }}>
                 {perfil?.contato_emergencia || 'Sem contacto registado'}
               </Text>
-              <Text style={{ color: colors.textSubtle }}>{perfil?.relacao || '—'}</Text>
-              <Text style={{ color: colors.danger }}>{perfil?.telemergencia || '—'}</Text>
+              <Text style={{ ...typography.body, color: colors.inkSecondary }}>{perfil?.relacao || '—'}</Text>
+              <Text style={{ ...typography.body, color: colors.danger }}>{perfil?.telemergencia || '—'}</Text>
             </Card>
           </View>
         </View>

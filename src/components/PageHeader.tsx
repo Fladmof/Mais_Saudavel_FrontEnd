@@ -6,7 +6,8 @@ import { colors, spacing, radii, typography, fontFamily } from '../theme';
 
 // Cabecalho das paginas internas: titulo verde + badge "Segurança da informação".
 // onSignOut opcional -> mostra um botao "Sair" no canto superior direito.
-export function PageHeader({ title, onSignOut }: { title: string; onSignOut?: () => void }) {
+// onBack opcional -> mostra uma seta de voltar no canto superior esquerdo.
+export function PageHeader({ title, onSignOut, onBack }: { title: string; onSignOut?: () => void; onBack?: () => void }) {
   return (
     <View
       style={{
@@ -17,6 +18,15 @@ export function PageHeader({ title, onSignOut }: { title: string; onSignOut?: ()
         borderBottomRightRadius: radii.lg,
       }}
     >
+      {onBack ? (
+        <Touchable
+          onPress={onBack}
+          accessibilityLabel="Voltar"
+          style={{ position: 'absolute', left: spacing.lg, top: spacing.md }}
+        >
+          <Icon nome="arrow-back" tamanho="md" cor={colors.actionInk} />
+        </Touchable>
+      ) : null}
       <Text style={[typography.h2, { color: colors.actionInk, marginTop: spacing.md }]}>{title}</Text>
       {onSignOut ? (
         <Touchable

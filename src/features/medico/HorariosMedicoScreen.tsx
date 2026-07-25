@@ -8,7 +8,7 @@ import { Button } from '../../components/Button';
 import { ServerError } from '../../components/ServerError';
 import { medicoService } from '../../services/medicoService';
 import { useAuth } from '../../context/AuthContext';
-import { colors, spacing, typography, fontFamily } from '../../theme';
+import { colors, spacing, typography, fontFamily, radii } from '../../theme';
 
 // Ecra do medico para preencher a disponibilidade semanal: uma janela por dia
 // (hora inicio/fim, slots de 30 min). Os utentes so conseguem agendar dentro
@@ -89,7 +89,7 @@ export function HorariosMedicoScreen() {
   const atualizar = (d: number, campos: Partial<Dia>) => setDias({ ...dias, [d]: { ...dias[d], ...campos } });
 
   return (
-    <Screen style={{ backgroundColor: '#F7F8FA' }}>
+    <Screen>
       <ScrollView
         contentContainerStyle={{ paddingBottom: spacing.xxl }}
         refreshControl={<RefreshControl refreshing={loading} onRefresh={carregar} tintColor={colors.primary} />}
@@ -107,17 +107,17 @@ export function HorariosMedicoScreen() {
               return (
                 <Card key={d} style={{ marginBottom: spacing.md }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <Text style={{ fontFamily: fontFamily.medium, fontSize: 15 }}>{NOME_DIA[d]}</Text>
+                    <Text style={{ ...typography.title, color: colors.ink }}>{NOME_DIA[d]}</Text>
                     <Switch
                       value={dia.ativo}
                       onValueChange={(v) => atualizar(d, { ativo: v })}
                       trackColor={{ true: colors.action, false: colors.border }}
-                      thumbColor={colors.white}
+                      thumbColor={colors.surface}
                     />
                   </View>
                   {dia.ativo ? (
                     <View style={{ flexDirection: 'row', gap: spacing.md, marginTop: spacing.md, alignItems: 'center' }}>
-                      <Text style={{ color: colors.textSubtle, fontSize: 13 }}>Das</Text>
+                      <Text style={{ ...typography.caption, color: colors.inkSecondary }}>Das</Text>
                       <TextInput
                         value={dia.inicio}
                         onChangeText={(v) => atualizar(d, { inicio: v })}
@@ -125,12 +125,12 @@ export function HorariosMedicoScreen() {
                         keyboardType="numbers-and-punctuation"
                         maxLength={5}
                         style={{
-                          borderWidth: 1, borderColor: colors.border, borderRadius: 8,
-                          paddingVertical: 8, paddingHorizontal: 12, minWidth: 80, textAlign: 'center',
+                          borderWidth: 1, borderColor: colors.border, borderRadius: radii.sm,
+                          paddingVertical: spacing.sm, paddingHorizontal: spacing.md, minWidth: 80, textAlign: 'center',
                           fontFamily: fontFamily.medium,
                         }}
                       />
-                      <Text style={{ color: colors.textSubtle, fontSize: 13 }}>às</Text>
+                      <Text style={{ ...typography.caption, color: colors.inkSecondary }}>às</Text>
                       <TextInput
                         value={dia.fim}
                         onChangeText={(v) => atualizar(d, { fim: v })}
@@ -138,8 +138,8 @@ export function HorariosMedicoScreen() {
                         keyboardType="numbers-and-punctuation"
                         maxLength={5}
                         style={{
-                          borderWidth: 1, borderColor: colors.border, borderRadius: 8,
-                          paddingVertical: 8, paddingHorizontal: 12, minWidth: 80, textAlign: 'center',
+                          borderWidth: 1, borderColor: colors.border, borderRadius: radii.sm,
+                          paddingVertical: spacing.sm, paddingHorizontal: spacing.md, minWidth: 80, textAlign: 'center',
                           fontFamily: fontFamily.medium,
                         }}
                       />
